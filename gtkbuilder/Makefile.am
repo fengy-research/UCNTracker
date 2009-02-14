@@ -7,7 +7,8 @@ gtkbuilder.h \
 gtkbuilderprivate.h \
 gtkbuildable.c \
 gtkbuilder.c \
-gtkbuilderparser.c
+gtkbuilderparser.c \
+nls.h
 
 libgtkbuilder_la_LDFLAGS = -no-undefined
 libgtkbuilder_la_LIBADD = $(GLIB_LIBS)
