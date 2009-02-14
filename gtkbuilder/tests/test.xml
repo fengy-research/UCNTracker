@@ -1,0 +1,6 @@
+<interface>
+	<object class="MyObject" id="object1"/>
+	<object class="MyObject" id="object2">
+		<property name="child">object1</property>
+	</object>
+</interface>
