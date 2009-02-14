@@ -21,6 +21,9 @@
  */
 
 #include "config.h"
+#include <glib.h>
+#include <gmodule.h>
+
 #include <errno.h> /* errno */
 #include <stdlib.h> /* strtol, strtoul */
 #include <string.h> /* strlen */
@@ -28,15 +31,7 @@
 #include "gtkbuilder.h"
 #include "gtkbuildable.h"
 #include "gtkbuilderprivate.h"
-#include "gtkmain.h"
-#include "gtkintl.h"
-#include "gtkprivate.h"
-#include "gtktypebuiltins.h"
-#include "gtkwindow.h"
-#include "gtkicontheme.h"
-#include "gtkstock.h"
-#include "gtkalias.h"
-
+#include "nls.h"
 static void gtk_builder_class_init     (GtkBuilderClass *klass);
 static void gtk_builder_init           (GtkBuilder      *builder);
 static void gtk_builder_finalize       (GObject         *object);
@@ -96,7 +91,7 @@ gtk_builder_class_init (GtkBuilderClass *klass)
                                                         P_("Translation Domain"),
                                                         P_("The translation domain used by gettext"),
                                                         NULL,
-                                                        GTK_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE));
 
   g_type_class_add_private (gobject_class, sizeof (GtkBuilderPrivate));
 }
@@ -277,8 +272,12 @@ gtk_builder_get_parameters (GtkBuilder  *builder,
 
       parameter.name = prop->name;
 
-      if (G_IS_PARAM_SPEC_OBJECT (pspec) &&
-          (G_PARAM_SPEC_VALUE_TYPE (pspec) != GDK_TYPE_PIXBUF))
+      if (G_IS_PARAM_SPEC_OBJECT (pspec)
+#if IN_GTK
+			  &&
+          (G_PARAM_SPEC_VALUE_TYPE (pspec) != GDK_TYPE_PIXBUF)
+#endif
+)
         {
           if (pspec->flags & G_PARAM_CONSTRUCT_ONLY)
             {
@@ -343,10 +342,9 @@ gtk_builder_get_internal_child (GtkBuilder  *builder,
       if (!info)
         break;
 
-      GTK_NOTE (BUILDER,
-                g_print ("Trying to get internal child %s from %s\n",
+                g_debug ("Trying to get internal child %s from %s\n",
                          childname,
-                         gtk_buildable_get_name (GTK_BUILDABLE (info->object))));
+                         gtk_buildable_get_name (GTK_BUILDABLE (info->object)));
 
       if (GTK_IS_BUILDABLE (info->object))
           obj = gtk_buildable_get_internal_child (GTK_BUILDABLE (info->object),
@@ -451,8 +449,7 @@ _gtk_builder_construct (GtkBuilder *builder,
       if (G_IS_INITIALLY_UNOWNED (obj))
         g_object_ref_sink (obj);
 
-      GTK_NOTE (BUILDER,
-                g_print ("created %s of type %s\n", info->id, info->class_name));
+	  g_debug ("created %s of type %s\n", info->id, info->class_name);
 
       for (i = 0; i < construct_parameters->len; i++)
         {
@@ -540,10 +537,9 @@ _gtk_builder_add (GtkBuilder *builder,
   parent = ((ObjectInfo*)child_info->parent)->object;
   g_assert (GTK_IS_BUILDABLE (parent));
 
-  GTK_NOTE (BUILDER,
-            g_print ("adding %s to %s\n",
+            g_debug("adding %s to %s\n",
                      gtk_buildable_get_name (GTK_BUILDABLE (object)),
-                     gtk_buildable_get_name (GTK_BUILDABLE (parent))));
+                     gtk_buildable_get_name (GTK_BUILDABLE (parent)));
   
   gtk_buildable_add_child (GTK_BUILDABLE (parent), builder, object,
 			   child_info->type);
@@ -1305,6 +1301,7 @@ gtk_builder_value_from_string_type (GtkBuilder   *builder,
       g_value_set_string (value, string);
       break;
     case G_TYPE_BOXED:
+#if IN_GTK
       if (G_VALUE_HOLDS (value, GDK_TYPE_COLOR))
         {
           GdkColor colour = { 0, };
@@ -1323,7 +1320,9 @@ gtk_builder_value_from_string_type (GtkBuilder   *builder,
               ret = FALSE;
             }
         }
-      else if (G_VALUE_HOLDS (value, G_TYPE_STRV))
+      else 
+#endif
+      if (G_VALUE_HOLDS (value, G_TYPE_STRV))
         {
           gchar **vector = g_strsplit (string, "\n", 0);
           g_value_take_boxed (value, vector);
@@ -1332,6 +1331,7 @@ gtk_builder_value_from_string_type (GtkBuilder   *builder,
         ret = FALSE;
       break;
     case G_TYPE_OBJECT:
+#if IN_GTK
       if (G_VALUE_HOLDS (value, GDK_TYPE_PIXBUF))
         {
           gchar *filename;
@@ -1380,6 +1380,7 @@ gtk_builder_value_from_string_type (GtkBuilder   *builder,
           ret = TRUE;
         }
       else
+#endif
         ret = FALSE;
       break;
     default:
@@ -1598,6 +1599,3 @@ _gtk_builder_get_absolute_filename (GtkBuilder *builder, const gchar *string)
   
   return filename;
 }
-
-#define __GTK_BUILDER_C__
-#include "gtkaliasdef.c"

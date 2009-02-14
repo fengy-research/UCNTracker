@@ -21,9 +21,7 @@
 
 #include "config.h"
 #include "gtkbuildable.h"
-#include "gtktypeutils.h"
-#include "gtkintl.h"
-#include "gtkalias.h"
+#include "nls.h"
 
 GType
 gtk_buildable_get_type (void)
@@ -345,6 +343,3 @@ gtk_buildable_get_internal_child (GtkBuildable *buildable,
 
   return (* iface->get_internal_child) (buildable, builder, childname);
 }
-
-#define __GTK_BUILDABLE_C__
-#include "gtkaliasdef.c"

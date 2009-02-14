@@ -23,16 +23,10 @@
 #include <string.h>
 #include <gmodule.h>
 
-#include "gtktypeutils.h"
 #include "gtkbuilderprivate.h"
 #include "gtkbuilder.h"
 #include "gtkbuildable.h"
-#include "gtkdebug.h"
-#include "gtkversion.h"
-#include "gtktypeutils.h"
-#include "gtkintl.h"
-#include "gtkalias.h"
-
+#include "nls.h"
 static void free_property_info (PropertyInfo *info);
 static void free_object_info (ObjectInfo *info);
 
@@ -370,9 +364,9 @@ parse_object (ParserData   *data,
         {
           data->requested_object_level = data->cur_object_level;
 
-          GTK_NOTE (BUILDER, g_print ("requested object \"%s\" found at level %d\n",
+          g_debug ("requested object \"%s\" found at level %d\n",
                                       object_id,
-                                      data->requested_object_level));
+                                      data->requested_object_level);
 
           data->inside_requested_object = TRUE;
         }
@@ -935,7 +929,7 @@ end_element (GMarkupParseContext *context,
 {
   ParserData *data = (ParserData*)user_data;
 
-  GTK_NOTE (BUILDER, g_print ("</%s>\n", element_name));
+   g_debug ("</%s>\n", element_name);
 
   if (data->subparser && data->subparser->start)
     {
@@ -953,14 +947,14 @@ end_element (GMarkupParseContext *context,
        */
       if (!strcmp (req_info->library, "gtk+"))
 	{
-	  if (!GTK_CHECK_VERSION (req_info->major, req_info->minor, 0))
+	  if (!GLIB_CHECK_VERSION (req_info->major, req_info->minor, 0))
 	    g_set_error (error,
 			 GTK_BUILDER_ERROR,
 			 GTK_BUILDER_ERROR_VERSION_MISMATCH,
 			 "%s: required %s version %d.%d, current version is %d.%d",
 			 data->filename, req_info->library, 
 			 req_info->major, req_info->minor,
-			 GTK_MAJOR_VERSION, GTK_MINOR_VERSION);
+			 GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION);
 	}
     }
   else if (strcmp (element_name, "interface") == 0)
@@ -979,8 +973,8 @@ end_element (GMarkupParseContext *context,
       if (data->requested_objects && data->inside_requested_object &&
           (data->cur_object_level == data->requested_object_level))
         {
-          GTK_NOTE (BUILDER, g_print ("requested object end found at level %d\n",
-                                      data->requested_object_level));
+          g_debug ("requested object end found at level %d\n",
+                                      data->requested_object_level);
 
           data->inside_requested_object = FALSE;
         }

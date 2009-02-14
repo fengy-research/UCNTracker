@@ -25,7 +25,8 @@ AC_SUBST(GSL_LIBS)
 
 AC_CONFIG_FILES([
 				Makefile
-				src/Makefile
+				gtkbuilder/Makefile
+				gtkbuilder/tests/Makefile
 				])
 
 AC_OUTPUT
