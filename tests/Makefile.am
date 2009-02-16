@@ -6,5 +6,5 @@ SUFFIXES = .vala .c
 	$(VALAC) -C ../builder.vapi $<
 
 test_SOURCES = test.c test.h
-test_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)/gtkbuilder
+test_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
 test_LDADD = $(GLIB_LIBS) ../libgtkbuilder.la

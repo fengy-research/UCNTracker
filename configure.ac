@@ -27,6 +27,7 @@ AC_CONFIG_FILES([
 				Makefile
 				gtkbuilder/Makefile
 				gtkbuilder/tests/Makefile
+				geometry/Makefile
 				])
 
 AC_OUTPUT

@@ -24,22 +24,22 @@
 #include "nls.h"
 
 GType
-gtk_buildable_get_type (void)
+ucn_buildable_get_type (void)
 {
   static GType buildable_type = 0;
 
   if (!buildable_type)
     buildable_type =
-      g_type_register_static_simple (G_TYPE_INTERFACE, I_("GtkBuildable"),
-				     sizeof (GtkBuildableIface),
+      g_type_register_static_simple (G_TYPE_INTERFACE, I_("UCNBuildable"),
+				     sizeof (UCNBuildableIface),
 				     NULL, 0, NULL, 0);
 
   return buildable_type;
 }
 
 /**
- * gtk_buildable_set_name:
- * @buildable: a #GtkBuildable
+ * ucn_buildable_set_name:
+ * @buildable: a #UCNBuildable
  * @name: name to set
  *
  * Sets the name of the @buildable object.
@@ -47,59 +47,59 @@ gtk_buildable_get_type (void)
  * Since: 2.12
  **/
 void
-gtk_buildable_set_name (GtkBuildable *buildable,
+ucn_buildable_set_name (UCNBuildable *buildable,
                         const gchar  *name)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_if_fail (GTK_IS_BUILDABLE (buildable));
+  g_return_if_fail (UCN_IS_BUILDABLE (buildable));
   g_return_if_fail (name != NULL);
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
 
   if (iface->set_name)
     (* iface->set_name) (buildable, name);
   else
     g_object_set_data_full (G_OBJECT (buildable),
-			    "gtk-builder-name",
+			    "ucn-builder-name",
 			    g_strdup (name),
 			    g_free);
 }
 
 /**
- * gtk_buildable_get_name:
- * @buildable: a #GtkBuildable
+ * ucn_buildable_get_name:
+ * @buildable: a #UCNBuildable
  *
  * Gets the name of the @buildable object. 
  * 
- * #GtkBuilder sets the name based on the the 
- * <link linkend="BUILDER-UI">GtkBuilder UI definition</link> 
+ * #UCNBuilder sets the name based on the the 
+ * <link linkend="BUILDER-UI">UCNBuilder UI definition</link> 
  * used to construct the @buildable.
  *
- * Returns: the name set with gtk_buildable_set_name()
+ * Returns: the name set with ucn_buildable_set_name()
  *
  * Since: 2.12
  **/
 const gchar *
-gtk_buildable_get_name (GtkBuildable *buildable)
+ucn_buildable_get_name (UCNBuildable *buildable)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_val_if_fail (GTK_IS_BUILDABLE (buildable), NULL);
+  g_return_val_if_fail (UCN_IS_BUILDABLE (buildable), NULL);
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
 
   if (iface->get_name)
     return (* iface->get_name) (buildable);
   else
     return (const gchar*)g_object_get_data (G_OBJECT (buildable),
-					    "gtk-builder-name");
+					    "ucn-builder-name");
 }
 
 /**
- * gtk_buildable_add_child:
- * @buildable: a #GtkBuildable
- * @builder: a #GtkBuilder
+ * ucn_buildable_add_child:
+ * @buildable: a #UCNBuildable
+ * @builder: a #UCNBuilder
  * @child: child to add
  * @type: kind of child or %NULL
  *
@@ -109,26 +109,26 @@ gtk_buildable_get_name (GtkBuildable *buildable)
  * Since: 2.12
  **/
 void
-gtk_buildable_add_child (GtkBuildable *buildable,
-			 GtkBuilder   *builder,
+ucn_buildable_add_child (UCNBuildable *buildable,
+			 UCNBuilder   *builder,
 			 GObject      *child,
 			 const gchar  *type)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_if_fail (GTK_IS_BUILDABLE (buildable));
-  g_return_if_fail (GTK_IS_BUILDER (builder));
+  g_return_if_fail (UCN_IS_BUILDABLE (buildable));
+  g_return_if_fail (UCN_IS_BUILDER (builder));
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
   g_return_if_fail (iface->add_child != NULL);
 
   (* iface->add_child) (buildable, builder, child, type);
 }
 
 /**
- * gtk_buildable_set_buildable_property:
- * @buildable: a #GtkBuildable
- * @builder: a #GtkBuilder
+ * ucn_buildable_set_buildable_property:
+ * @buildable: a #UCNBuildable
+ * @builder: a #UCNBuilder
  * @name: name of property
  * @value: value of property
  *
@@ -137,19 +137,19 @@ gtk_buildable_add_child (GtkBuildable *buildable,
  * Since: 2.12
  **/
 void
-gtk_buildable_set_buildable_property (GtkBuildable *buildable,
-				      GtkBuilder   *builder,
+ucn_buildable_set_buildable_property (UCNBuildable *buildable,
+				      UCNBuilder   *builder,
 				      const gchar  *name,
 				      const GValue *value)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_if_fail (GTK_IS_BUILDABLE (buildable));
-  g_return_if_fail (GTK_IS_BUILDER (builder));
+  g_return_if_fail (UCN_IS_BUILDABLE (buildable));
+  g_return_if_fail (UCN_IS_BUILDER (builder));
   g_return_if_fail (name != NULL);
   g_return_if_fail (value != NULL);
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
   if (iface->set_buildable_property)
     (* iface->set_buildable_property) (buildable, builder, name, value);
   else
@@ -157,41 +157,41 @@ gtk_buildable_set_buildable_property (GtkBuildable *buildable,
 }
 
 /**
- * gtk_buildable_parser_finished:
- * @buildable: a #GtkBuildable
- * @builder: a #GtkBuilder
+ * ucn_buildable_parser_finished:
+ * @buildable: a #UCNBuildable
+ * @builder: a #UCNBuilder
  *
  * Called when the builder finishes the parsing of a 
- * <link linkend="BUILDER-UI">GtkBuilder UI definition</link>. 
+ * <link linkend="BUILDER-UI">UCNBuilder UI definition</link>. 
  * Note that this will be called once for each time 
- * gtk_builder_add_from_file() or gtk_builder_add_from_string() 
+ * ucn_builder_add_from_file() or ucn_builder_add_from_string() 
  * is called on a builder.
  *
  * Since: 2.12
  **/
 void
-gtk_buildable_parser_finished (GtkBuildable *buildable,
-			       GtkBuilder   *builder)
+ucn_buildable_parser_finished (UCNBuildable *buildable,
+			       UCNBuilder   *builder)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_if_fail (GTK_IS_BUILDABLE (buildable));
-  g_return_if_fail (GTK_IS_BUILDER (builder));
+  g_return_if_fail (UCN_IS_BUILDABLE (buildable));
+  g_return_if_fail (UCN_IS_BUILDER (builder));
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
   if (iface->parser_finished)
     (* iface->parser_finished) (buildable, builder);
 }
 
 /**
- * gtk_buildable_construct_child:
- * @buildable: A #GtkBuildable
- * @builder: #GtkBuilder used to construct this object
+ * ucn_buildable_construct_child:
+ * @buildable: A #UCNBuildable
+ * @builder: #UCNBuilder used to construct this object
  * @name: name of child to construct
  *
  * Constructs a child of @buildable with the name @name. 
  *
- * #GtkBuilder calls this function if a "constructor" has been
+ * #UCNBuilder calls this function if a "constructor" has been
  * specified in the UI definition.
  *
  * Returns: the constructed child
@@ -199,26 +199,26 @@ gtk_buildable_parser_finished (GtkBuildable *buildable,
  * Since: 2.12
  **/
 GObject *
-gtk_buildable_construct_child (GtkBuildable *buildable,
-                               GtkBuilder   *builder,
+ucn_buildable_construct_child (UCNBuildable *buildable,
+                               UCNBuilder   *builder,
                                const gchar  *name)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_val_if_fail (GTK_IS_BUILDABLE (buildable), NULL);
-  g_return_val_if_fail (GTK_IS_BUILDER (builder), NULL);
+  g_return_val_if_fail (UCN_IS_BUILDABLE (buildable), NULL);
+  g_return_val_if_fail (UCN_IS_BUILDER (builder), NULL);
   g_return_val_if_fail (name != NULL, NULL);
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
   g_return_val_if_fail (iface->construct_child != NULL, NULL);
 
   return (* iface->construct_child) (buildable, builder, name);
 }
 
 /**
- * gtk_buildable_custom_tag_start:
- * @buildable: a #GtkBuildable
- * @builder: a #GtkBuilder used to construct this object
+ * ucn_buildable_custom_tag_start:
+ * @buildable: a #UCNBuildable
+ * @builder: a #UCNBuilder used to construct this object
  * @child: child object or %NULL for non-child tags
  * @tagname: name of tag
  * @parser: a #GMarkupParser structure to fill in
@@ -233,20 +233,20 @@ gtk_buildable_construct_child (GtkBuildable *buildable,
  * Since: 2.12
  **/
 gboolean
-gtk_buildable_custom_tag_start (GtkBuildable  *buildable,
-                                GtkBuilder    *builder,
+ucn_buildable_custom_tag_start (UCNBuildable  *buildable,
+                                UCNBuilder    *builder,
                                 GObject       *child,
                                 const gchar   *tagname,
                                 GMarkupParser *parser,
                                 gpointer      *data)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_val_if_fail (GTK_IS_BUILDABLE (buildable), FALSE);
-  g_return_val_if_fail (GTK_IS_BUILDER (builder), FALSE);
+  g_return_val_if_fail (UCN_IS_BUILDABLE (buildable), FALSE);
+  g_return_val_if_fail (UCN_IS_BUILDER (builder), FALSE);
   g_return_val_if_fail (tagname != NULL, FALSE);
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
   g_return_val_if_fail (iface->custom_tag_start != NULL, FALSE);
 
   return (* iface->custom_tag_start) (buildable, builder, child,
@@ -254,9 +254,9 @@ gtk_buildable_custom_tag_start (GtkBuildable  *buildable,
 }
 
 /**
- * gtk_buildable_custom_tag_end:
- * @buildable: A #GtkBuildable
- * @builder: #GtkBuilder used to construct this object
+ * ucn_buildable_custom_tag_end:
+ * @buildable: A #UCNBuildable
+ * @builder: #UCNBuilder used to construct this object
  * @child: child object or %NULL for non-child tags
  * @tagname: name of tag
  * @data: user data that will be passed in to parser functions
@@ -267,57 +267,57 @@ gtk_buildable_custom_tag_start (GtkBuildable  *buildable,
  * Since: 2.12
  **/
 void
-gtk_buildable_custom_tag_end (GtkBuildable  *buildable,
-                              GtkBuilder    *builder,
+ucn_buildable_custom_tag_end (UCNBuildable  *buildable,
+                              UCNBuilder    *builder,
                               GObject       *child,
                               const gchar   *tagname,
                               gpointer      *data)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_if_fail (GTK_IS_BUILDABLE (buildable));
-  g_return_if_fail (GTK_IS_BUILDER (builder));
+  g_return_if_fail (UCN_IS_BUILDABLE (buildable));
+  g_return_if_fail (UCN_IS_BUILDER (builder));
   g_return_if_fail (tagname != NULL);
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
   if (iface->custom_tag_end)
     (* iface->custom_tag_end) (buildable, builder, child, tagname, data);
 }
 
 /**
- * gtk_buildable_custom_finished:
- * @buildable: a #GtkBuildable
- * @builder: a #GtkBuilder
+ * ucn_buildable_custom_finished:
+ * @buildable: a #UCNBuildable
+ * @builder: a #UCNBuilder
  * @child: child object or %NULL for non-child tags
  * @tagname: the name of the tag
  * @data: user data created in custom_tag_start
  *
- * This is similar to gtk_buildable_parser_finished() but is
+ * This is similar to ucn_buildable_parser_finished() but is
  * called once for each custom tag handled by the @buildable.
  * 
  * Since: 2.12
  **/
 void
-gtk_buildable_custom_finished (GtkBuildable  *buildable,
-			       GtkBuilder    *builder,
+ucn_buildable_custom_finished (UCNBuildable  *buildable,
+			       UCNBuilder    *builder,
 			       GObject       *child,
 			       const gchar   *tagname,
 			       gpointer       data)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_if_fail (GTK_IS_BUILDABLE (buildable));
-  g_return_if_fail (GTK_IS_BUILDER (builder));
+  g_return_if_fail (UCN_IS_BUILDABLE (buildable));
+  g_return_if_fail (UCN_IS_BUILDER (builder));
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
   if (iface->custom_finished)
     (* iface->custom_finished) (buildable, builder, child, tagname, data);
 }
 
 /**
- * gtk_buildable_get_internal_child:
- * @buildable: a #GtkBuildable
- * @builder: a #GtkBuilder
+ * ucn_buildable_get_internal_child:
+ * @buildable: a #UCNBuildable
+ * @builder: a #UCNBuilder
  * @childname: name of child
  *
  * Get the internal child called @childname of the @buildable object.
@@ -327,17 +327,17 @@ gtk_buildable_custom_finished (GtkBuildable  *buildable,
  * Since: 2.12
  **/
 GObject *
-gtk_buildable_get_internal_child (GtkBuildable *buildable,
-                                  GtkBuilder   *builder,
+ucn_buildable_get_internal_child (UCNBuildable *buildable,
+                                  UCNBuilder   *builder,
                                   const gchar  *childname)
 {
-  GtkBuildableIface *iface;
+  UCNBuildableIface *iface;
 
-  g_return_val_if_fail (GTK_IS_BUILDABLE (buildable), NULL);
-  g_return_val_if_fail (GTK_IS_BUILDER (builder), NULL);
+  g_return_val_if_fail (UCN_IS_BUILDABLE (buildable), NULL);
+  g_return_val_if_fail (UCN_IS_BUILDER (builder), NULL);
   g_return_val_if_fail (childname != NULL, NULL);
 
-  iface = GTK_BUILDABLE_GET_IFACE (buildable);
+  iface = UCN_BUILDABLE_GET_IFACE (buildable);
   if (!iface->get_internal_child)
     return NULL;
 

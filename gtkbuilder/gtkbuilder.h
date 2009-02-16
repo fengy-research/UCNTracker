@@ -18,66 +18,66 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GTK_BUILDER_H__
-#define __GTK_BUILDER_H__
+#ifndef __UCN_BUILDER_H__
+#define __UCN_BUILDER_H__
 
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define GTK_TYPE_BUILDER                 (gtk_builder_get_type ())
-#define GTK_BUILDER(obj)                 (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_BUILDER, GtkBuilder))
-#define GTK_BUILDER_CLASS(klass)         (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_BUILDER, GtkBuilderClass))
-#define GTK_IS_BUILDER(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_BUILDER))
-#define GTK_IS_BUILDER_CLASS(klass)      (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_BUILDER))
-#define GTK_BUILDER_GET_CLASS(obj)       (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_BUILDER, GtkBuilderClass))
+#define UCN_TYPE_BUILDER                 (ucn_builder_get_type ())
+#define UCN_BUILDER(obj)                 (G_TYPE_CHECK_INSTANCE_CAST ((obj), UCN_TYPE_BUILDER, UCNBuilder))
+#define UCN_BUILDER_CLASS(klass)         (G_TYPE_CHECK_CLASS_CAST ((klass), UCN_TYPE_BUILDER, UCNBuilderClass))
+#define UCN_IS_BUILDER(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), UCN_TYPE_BUILDER))
+#define UCN_IS_BUILDER_CLASS(klass)      (G_TYPE_CHECK_CLASS_TYPE ((klass), UCN_TYPE_BUILDER))
+#define UCN_BUILDER_GET_CLASS(obj)       (G_TYPE_INSTANCE_GET_CLASS ((obj), UCN_TYPE_BUILDER, UCNBuilderClass))
 
-#define GTK_BUILDER_ERROR                (gtk_builder_error_quark ())
+#define UCN_BUILDER_ERROR                (ucn_builder_error_quark ())
 
-typedef struct _GtkBuilder        GtkBuilder;
-typedef struct _GtkBuilderClass   GtkBuilderClass;
-typedef struct _GtkBuilderPrivate GtkBuilderPrivate;
+typedef struct _UCNBuilder        UCNBuilder;
+typedef struct _UCNBuilderClass   UCNBuilderClass;
+typedef struct _UCNBuilderPrivate UCNBuilderPrivate;
 
 typedef enum
 {
-  GTK_BUILDER_ERROR_INVALID_TYPE_FUNCTION,
-  GTK_BUILDER_ERROR_UNHANDLED_TAG,
-  GTK_BUILDER_ERROR_MISSING_ATTRIBUTE,
-  GTK_BUILDER_ERROR_INVALID_ATTRIBUTE,
-  GTK_BUILDER_ERROR_INVALID_TAG,
-  GTK_BUILDER_ERROR_MISSING_PROPERTY_VALUE,
-  GTK_BUILDER_ERROR_INVALID_VALUE,
-  GTK_BUILDER_ERROR_VERSION_MISMATCH
-} GtkBuilderError;
+  UCN_BUILDER_ERROR_INVALID_TYPE_FUNCTION,
+  UCN_BUILDER_ERROR_UNHANDLED_TAG,
+  UCN_BUILDER_ERROR_MISSING_ATTRIBUTE,
+  UCN_BUILDER_ERROR_INVALID_ATTRIBUTE,
+  UCN_BUILDER_ERROR_INVALID_TAG,
+  UCN_BUILDER_ERROR_MISSING_PROPERTY_VALUE,
+  UCN_BUILDER_ERROR_INVALID_VALUE,
+  UCN_BUILDER_ERROR_VERSION_MISMATCH
+} UCNBuilderError;
 
-GQuark gtk_builder_error_quark (void);
+GQuark ucn_builder_error_quark (void);
 
-struct _GtkBuilder
+struct _UCNBuilder
 {
   GObject parent_instance;
 
-  GtkBuilderPrivate * priv;
+  UCNBuilderPrivate * priv;
 };
 
-struct _GtkBuilderClass
+struct _UCNBuilderClass
 {
   GObjectClass parent_class;
   
-  GType (* get_type_from_name) (GtkBuilder *builder,
+  GType (* get_type_from_name) (UCNBuilder *builder,
                                 const char *type_name);
 
   /* Padding for future expansion */
-  void (*_gtk_reserved1) (void);
-  void (*_gtk_reserved2) (void);
-  void (*_gtk_reserved3) (void);
-  void (*_gtk_reserved4) (void);
-  void (*_gtk_reserved5) (void);
-  void (*_gtk_reserved6) (void);
-  void (*_gtk_reserved7) (void);
-  void (*_gtk_reserved8) (void);
+  void (*_ucn_reserved1) (void);
+  void (*_ucn_reserved2) (void);
+  void (*_ucn_reserved3) (void);
+  void (*_ucn_reserved4) (void);
+  void (*_ucn_reserved5) (void);
+  void (*_ucn_reserved6) (void);
+  void (*_ucn_reserved7) (void);
+  void (*_ucn_reserved8) (void);
 };
 
-typedef void (*GtkBuilderConnectFunc) (GtkBuilder    *builder,
+typedef void (*UCNBuilderConnectFunc) (UCNBuilder    *builder,
 				       GObject       *object,
 				       const gchar   *signal_name,
 				       const gchar   *handler_name,
@@ -85,53 +85,53 @@ typedef void (*GtkBuilderConnectFunc) (GtkBuilder    *builder,
 				       GConnectFlags  flags,
 				       gpointer       user_data);
 
-GType        gtk_builder_get_type                (void) G_GNUC_CONST;
-GtkBuilder*  gtk_builder_new                     (void);
+GType        ucn_builder_get_type                (void) G_GNUC_CONST;
+UCNBuilder*  ucn_builder_new                     (void);
 
-guint        gtk_builder_add_from_file           (GtkBuilder    *builder,
+guint        ucn_builder_add_from_file           (UCNBuilder    *builder,
                                                   const gchar   *filename,
                                                   GError       **error);
-guint        gtk_builder_add_from_string         (GtkBuilder    *builder,
+guint        ucn_builder_add_from_string         (UCNBuilder    *builder,
                                                   const gchar   *buffer,
                                                   gsize          length,
                                                   GError       **error);
-guint        gtk_builder_add_objects_from_file   (GtkBuilder    *builder,
+guint        ucn_builder_add_objects_from_file   (UCNBuilder    *builder,
                                                   const gchar   *filename,
                                                   gchar        **object_ids,
                                                   GError       **error);
-guint        gtk_builder_add_objects_from_string (GtkBuilder    *builder,
+guint        ucn_builder_add_objects_from_string (UCNBuilder    *builder,
                                                   const gchar   *buffer,
                                                   gsize          length,
                                                   gchar        **object_ids,
                                                   GError       **error);
-GObject*     gtk_builder_get_object              (GtkBuilder    *builder,
+GObject*     ucn_builder_get_object              (UCNBuilder    *builder,
                                                   const gchar   *name);
-GSList*      gtk_builder_get_objects             (GtkBuilder    *builder);
-void         gtk_builder_connect_signals         (GtkBuilder    *builder,
+GSList*      ucn_builder_get_objects             (UCNBuilder    *builder);
+void         ucn_builder_connect_signals         (UCNBuilder    *builder,
 						  gpointer       user_data);
-void         gtk_builder_connect_signals_full    (GtkBuilder    *builder,
-                                                  GtkBuilderConnectFunc func,
+void         ucn_builder_connect_signals_full    (UCNBuilder    *builder,
+                                                  UCNBuilderConnectFunc func,
 						  gpointer       user_data);
-void         gtk_builder_set_translation_domain  (GtkBuilder   	*builder,
+void         ucn_builder_set_translation_domain  (UCNBuilder   	*builder,
                                                   const gchar  	*domain);
-const gchar* gtk_builder_get_translation_domain  (GtkBuilder   	*builder);
-GType        gtk_builder_get_type_from_name      (GtkBuilder   	*builder,
+const gchar* ucn_builder_get_translation_domain  (UCNBuilder   	*builder);
+GType        ucn_builder_get_type_from_name      (UCNBuilder   	*builder,
                                                   const char   	*type_name);
 
-gboolean     gtk_builder_value_from_string       (GtkBuilder    *builder,
+gboolean     ucn_builder_value_from_string       (UCNBuilder    *builder,
 						  GParamSpec   	*pspec,
                                                   const gchar  	*string,
                                                   GValue       	*value,
 						  GError       **error);
-gboolean     gtk_builder_value_from_string_type  (GtkBuilder    *builder,
+gboolean     ucn_builder_value_from_string_type  (UCNBuilder    *builder,
 						  GType        	 type,
                                                   const gchar  	*string,
                                                   GValue       	*value,
 						  GError       **error);
 
-#define GTK_BUILDER_WARN_INVALID_CHILD_TYPE(object, type) \
+#define UCN_BUILDER_WARN_INVALID_CHILD_TYPE(object, type) \
   g_warning ("'%s' is not a valid child type of '%s'", type, g_type_name (G_OBJECT_TYPE (object)))
 
 G_END_DECLS
 
-#endif /* __GTK_BUILDER_H__ */
+#endif /* __UCN_BUILDER_H__ */

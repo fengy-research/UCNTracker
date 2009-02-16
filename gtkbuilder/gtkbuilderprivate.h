@@ -18,8 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GTK_BUILDER_PRIVATE_H__
-#define __GTK_BUILDER_PRIVATE_H__
+#ifndef __UCN_BUILDER_PRIVATE_H__
+#define __UCN_BUILDER_PRIVATE_H__
 
 #include "gtkbuilder.h"
 
@@ -88,7 +88,7 @@ typedef struct {
 
 typedef struct {
   const gchar *last_element;
-  GtkBuilder *builder;
+  UCNBuilder *builder;
   gchar *domain;
   GSList *stack;
   SubParser *subparser;
@@ -105,40 +105,40 @@ typedef struct {
 
 typedef GType (*GTypeGetFunc) (void);
 
-/* Things only GtkBuilder should use */
-void _gtk_builder_parser_parse_buffer (GtkBuilder *builder,
+/* Things only UCNBuilder should use */
+void _ucn_builder_parser_parse_buffer (UCNBuilder *builder,
                                        const gchar *filename,
                                        const gchar *buffer,
                                        gsize length,
                                        gchar **requested_objs,
                                        GError **error);
-GObject * _gtk_builder_construct (GtkBuilder *builder,
+GObject * _ucn_builder_construct (UCNBuilder *builder,
                                   ObjectInfo *info,
 				  GError    **error);
-void      _gtk_builder_add (GtkBuilder *builder,
+void      _ucn_builder_add (UCNBuilder *builder,
                             ChildInfo *child_info);
-void      _gtk_builder_add_signals (GtkBuilder *builder,
+void      _ucn_builder_add_signals (UCNBuilder *builder,
 				    GSList     *signals);
-void      _gtk_builder_finish (GtkBuilder *builder);
+void      _ucn_builder_finish (UCNBuilder *builder);
 void _free_signal_info (SignalInfo *info,
                         gpointer user_data);
 
 /* Internal API which might be made public at some point */
-gboolean _gtk_builder_boolean_from_string (const gchar  *string,
+gboolean _ucn_builder_boolean_from_string (const gchar  *string,
 					   gboolean     *value,
 					   GError      **error);
-gboolean _gtk_builder_enum_from_string (GType         type,
+gboolean _ucn_builder_enum_from_string (GType         type,
                                         const gchar  *string,
                                         gint         *enum_value,
                                         GError      **error);
-gboolean  _gtk_builder_flags_from_string (GType       type,
+gboolean  _ucn_builder_flags_from_string (GType       type,
 					  const char *string,
 					  guint      *value,
 					  GError    **error);
-gchar * _gtk_builder_parser_translate (const gchar *domain,
+gchar * _ucn_builder_parser_translate (const gchar *domain,
 				       const gchar *context,
 				       const gchar *text);
-gchar *   _gtk_builder_get_absolute_filename (GtkBuilder *builder,
+gchar *   _ucn_builder_get_absolute_filename (UCNBuilder *builder,
 					      const gchar *string);
 
-#endif /* __GTK_BUILDER_PRIVATE_H__ */
+#endif /* __UCN_BUILDER_PRIVATE_H__ */
