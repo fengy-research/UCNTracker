@@ -26,8 +26,9 @@ AC_SUBST(GSL_LIBS)
 AC_CONFIG_FILES([
 				Makefile
 				gtkbuilder/Makefile
-				gtkbuilder/tests/Makefile
 				geometry/Makefile
+				tests/Makefile
+				tests/gtkbuilder/Makefile
 				])
 
 AC_OUTPUT

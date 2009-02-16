@@ -1,4 +1,3 @@
-SUBDIRS = . tests
 lib_LTLIBRARIES = libgtkbuilder.la
 
 libgtkbuilder_la_SOURCES =  \

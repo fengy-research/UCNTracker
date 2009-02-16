@@ -1,1 +1,1 @@
-SUBDIRS = gtkbuilder geometry
+SUBDIRS = gtkbuilder geometry tests

@@ -1,0 +1,8 @@
+SUFFIXES = .c .vala
+.vala.c:
+	$(VALAC) -C $(VALACFLAGS) $<
+
+check-local:
+	for i in $(noinst_PROGRAMS); do \
+		./$$i; \
+    done;
