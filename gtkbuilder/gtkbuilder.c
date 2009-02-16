@@ -167,6 +167,45 @@ ucn_builder_get_property (GObject    *object,
 
 
 /*
+   Try to resolve a symbol
+
+   */
+static gboolean _ucn_builder_resolve_method (const gchar * name,
+		const gchar * method, gpointer func) {
+  static GModule *module = NULL;
+  gboolean rt;
+  GString *symbol_name = g_string_new ("");
+  char c, *symbol;
+  int i;
+
+  if (!module)
+    module = g_module_open (NULL, 0);
+  
+  for (i = 0; name[i] != '\0'; i++)
+    {
+      c = name[i];
+      /* skip if uppercase, first or previous is uppercase */
+      if ((c == g_ascii_toupper (c) &&
+           i > 0 && name[i-1] != g_ascii_toupper (name[i-1])) ||
+          (i > 2 && name[i]   == g_ascii_toupper (name[i]) &&
+           name[i-1] == g_ascii_toupper (name[i-1]) &&
+           name[i-2] == g_ascii_toupper (name[i-2])))
+        g_string_append_c (symbol_name, '_');
+      g_string_append_c (symbol_name, g_ascii_tolower (c));
+    }
+  g_string_append (symbol_name, "_");
+  g_string_append (symbol_name, method);
+  
+  symbol = g_string_free (symbol_name, FALSE);
+
+  rt = g_module_symbol (module, symbol, func);
+  
+  g_free (symbol);
+
+  return rt;
+
+}
+/*
  * Try to map a type name to a _get_type function
  * and call it, eg:
  *
@@ -273,7 +312,7 @@ ucn_builder_get_parameters (UCNBuilder  *builder,
       parameter.name = prop->name;
 
       if (G_IS_PARAM_SPEC_OBJECT (pspec)
-#if IN_UCN
+#if IN_GTK
 			  &&
           (G_PARAM_SPEC_VALUE_TYPE (pspec) != GDK_TYPE_PIXBUF)
 #endif
@@ -1179,6 +1218,11 @@ ucn_builder_value_from_string_type (UCNBuilder   *builder,
 {
   gboolean ret = TRUE;
 
+#ifndef IN_GTK
+  typedef gboolean (*ParseFunc)(const gchar * string,
+		  gpointer buffer);
+  ParseFunc parse_func = NULL;
+#endif
   g_return_val_if_fail (type != G_TYPE_INVALID, FALSE);
   g_return_val_if_fail (string != NULL, FALSE);
   g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -1301,13 +1345,13 @@ ucn_builder_value_from_string_type (UCNBuilder   *builder,
       g_value_set_string (value, string);
       break;
     case G_TYPE_BOXED:
-#if IN_UCN
+#if IN_GTK
       if (G_VALUE_HOLDS (value, GDK_TYPE_COLOR))
         {
           GdkColor colour = { 0, };
 
           if (gdk_color_parse (string, &colour) &&
-              gdk_colormap_alloc_color (ucn_widget_get_default_colormap (),
+              gdk_colormap_alloc_color (gtk_widget_get_default_colormap (),
                                         &colour, FALSE, TRUE))
             g_value_set_boxed (value, &colour);
           else
@@ -1321,6 +1365,22 @@ ucn_builder_value_from_string_type (UCNBuilder   *builder,
             }
         }
       else 
+#else
+     if (_ucn_builder_resolve_method(g_type_name(type),
+				 "parse", &parse_func)
+		&& parse_func) {
+			/*suppose no boxed is larger than 64K*/
+			gchar buffer[65536] = "\0\0\0\0\0\0\0\0\0\0\0"; 
+			if(!parse_func(string, buffer)) {
+			  g_set_error (error,
+				   UCN_BUILDER_ERROR,
+				   UCN_BUILDER_ERROR_INVALID_VALUE,
+				   "Could not parse boxed type `%s': `%s'",
+				   g_type_name(type), string);
+				  ret = FALSE;
+			} else
+			g_value_set_boxed (value, buffer);
+	 } else
 #endif
       if (G_VALUE_HOLDS (value, G_TYPE_STRV))
         {
@@ -1331,7 +1391,7 @@ ucn_builder_value_from_string_type (UCNBuilder   *builder,
         ret = FALSE;
       break;
     case G_TYPE_OBJECT:
-#if IN_UCN
+#if IN_GTK
       if (G_VALUE_HOLDS (value, GDK_TYPE_PIXBUF))
         {
           gchar *filename;

@@ -1,2 +1,2 @@
-SUBDIRS = gtkbuilder
+SUBDIRS = gtkbuilder geometry
 

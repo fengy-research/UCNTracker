@@ -1,4 +1,6 @@
 using GLib;
+[CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
+namespace UCNTracker {
 public enum Sense {
 	/**
 	 * Sense is defined to describe the relative position relation
@@ -10,4 +12,5 @@ public enum Sense {
 	IN = -1,
 	ON = 0,
 	OUT = 1
+}
 }

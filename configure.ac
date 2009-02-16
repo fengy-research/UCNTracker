@@ -29,6 +29,7 @@ AC_CONFIG_FILES([
 				geometry/Makefile
 				tests/Makefile
 				tests/gtkbuilder/Makefile
+				tests/geometry/Makefile
 				])
 
 AC_OUTPUT

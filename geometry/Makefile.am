@@ -13,4 +13,4 @@ libgeometry_la_LIBADD = $(GLIB_LIBS) \
 BUILT_SOURCES = vala-stamp
 
 vala-stamp: $(VALASOURCES)
-	$(VALAC) -C $^ ../gtkbuilder/builder.vapi
+	$(VALAC) --library=geometry --basedir=$(top_builddir) -C $^ ../gtkbuilder/builder.vapi

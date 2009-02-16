@@ -1,10 +1,17 @@
 using GLib;
-using UCNTracker;
 
-public abstract class Volume: Object, Buildable {
-	public Vector center;
-	public Vector zoom;
-	public EulerAngles rotation;
+[CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
+namespace UCNTracker {
+public abstract class Volume: Object/*, Buildable*/ {
+	public Vector center {
+		get; set;
+	}
+	public Vector zoom {
+		get; set;
+	}
+	public EulerAngles rotation {
+		get; set;
+	}
 
 	/**
 	 * generate a point in the volume or on the surface.
@@ -59,5 +66,5 @@ public abstract class Volume: Object, Buildable {
 
 	public abstract void grad(Vector point, out Vector grad);
 
-
+}
 }
