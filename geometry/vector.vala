@@ -63,17 +63,6 @@ public struct Vector {
 		y /= zm.y;
 		z /= zm.z;
 	}
-	/**
-	 * 'invert' transform the vector by successively applying:
-	 * translation a
-	 * rotation r,
-	 * zoom z
-	 */ 
-	public void transform_i(Vector zm, EulerAngles r, Vector a) {
-		translate_i(a);
-		rotate_i(r);
-		zoom_i(zm);
-	}
 	public void rotate(EulerAngles r) {
 		Vector tmp = {
 			r.matrix[0,0] * x +
@@ -99,17 +88,6 @@ public struct Vector {
 		x *= zm.x;
 		y *= zm.y;
 		z *= zm.z;
-	}
-	/**
-	 * transform the vector by successively applying:
-	 * zoom z
-	 * rotation r,
-	 * translation a
-	 */ 
-	public void transform(Vector zm, EulerAngles r, Vector a) {
-		zoom(zm);
-		rotate(r);
-		translate(a);
 	}
 }
 
@@ -144,12 +122,14 @@ public struct EulerAngles {
 		matrix[2,1] = sb * cg;
 		matrix[2,2] = cb;
 	}
-	public static EulerAngles from_string(string foo) {
+	[CCode (instance_pos = 2)]
+	public bool parse(string foo) {
 		string[] words = foo.split(",");
-		assert(words != null && words.length == 3);
-		return EulerAngles(words[0].to_double(), 
-				words[1].to_double(), 
-				words[2].to_double());
+		if(words == null || words.length != 3) return false;
+		alpha = words[0].to_double();
+		beta =	words[1].to_double();
+		gamma = words[2].to_double();
+		return true;
 	}
 }
 }
