@@ -3,7 +3,7 @@ using UCNTracker;
 using Math;
 
 public void test_rotate(Vector v, EulerAngles r, Vector ex) {
-	Vector tmp = v.clone();
+	Vector tmp = v;
 	tmp.rotate(r);
 	message("%lf %lf %lf -(%lf %lf %lf)-> %lf %lf %lf = %lf %lf %lf",
 			v.x, v.y, v.z,

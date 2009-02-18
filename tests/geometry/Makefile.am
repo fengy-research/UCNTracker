@@ -6,6 +6,6 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) -I$(top_srcdir)
 
 VALACFLAGS= $(top_srcdir)/geometry/geometry.vapi $(top_srcdir)/gtkbuilder/builder.vapi --pkg gsl
 
-noinst_PROGRAMS = test-builder test-vector test-volume
+noinst_PROGRAMS = test-builder test-vector test-volume test-grad
 
 include ../Makefile.tests

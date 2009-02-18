@@ -23,9 +23,6 @@ public struct Vector {
 		z = words[2].to_double();
 		return true;
 	}
-	public Vector clone() {
-		return this;
-	}
 	public bool equal(Vector v) {
 		/*FIXME: magic number should be controlable*/
 		return distance(v) < 1.0e-6; 
