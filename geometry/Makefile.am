@@ -1,5 +1,5 @@
 
-VALASOURCES = types.vala vector.vala volume.vala volume-intersect.vala
+VALASOURCES = types.vala vector.vala volume.vala intersection.vala
 noinst_LTLIBRARIES = libgeometry.la 
 
 libgeometry_la_SOURCES=$(VALASOURCES:.vala=.c) \

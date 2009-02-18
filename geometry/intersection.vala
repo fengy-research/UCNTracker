@@ -1,6 +1,6 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-public class Intersect {
+public class Intersection {
 	private struct solver_params {
 		public unowned Volume volume;
 		public double length;
@@ -17,7 +17,7 @@ public class Intersect {
 		double rt = params->volume.sfunc(point);
 		return rt;
 	}
-	public static bool intersect(Volume volume, Vector point_in, Vector point_out,
+	public static bool solve(Volume volume, Vector point_in, Vector point_out,
 		   out Vector intersection) {
 		if(volume.sense(point_in) == volume.sense(point_out)) {
 			return false;

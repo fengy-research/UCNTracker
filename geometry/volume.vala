@@ -62,7 +62,7 @@ public abstract class Volume: Object, Buildable {
 
 	public virtual bool intersect(Vector point_in, Vector point_out,
 		   out Vector intersection) {
-		return Intersect.intersect(this, point_in, point_out, out intersection);
+		return Intersection.solve(this, point_in, point_out, out intersection);
 	
 	}
 
