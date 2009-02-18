@@ -21,16 +21,23 @@ public int main(string[] args) {
 	assert(myvol is Buildable);
 
 	Vector intersection;
-	myvol.intersect(Vector(-10.0, 0.0, 0.0),
+	assert(true == myvol.intersect(Vector(-10.0, 0.0, 0.0),
 			Vector(0.0, 0.0, 0.0),
-			out intersection);
-	myvol.center = Vector(0.0, 100.0, 0.0);
-	myvol.rotation = EulerAngles(1.0, 3.0, 0.0);
+			out intersection));
 
 	message("%lf %lf %lf", 
 			intersection.x,
 			intersection.y,
 			intersection.z);
+
+	assert(false == myvol.intersect(Vector(-2.0, 0.0, 0.0),
+			Vector(0.0, 0.0, 0.0),
+			out intersection));
+
+
+	myvol.center = Vector(0.0, 100.0, 0.0);
+	myvol.rotation = EulerAngles(1.0, 3.0, 0.0);
+
 	Vector sample;
 	Vector grad;
 	for(int i = 0; i< 1000; i++) {

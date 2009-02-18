@@ -5,8 +5,8 @@ using Math;
 namespace UCNTracker {
 public abstract class Volume: Object, Buildable {
 	private Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
-	const double delta = 1.0e-3; /* Used by grad*/
-	const double thickness = 1e-6; /*usaed by sense*/
+	private const double delta = 1.0e-3; /* Used by grad*/
+	public const double thickness = 1e-6; /* Used by sense and intersect*/
 	private Vector _center = Vector(0.0, 0.0, 0.0);
 	private EulerAngles _rotation = EulerAngles(0.0, 0.0, 0.0);
 	public abstract double radius { get; }
@@ -62,42 +62,7 @@ public abstract class Volume: Object, Buildable {
 
 	public virtual bool intersect(Vector point_in, Vector point_out,
 		   out Vector intersection) {
-		double length = point_in.distance(point_out);
-		Vector direction = Vector((point_out.x - point_in.x)/length,
-				(point_out.y - point_in.y)/length,
-				(point_out.z - point_in.z)/length);
-
-		solver_params params = {null};
-		/* workaround vala bz 572079*/
-		params.volume = this;
-		params.length = length;
-		params.point_in = &point_in;
-		params.direction = &direction;
-		params.value = 0.0;
-
-		bool converged = false;
-		int iter = 0;
-		int max_iter = 100;
-		Gsl.Function f = {intersect_solver_function, &params};
-		Gsl.RootFsolver s = new Gsl.RootFsolver(Gsl.RootFsolverTypes.brent);
-		s.set (&f, 0.0, 1.0);
-		int status = Gsl.Status.CONTINUE;
-		do {
-			iter ++;
-			s.iterate();
-			status = Gsl.RootTest.residual(params.value, thickness);
-			if(status == Gsl.Status.SUCCESS) {
-				converged = true;
-				break;
-			}
-		} while(status == Gsl.Status.CONTINUE && iter < max_iter);
-		double t = s.root;
-		intersection = Vector(
-				point_in.x + direction.x * t * length,
-				point_in.y + direction.y * t * length,
-				point_in.z + direction.z * t * length);
-				
-		return converged;
+		return Intersect.intersect(this, point_in, point_out, out intersection);
 	
 	}
 
@@ -163,22 +128,6 @@ public abstract class Volume: Object, Buildable {
 	public void body_to_world(ref Vector point) {
 		point.rotate(rotation);
 		point.translate(center);
-	}
-	private struct solver_params {
-		public unowned Volume volume;
-		public double length;
-		public Vector* point_in;
-		public Vector* direction;
-		public double value;
-	}
-	private static double intersect_solver_function (double t, solver_params* params) {
-		Vector point = Vector(
-				params->point_in->x + params->direction->x * t * params->length,
-				params->point_in->y + params->direction->y * t * params->length,
-				params->point_in->z + params->direction->z * t * params->length);
-		assert(params->volume != null);
-		double rt = params->volume.sfunc(point);
-		return rt;
 	}
 }
 }
