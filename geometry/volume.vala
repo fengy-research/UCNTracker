@@ -9,7 +9,7 @@ public abstract class Volume: Object, Buildable {
 	public const double thickness = 1e-6; /* Used by sense and intersect*/
 	private Vector _center = Vector(0.0, 0.0, 0.0);
 	private EulerAngles _rotation = EulerAngles(0.0, 0.0, 0.0);
-	public abstract double radius { get; }
+	public double bounding_radius { get; protected set; }
 	public Vector center {
 		get {
 			return _center;
@@ -37,10 +37,10 @@ public abstract class Volume: Object, Buildable {
 		double x, y, z;
 		double r;
 		Sense s = Sense.OUT;
-		Gsl.Randist.dir_3d( rng, out x, out y, out z);
-		r = rng.uniform();
-		r = sqrt(r) * 3.0;
 		do{
+			Gsl.Randist.dir_3d( rng, out x, out y, out z);
+			r = rng.uniform();
+			r = cbrt(r) * bounding_radius;
 			point = Vector(x * r, y * r, z * r);
 			body_to_world(ref point);
 			s = sense(point);
@@ -70,7 +70,7 @@ public abstract class Volume: Object, Buildable {
 	 * return the sense of the point.
 	 */
 	public virtual Sense sense(Vector point) {
-		if(point.distance(_center) > radius + thickness) {
+		if(point.distance(_center) > bounding_radius + thickness) {
 			/* if the point is out of the bounding ball,
 			 * don't bother calling sfunc and do the rotation
 			 * */

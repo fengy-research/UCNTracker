@@ -4,7 +4,9 @@ using UCNTracker;
 using Math;
 
 class MyVol : Volume, Buildable {
-	public override double radius { get { return 3.0;}}
+	construct {
+		bounding_radius = 3.0;
+	}
 	public override double sfunc(Vector v) {
 		/*Protect v from being changed.
 		 * Definitely another vala bug. 
@@ -40,7 +42,7 @@ public int main(string[] args) {
 
 	Vector sample;
 	Vector grad;
-	for(int i = 0; i< 1000; i++) {
+	for(int i = 0; i< 500000; i++) {
 		myvol.sample(out sample, true);
 		myvol.grad(sample, out grad);
 		stdout.printf("%lf %lf %lf %lf %lf %lf\n", 

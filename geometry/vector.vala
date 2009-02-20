@@ -27,6 +27,23 @@ public struct Vector {
 		/*FIXME: magic number should be controlable*/
 		return distance(v) < 1.0e-6; 
 	}
+	public double norm() {
+		return sqrt(norm2());
+	}
+	public double norm2() {
+		return x*x + y*y + z*z;
+	}
+	public double dot(Vector v) {
+		return x * v.x + y * v.y + z * v.z;
+	}
+	public Vector cross(Vector v) {
+		/*not used yet*/
+		Vector rt = Vector(
+			y * v.z - z * v.y,
+			z * v.x - x * v.z,
+			x * v.y - y * v.x);
+		return rt;
+	}
 	public double distance(Vector v) {
 		double dx = v.x - x;
 		double dy = v.y - y;
@@ -55,11 +72,6 @@ public struct Vector {
 		y -= a.y;
 		z -= a.z;
 	}
-	public void zoom_i(Vector zm) {
-		x /= zm.x;
-		y /= zm.y;
-		z /= zm.z;
-	}
 	public void rotate(EulerAngles r) {
 		Vector tmp = {
 			r.matrix[0,0] * x +
@@ -80,11 +92,6 @@ public struct Vector {
 		x += a.x;
 		y += a.y;
 		z += a.z;
-	}
-	public void zoom(Vector zm) {
-		x *= zm.x;
-		y *= zm.y;
-		z *= zm.z;
 	}
 }
 

@@ -5,7 +5,10 @@ using UCNTracker;
 using Math;
 
 class MyVol : Volume, Buildable {
-	public override double radius { get { return 3.0;}}
+	
+	construct {
+		bounding_radius = 3.0;
+	}
 	public override double sfunc(Vector v) {
 		/*Protect v from being changed.
 		 * Definitely another vala bug. 

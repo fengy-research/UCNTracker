@@ -364,7 +364,7 @@ parse_object (ParserData   *data,
         {
           data->requested_object_level = data->cur_object_level;
 
-          g_debug ("requested object \"%s\" found at level %d\n",
+          INFO ("requested object \"%s\" found at level %d\n",
                                       object_id,
                                       data->requested_object_level);
 
@@ -929,7 +929,7 @@ end_element (GMarkupParseContext *context,
 {
   ParserData *data = (ParserData*)user_data;
 
-   g_debug ("</%s>\n", element_name);
+   INFO ("</%s>\n", element_name);
 
   if (data->subparser && data->subparser->start)
     {
@@ -973,7 +973,7 @@ end_element (GMarkupParseContext *context,
       if (data->requested_objects && data->inside_requested_object &&
           (data->cur_object_level == data->requested_object_level))
         {
-          g_debug ("requested object end found at level %d\n",
+          INFO ("requested object end found at level %d\n",
                                       data->requested_object_level);
 
           data->inside_requested_object = FALSE;

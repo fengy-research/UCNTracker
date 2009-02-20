@@ -381,7 +381,7 @@ ucn_builder_get_internal_child (UCNBuilder  *builder,
       if (!info)
         break;
 
-                g_debug ("Trying to get internal child %s from %s\n",
+                INFO ("Trying to get internal child %s from %s\n",
                          childname,
                          ucn_buildable_get_name (UCN_BUILDABLE (info->object)));
 
@@ -488,7 +488,7 @@ _ucn_builder_construct (UCNBuilder *builder,
       if (G_IS_INITIALLY_UNOWNED (obj))
         g_object_ref_sink (obj);
 
-	  g_debug ("created %s of type %s\n", info->id, info->class_name);
+	  INFO ("created %s of type %s\n", info->id, info->class_name);
 
       for (i = 0; i < construct_parameters->len; i++)
         {
@@ -576,7 +576,7 @@ _ucn_builder_add (UCNBuilder *builder,
   parent = ((ObjectInfo*)child_info->parent)->object;
   g_assert (UCN_IS_BUILDABLE (parent));
 
-            g_debug("adding %s to %s\n",
+            INFO("adding %s to %s\n",
                      ucn_buildable_get_name (UCN_BUILDABLE (object)),
                      ucn_buildable_get_name (UCN_BUILDABLE (parent)));
   
