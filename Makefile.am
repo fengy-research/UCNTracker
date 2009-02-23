@@ -1,1 +1,1 @@
-SUBDIRS = gtkbuilder geometry device ucntracker
+SUBDIRS = gtkbuilder ucntracker

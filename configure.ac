@@ -25,13 +25,17 @@ AC_SUBST(GSL_LIBS)
 
 AC_CONFIG_FILES([
 				Makefile
-				gtkbuilder/Makefile
-				gtkbuilder/tests/Makefile
-				geometry/Makefile
-				geometry/tests/Makefile
-				device/Makefile
 				ucntracker/Makefile
 				ucntracker/tests/Makefile
+				gtkbuilder/Makefile
+				gtkbuilder/tests/Makefile
+				ucntracker/plugin-manager/Makefile
+				ucntracker/geometry/Makefile
+				ucntracker/geometry/tests/Makefile
+				ucntracker/device/Makefile
+				ucntracker/device/tests/Makefile
+				ucntracker/tracking/Makefile
+				ucntracker/tracking/tests/Makefile
 				])
 
 AC_OUTPUT

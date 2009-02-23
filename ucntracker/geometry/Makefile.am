@@ -1,3 +1,4 @@
+SUBDIRS = . tests
 
 VALASOURCES = \
 	types.vala \
@@ -11,6 +12,8 @@ VALASOURCES = \
 	volume-cylinder.vala \
 	geometry.vala 
 
-VAPIDEPENDS = ../gtkbuilder/libgtkbuilder.vapi
+VAPIDEPENDS = 
+noinst_LTLIBRARIES = libgeometry.la
+libgeometry_la_SOURCES = $(COMPILEDSOURCES)
 
-include ../Makefile.plugin
+include $(top_srcdir)/Makefile.plugin

@@ -18,4 +18,6 @@ stamp-h1
 *.tar.gz
 *.la
 */tests/*.[ch]
+*/tests/test*
+!*/tests/*.vala
 vala-stamp

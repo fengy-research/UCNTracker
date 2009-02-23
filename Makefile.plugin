@@ -1,16 +1,15 @@
-noinst_LTLIBRARIES = libplugin.la 
-
-libplugin_la_SOURCES=$(VALASOURCES:.vala=.c) \
+COMPILEDSOURCES=$(VALASOURCES:.vala=.c) \
 					   $(VALASOURCES:.vala=.h)
-libplugin_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) \
-				-I$(top_srcdir) -I$(top_builddir) \
+AM_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) \
+				-I$(top_srcdir) -I$(top_srcdir) \
+				-I$(top_srcdir)/ucntracker \
 				-include config.h
 
-libplugin_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS)
-libplugin_la_LDFLAGS = 
+LIBADD = $(GLIB_LIBS) $(GSL_LIBS)
 
 BUILT_SOURCES = vala-stamp
 
 vala-stamp: $(VALASOURCES)
-	$(VALAC) --library=libplugin --basedir=$(top_builddir) -C $^ $(VAPIDEPENDS) --pkg gsl
+	$(VALAC) --library=lib$(PLUGIN_NAME) --basedir=$(top_srcdir)/ucntracker -C $(VAPIDIRS) $^ $(VAPIDEPENDS) --pkg gsl $(top_srcdir)/gtkbuilder/libgtkbuilder.vapi
+	echo 
 	touch $@
