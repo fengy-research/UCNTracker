@@ -1,6 +1,7 @@
 SUFFIXES = .c .vala
 .vala.c:
 	$(VALAC) -C $(VAPIDEPENDS) $<
+	touch $@
 
 check-local:
 	for i in $(noinst_PROGRAMS); do \

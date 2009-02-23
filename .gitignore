@@ -17,3 +17,5 @@ stamp-h1
 *.lo
 *.tar.gz
 *.la
+*/tests/*.[ch]
+vala-stamp

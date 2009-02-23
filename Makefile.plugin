@@ -13,3 +13,4 @@ BUILT_SOURCES = vala-stamp
 
 vala-stamp: $(VALASOURCES)
 	$(VALAC) --library=libplugin --basedir=$(top_builddir) -C $^ $(VAPIDEPENDS) --pkg gsl
+	touch $@
