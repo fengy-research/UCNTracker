@@ -1,5 +1,6 @@
 using GLib;
 using UCNTracker;
+using UCNTracker.Geometry;
 using Math;
 
 class MyObject:Object {

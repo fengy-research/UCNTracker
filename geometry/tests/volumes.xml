@@ -1,11 +1,11 @@
 <interface>
-	<object class="UCNBox" id="box">
+	<object class="UCNGeometryBox" id="box">
 		<property name="size">3, 4, 5</property>
 	</object>
-	<object class="UCNBall" id="ball">
+	<object class="UCNGeometryBall" id="ball">
 		<property name="radius">3</property>
 	</object>
-	<object class="UCNCylinder" id="cylinder">
+	<object class="UCNGeometryCylinder" id="cylinder">
 		<property name="length">3</property>
 		<property name="radius">3</property>
 	</object>

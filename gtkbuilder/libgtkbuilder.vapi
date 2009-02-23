@@ -20,7 +20,7 @@ namespace UCNTracker {
 	}
 	[CCode (cheader_filename = "gtkbuilder/gtkbuildable.h")]
 	public interface Buildable {
-		public virtual void add_child (Builder builder, GLib.Object child, string type);
+		public virtual void add_child (Builder builder, GLib.Object child, string? type);
 		public virtual GLib.Object? construct_child (Builder builder, string name);
 		public virtual void custom_finished (Builder builder, GLib.Object child, string tagname, void* data);
 		public virtual void custom_tag_end (Builder builder, GLib.Object child, string tagname, void* data);

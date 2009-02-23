@@ -3,6 +3,7 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+namespace Geometry {
 	public class Ball : Volume, Buildable {
 		private double _radius;
 		public double radius {
@@ -14,4 +15,5 @@ namespace UCNTracker {
 		}	
 	}
 
+}
 }

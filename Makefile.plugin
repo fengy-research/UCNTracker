@@ -1,0 +1,15 @@
+noinst_LTLIBRARIES = libplugin.la 
+
+libplugin_la_SOURCES=$(VALASOURCES:.vala=.c) \
+					   $(VALASOURCES:.vala=.h)
+libplugin_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) \
+				-I$(top_srcdir) -I$(top_builddir) \
+				-include config.h
+
+libplugin_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS)
+libplugin_la_LDFLAGS = 
+
+BUILT_SOURCES = vala-stamp
+
+vala-stamp: $(VALASOURCES)
+	$(VALAC) --library=libplugin --basedir=$(top_builddir) -C $^ $(VAPIDEPENDS) --pkg gsl

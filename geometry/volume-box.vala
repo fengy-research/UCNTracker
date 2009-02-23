@@ -3,6 +3,7 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+namespace Geometry {
 	public class Box : Convex, Buildable {
 		private Vector _size = Vector (0.0, 0.0, 0.0);
 		const int TOP = 0;
@@ -40,4 +41,5 @@ namespace UCNTracker {
 			this.size = size;
 		}
 	}
+}
 }

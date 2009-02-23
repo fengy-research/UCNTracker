@@ -1,11 +1,17 @@
 using GLib;
 using UCNTracker;
+using UCNTracker.Geometry;
 using Math;
 
+class TypeModule:GLib.TypeModule {
+	public override bool load() {
+		return true;
+	}
+	public override void unload() {}
+}
 public int main(string[] args) {
-	typeof(Box);
-	typeof(Cylinder);
-	typeof(Ball);
+	TypeModule module = new TypeModule();
+	Geometry.init(module);
 	Builder builder = new Builder();
 	builder.add_from_file("volumes.xml");
 	weak SList<weak Volume> volumes = builder.get_objects();

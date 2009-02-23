@@ -1,5 +1,0 @@
-*.[ch]
-Makefile.in
-Makefile
-test*
-!*.vala

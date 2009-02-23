@@ -1,1 +1,1 @@
-SUBDIRS = gtkbuilder geometry tests
+SUBDIRS = gtkbuilder geometry device ucntracker
