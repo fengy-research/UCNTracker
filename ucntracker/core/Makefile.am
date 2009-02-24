@@ -6,23 +6,11 @@ libcore_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS)  -I$(top_srcdir) -I$(top_srcd
 
 libcore_la_SOURCES =  \
 	$(VALASOURCES:.vala=.c)	\
-	$(VALASOURCES:.vala=.h)	\
-	gtkbuildable.h \
-	gtkbuilder.h \
-	gtkbuilderprivate.h \
-	gtkbuildable.c \
-	gtkbuilder.c \
-	gtkbuilderparser.c \
-	nls.h
+	$(VALASOURCES:.vala=.h)
 
-VALASOURCES = plugin-manager.vala \
-	types.vala \
-	vector.vala \
-	volume.vala \
-	intersection.vala 
+VALASOURCES = plugin-manager.vala
 
 BUILT_SOURCES = vala-stamp
 vala-stamp: $(VALASOURCES)
-	$(VALAC) --library=core --basedir=$(top_srcdir)/ucntracker -C $^ libgtkbuilder.vapi --pkg gsl
-	cat libgtkbuilder.vapi >> core.vapi
+	$(VALAC) --library=core --basedir=$(top_srcdir)/ucntracker -C $^ ../builder/builder.vapi --pkg gsl
 	touch $@

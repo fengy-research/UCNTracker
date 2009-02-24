@@ -50,13 +50,9 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libcore_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__objects_1 = libcore_la-plugin-manager.lo libcore_la-types.lo \
-	libcore_la-vector.lo libcore_la-volume.lo \
-	libcore_la-intersection.lo
+am__objects_1 = libcore_la-plugin-manager.lo
 am__objects_2 =
-am_libcore_la_OBJECTS = $(am__objects_1) $(am__objects_2) \
-	libcore_la-gtkbuildable.lo libcore_la-gtkbuilder.lo \
-	libcore_la-gtkbuilderparser.lo
+am_libcore_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libcore_la_OBJECTS = $(am_libcore_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -188,21 +184,9 @@ libcore_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS)
 libcore_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS)  -I$(top_srcdir) -I$(top_srcdir)/ucntracker -DG_LOG_DOMAIN=\"UCNTracker\" -DINFO=
 libcore_la_SOURCES = \
 	$(VALASOURCES:.vala=.c)	\
-	$(VALASOURCES:.vala=.h)	\
-	gtkbuildable.h \
-	gtkbuilder.h \
-	gtkbuilderprivate.h \
-	gtkbuildable.c \
-	gtkbuilder.c \
-	gtkbuilderparser.c \
-	nls.h
+	$(VALASOURCES:.vala=.h)
 
-VALASOURCES = plugin-manager.vala \
-	types.vala \
-	vector.vala \
-	volume.vala \
-	intersection.vala 
-
+VALASOURCES = plugin-manager.vala
 BUILT_SOURCES = vala-stamp
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -256,14 +240,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/libcore_la-gtkbuildable.Plo
-include ./$(DEPDIR)/libcore_la-gtkbuilder.Plo
-include ./$(DEPDIR)/libcore_la-gtkbuilderparser.Plo
-include ./$(DEPDIR)/libcore_la-intersection.Plo
 include ./$(DEPDIR)/libcore_la-plugin-manager.Plo
-include ./$(DEPDIR)/libcore_la-types.Plo
-include ./$(DEPDIR)/libcore_la-vector.Plo
-include ./$(DEPDIR)/libcore_la-volume.Plo
 
 .c.o:
 	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -292,55 +269,6 @@ libcore_la-plugin-manager.lo: plugin-manager.c
 #	source='plugin-manager.c' object='libcore_la-plugin-manager.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-plugin-manager.lo `test -f 'plugin-manager.c' || echo '$(srcdir)/'`plugin-manager.c
-
-libcore_la-types.lo: types.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-types.lo -MD -MP -MF "$(DEPDIR)/libcore_la-types.Tpo" -c -o libcore_la-types.lo `test -f 'types.c' || echo '$(srcdir)/'`types.c; \
-	then mv -f "$(DEPDIR)/libcore_la-types.Tpo" "$(DEPDIR)/libcore_la-types.Plo"; else rm -f "$(DEPDIR)/libcore_la-types.Tpo"; exit 1; fi
-#	source='types.c' object='libcore_la-types.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-types.lo `test -f 'types.c' || echo '$(srcdir)/'`types.c
-
-libcore_la-vector.lo: vector.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-vector.lo -MD -MP -MF "$(DEPDIR)/libcore_la-vector.Tpo" -c -o libcore_la-vector.lo `test -f 'vector.c' || echo '$(srcdir)/'`vector.c; \
-	then mv -f "$(DEPDIR)/libcore_la-vector.Tpo" "$(DEPDIR)/libcore_la-vector.Plo"; else rm -f "$(DEPDIR)/libcore_la-vector.Tpo"; exit 1; fi
-#	source='vector.c' object='libcore_la-vector.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-vector.lo `test -f 'vector.c' || echo '$(srcdir)/'`vector.c
-
-libcore_la-volume.lo: volume.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume.Tpo" -c -o libcore_la-volume.lo `test -f 'volume.c' || echo '$(srcdir)/'`volume.c; \
-	then mv -f "$(DEPDIR)/libcore_la-volume.Tpo" "$(DEPDIR)/libcore_la-volume.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume.Tpo"; exit 1; fi
-#	source='volume.c' object='libcore_la-volume.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume.lo `test -f 'volume.c' || echo '$(srcdir)/'`volume.c
-
-libcore_la-intersection.lo: intersection.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-intersection.lo -MD -MP -MF "$(DEPDIR)/libcore_la-intersection.Tpo" -c -o libcore_la-intersection.lo `test -f 'intersection.c' || echo '$(srcdir)/'`intersection.c; \
-	then mv -f "$(DEPDIR)/libcore_la-intersection.Tpo" "$(DEPDIR)/libcore_la-intersection.Plo"; else rm -f "$(DEPDIR)/libcore_la-intersection.Tpo"; exit 1; fi
-#	source='intersection.c' object='libcore_la-intersection.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-intersection.lo `test -f 'intersection.c' || echo '$(srcdir)/'`intersection.c
-
-libcore_la-gtkbuildable.lo: gtkbuildable.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-gtkbuildable.lo -MD -MP -MF "$(DEPDIR)/libcore_la-gtkbuildable.Tpo" -c -o libcore_la-gtkbuildable.lo `test -f 'gtkbuildable.c' || echo '$(srcdir)/'`gtkbuildable.c; \
-	then mv -f "$(DEPDIR)/libcore_la-gtkbuildable.Tpo" "$(DEPDIR)/libcore_la-gtkbuildable.Plo"; else rm -f "$(DEPDIR)/libcore_la-gtkbuildable.Tpo"; exit 1; fi
-#	source='gtkbuildable.c' object='libcore_la-gtkbuildable.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-gtkbuildable.lo `test -f 'gtkbuildable.c' || echo '$(srcdir)/'`gtkbuildable.c
-
-libcore_la-gtkbuilder.lo: gtkbuilder.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-gtkbuilder.lo -MD -MP -MF "$(DEPDIR)/libcore_la-gtkbuilder.Tpo" -c -o libcore_la-gtkbuilder.lo `test -f 'gtkbuilder.c' || echo '$(srcdir)/'`gtkbuilder.c; \
-	then mv -f "$(DEPDIR)/libcore_la-gtkbuilder.Tpo" "$(DEPDIR)/libcore_la-gtkbuilder.Plo"; else rm -f "$(DEPDIR)/libcore_la-gtkbuilder.Tpo"; exit 1; fi
-#	source='gtkbuilder.c' object='libcore_la-gtkbuilder.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-gtkbuilder.lo `test -f 'gtkbuilder.c' || echo '$(srcdir)/'`gtkbuilder.c
-
-libcore_la-gtkbuilderparser.lo: gtkbuilderparser.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-gtkbuilderparser.lo -MD -MP -MF "$(DEPDIR)/libcore_la-gtkbuilderparser.Tpo" -c -o libcore_la-gtkbuilderparser.lo `test -f 'gtkbuilderparser.c' || echo '$(srcdir)/'`gtkbuilderparser.c; \
-	then mv -f "$(DEPDIR)/libcore_la-gtkbuilderparser.Tpo" "$(DEPDIR)/libcore_la-gtkbuilderparser.Plo"; else rm -f "$(DEPDIR)/libcore_la-gtkbuilderparser.Tpo"; exit 1; fi
-#	source='gtkbuilderparser.c' object='libcore_la-gtkbuilderparser.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-gtkbuilderparser.lo `test -f 'gtkbuilderparser.c' || echo '$(srcdir)/'`gtkbuilderparser.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -522,8 +450,7 @@ uninstall-am: uninstall-info-am
 	uninstall-info-am
 
 vala-stamp: $(VALASOURCES)
-	$(VALAC) --library=core --basedir=$(top_srcdir)/ucntracker -C $^ libgtkbuilder.vapi --pkg gsl
-	cat libgtkbuilder.vapi >> core.vapi
+	$(VALAC) --library=core --basedir=$(top_srcdir)/ucntracker -C $^ ../builder/builder.vapi --pkg gsl
 	touch $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,4 +1,4 @@
-SUBDIRS = . tests
+SUBDIRS = .
 
 VAPINAME = device
 noinst_LTLIBRARIES = libdevice.la

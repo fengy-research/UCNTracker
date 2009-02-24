@@ -1,7 +1,11 @@
-SUBDIRS = . tests
+SUBDIRS = .
 
 VAPINAME = geometry
 VALASOURCES = \
+	types.vala \
+	vector.vala \
+	volume.vala \
+	intersection.vala \
 	surface.vala \
 	volume-simple.vala \
 	volume-box.vala \

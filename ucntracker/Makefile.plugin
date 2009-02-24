@@ -9,5 +9,8 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) \
 BUILT_SOURCES = vala-stamp
 
 vala-stamp: $(VALASOURCES)
-	$(VALAC) --library=$(VAPINAME) --basedir=$(top_srcdir)/ucntracker -C --vapidir=$(top_srcdir)/ucntracker/core $^ $(VAPIDEPENDS) --pkg gsl --pkg core
+	$(VALAC) --library=$(VAPINAME) --basedir=$(top_srcdir)/ucntracker -C \
+			--vapidir=$(top_srcdir)/ucntracker/core \
+			--vapidir=$(top_srcdir)/ucntracker/builder \
+			$^ $(VAPIDEPENDS) --pkg gsl --pkg core --pkg builder
 	touch $@
