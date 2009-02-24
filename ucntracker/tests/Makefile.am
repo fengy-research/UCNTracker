@@ -1,6 +1,6 @@
-include $(top_srcdir)/Makefile.tests
+include ../Makefile.tests
 
-LDADD += ../libucntracker.la
+LDADD = ../libucntracker.la
 
 VAPIDEPENDS = $(top_srcdir)/ucntracker/ucntracker.vapi
 

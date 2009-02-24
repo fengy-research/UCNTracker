@@ -1,1 +1,1 @@
-SUBDIRS = gtkbuilder ucntracker
+SUBDIRS = ucntracker

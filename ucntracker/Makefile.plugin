@@ -1,15 +1,13 @@
 COMPILEDSOURCES=$(VALASOURCES:.vala=.c) \
-					   $(VALASOURCES:.vala=.h)
+			   $(VALASOURCES:.vala=.h)
+
 AM_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) \
 				-I$(top_srcdir) -I$(top_srcdir) \
 				-I$(top_srcdir)/ucntracker \
 				-include config.h
 
-LIBADD = $(GLIB_LIBS) $(GSL_LIBS)
-
 BUILT_SOURCES = vala-stamp
 
 vala-stamp: $(VALASOURCES)
-	$(VALAC) --library=lib$(PLUGIN_NAME) --basedir=$(top_srcdir)/ucntracker -C $(VAPIDIRS) $^ $(VAPIDEPENDS) --pkg gsl $(top_srcdir)/gtkbuilder/libgtkbuilder.vapi
-	echo 
+	$(VALAC) --library=$(VAPINAME) --basedir=$(top_srcdir)/ucntracker -C --vapidir=$(top_srcdir)/ucntracker/core $^ $(VAPIDEPENDS) --pkg gsl --pkg core
 	touch $@

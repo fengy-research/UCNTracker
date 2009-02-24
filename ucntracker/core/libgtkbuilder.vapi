@@ -1,6 +1,6 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	[CCode (cheader_filename = "gtkbuilder/gtkbuilder.h")]
+	[CCode (cheader_filename = "core/gtkbuilder.h")]
 	public class Builder : GLib.Object {
 		public uint add_from_file (string filename) throws GLib.Error;
 		public uint add_from_string (string buffer, size_t length) throws GLib.Error;
@@ -18,7 +18,7 @@ namespace UCNTracker {
 		public bool value_from_string_type (GLib.Type type, string str, GLib.Value value) throws GLib.Error;
 		public string translation_domain { get; set; }
 	}
-	[CCode (cheader_filename = "gtkbuilder/gtkbuildable.h")]
+	[CCode (cheader_filename = "core/gtkbuildable.h")]
 	public interface Buildable {
 		public virtual void add_child (Builder builder, GLib.Object child, string? type);
 		public virtual GLib.Object? construct_child (Builder builder, string name);

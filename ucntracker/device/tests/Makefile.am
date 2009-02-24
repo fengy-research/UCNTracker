@@ -1,11 +1,12 @@
-include $(top_srcdir)/Makefile.tests
+include ../../Makefile.tests
 
-LDADD += ../../plugin-manager/libplugin-manager.la \
-		../libdevice.la \
-		../../geometry/libgeometry.la
-VAPIDEPENDS = ../../plugin-manager/libplugin-manager.vapi \
-		../libdevice.vapi \
-		../../geometry/libgeometry.vapi
+LDADD = ../libdevice.la \
+		../../geometry/libgeometry.la \
+		../../core/libcore.la 
+
+VAPIDEPENDS = ../device.vapi \
+		../../geometry/geometry.vapi \
+		$(top_srcdir)/ucntracker/core/core.vapi
 
 noinst_PROGRAMS = test
 

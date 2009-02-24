@@ -1,6 +1,6 @@
 aclocal
-libtoolize
-autoconf
-autoheader
+libtoolize --force
+autoconf --force
+autoheader --force
 automake --add-missing
 ./configure --enable-maintainer-mode $*

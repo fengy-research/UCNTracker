@@ -7,6 +7,7 @@ namespace Geometry {
 	[ModuleInit]
 	public bool init(TypeModule module) {
 		//Initialize some global variables.
+		message("Geometry initialized");
 		return true;
 	}
 }
