@@ -14,8 +14,6 @@
 
 
 
-#SUBDIRS = tests
-
 srcdir = .
 top_srcdir = ../..
 

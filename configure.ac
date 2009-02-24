@@ -26,6 +26,7 @@ AC_SUBST(GSL_LIBS)
 AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
+				ucntracker/tests/Makefile
 				ucntracker/builder/Makefile
 				ucntracker/core/Makefile
 				ucntracker/geometry/Makefile

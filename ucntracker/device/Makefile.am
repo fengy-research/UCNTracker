@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 VAPINAME = device
 noinst_LTLIBRARIES = libdevice.la
 libdevice_la_SOURCES = $(COMPILEDSOURCES)

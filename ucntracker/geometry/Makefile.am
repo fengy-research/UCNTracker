@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 VAPINAME = geometry
 VALASOURCES = \
 	types.vala \

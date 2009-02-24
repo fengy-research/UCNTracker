@@ -1,4 +1,3 @@
-#SUBDIRS = tests
 
 noinst_LTLIBRARIES = libcore.la
 libcore_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS)

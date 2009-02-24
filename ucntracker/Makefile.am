@@ -1,4 +1,4 @@
-SUBDIRS = builder core geometry device .
+SUBDIRS = builder core geometry device . tests
 
 VALASOURCES = ucntracker.vala
 
