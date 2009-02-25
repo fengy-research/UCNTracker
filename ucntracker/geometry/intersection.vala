@@ -19,7 +19,7 @@ namespace Geometry {
 			return rt;
 		}
 		public static bool solve(Volume volume, Vector point_in, Vector point_out,
-			   out Vector intersection) {
+			   out Vector intersection, out double t) {
 			if(volume.sense(point_in) == volume.sense(point_out)) {
 				return false;
 			}
@@ -52,7 +52,7 @@ namespace Geometry {
 					break;
 				}
 			} while(status == Gsl.Status.CONTINUE && iter < max_iter);
-			double t = s.root;
+			t = s.root;
 			intersection = Vector(
 					point_in.x + direction.x * t * length,
 					point_in.y + direction.y * t * length,

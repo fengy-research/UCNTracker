@@ -3,7 +3,7 @@ noinst_LTLIBRARIES = libdevice.la
 libdevice_la_SOURCES = $(COMPILEDSOURCES)
 
 VALASOURCES = \
-	part.vala experiment.vala \
+	part.vala experiment.vala run.vala \
 	ptype.vala \
 	vertex.vala track.vala \
 	device.vala

@@ -12,5 +12,15 @@ namespace Device {
 				parts.prepend(child as Part);
 			}
 		}
+		public bool locate(Vertex vertex, out unowned Part located, out unowned Volume volume) {
+			foreach(Part part in parts) {
+				if(part.locate(vertex, out volume)) {
+					located = part;
+					return true;
+				}
+			}
+			located = null;
+			return false;
+		}
 	}
 }}

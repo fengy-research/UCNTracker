@@ -58,12 +58,16 @@ namespace Geometry {
 		 * 			NOT neccesary inside the volume
 		 * @point_out: end point of the line.
 		 * 			NOT neccesary outside the volume
+		 *
+		 * @t: (0-1), the distances between the intersection and point_in,
+		 *    normalized to the distance between point_out and pointer_in
+		 *
 		 * Returns: false if no intersection is found.
 		 */
 
 		public virtual bool intersect(Vector point_in, Vector point_out,
-			   out Vector intersection) {
-			return Intersection.solve(this, point_in, point_out, out intersection);
+			   out Vector intersection, out double t) {
+			return Intersection.solve(this, point_in, point_out, out intersection, out t);
 		
 		}
 
