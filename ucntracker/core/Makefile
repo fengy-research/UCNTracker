@@ -129,7 +129,7 @@ SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VALAC = /usr/bin/valac  --pkg gmodule-2.0
+VALAC = /usr/bin/valac  --pkg gmodule-2.0 --vapidir=$(top_srcdir)/vapi
 VALAC_BIN = /usr/bin/valac
 VALAC_FLAGS = 
 VERSION = 0.0

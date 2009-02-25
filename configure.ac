@@ -11,7 +11,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PATH_PROGS(VALAC_BIN, [valac])
 AC_SUBST(VALAC_FLAGS)
-VALAC="$VALAC_BIN $VALAC_FLAGS --pkg gmodule-2.0"
+VALAC="$VALAC_BIN $VALAC_FLAGS --pkg gmodule-2.0 --vapidir=\$(top_srcdir)/vapi"
 AC_SUBST(VALAC)
 
 AC_CHECK_LIB(m, log1p)
