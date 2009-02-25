@@ -8,8 +8,9 @@ namespace Device {
 	public class Experiment: Object, Buildable {
 		public List<Part> parts;
 		public void add_child(Builder builder, GLib.Object child, string? type) {
-
+			if(child is Part) {
+				parts.prepend(child as Part);
+			}
 		}
-		
 	}
 }}

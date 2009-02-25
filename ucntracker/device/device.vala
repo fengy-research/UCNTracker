@@ -7,6 +7,7 @@ namespace Device {
 	[ModuleInit]
 	public bool init(TypeModule module) {
 		//Initialize some global variables.
+		message("Device library initialized.");
 		return true;
 	}
 }

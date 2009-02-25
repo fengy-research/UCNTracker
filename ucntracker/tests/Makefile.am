@@ -6,5 +6,6 @@ VAPIDEPENDS = $(top_srcdir)/ucntracker/ucntracker.vapi
 
 noinst_PROGRAMS = \
 	test-linking \
-	test-node
+	test-node \
+	test-xml
 

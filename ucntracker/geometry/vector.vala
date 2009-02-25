@@ -15,7 +15,6 @@ namespace Geometry {
 		[CCode (instance_pos = 2)]
 		public bool parse(string foo) {
 			string[] words = foo.split(",");
-			message("%s", foo);
 			if(words == null || words.length != 3) {
 				return false;
 			}

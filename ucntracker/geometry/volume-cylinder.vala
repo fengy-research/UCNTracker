@@ -17,7 +17,6 @@ namespace Geometry {
 			= sqrt(_length * _length / 4.0 + _radius * _radius);
 			surfaces[LEFT].center.x = - _length / 2.0;
 			surfaces[RIGHT].center.x = _length / 2.0;
-			message("bounding radius = %lf", bounding_radius);
 		}
 		}
 		public double radius {
@@ -26,7 +25,6 @@ namespace Geometry {
 			bounding_radius 
 			= sqrt(_length * _length / 4.0 + _radius * _radius);
 			(surfaces[TUBE] as Tube).radius = _radius;
-			message("bounding radius = %lf", bounding_radius);
 		}
 		}
 		construct {
