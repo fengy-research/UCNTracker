@@ -65,9 +65,9 @@ namespace Geometry {
 		 * Returns: false if no intersection is found.
 		 */
 
-		public virtual bool intersect(Vector point_in, Vector point_out,
-			   out Vector intersection, out double t) {
-			return Intersection.solve(this, point_in, point_out, out intersection, out t);
+		public virtual bool intersect(CurveFunc curve, 
+			   double s_min, double s_max, out double s) {
+			return Intersection.solve(this, curve, s_min, s_max, out s);
 		
 		}
 

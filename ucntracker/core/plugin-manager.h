@@ -1,6 +1,6 @@
 
-#ifndef __CORE_PLUGIN_MANAGER_H__
-#define __CORE_PLUGIN_MANAGER_H__
+#ifndef __PLUGIN_MANAGER_H__
+#define __PLUGIN_MANAGER_H__
 
 #include <glib.h>
 #include <glib-object.h>
@@ -60,11 +60,13 @@ struct _UCNParamSpecPluginModuleManager {
 };
 
 
+gboolean ucn_core_init (GTypeModule* module);
 UCNPluginModule* ucn_plugin_module_construct (GType object_type, const char* filename, const char* init_func);
 UCNPluginModule* ucn_plugin_module_new (const char* filename, const char* init_func);
 UCNPluginModule* ucn_plugin_module_construct_static (GType object_type, const char* init_func);
 UCNPluginModule* ucn_plugin_module_new_static (const char* init_func);
 GType ucn_plugin_module_get_type (void);
+GType ucn_plugin_module_register_type (GTypeModule * module);
 void ucn_plugin_module_manager_query (UCNPluginModuleManager* self, const char* filename);
 void ucn_plugin_module_manager_query_static (UCNPluginModuleManager* self, const char* init_func);
 UCNPluginModuleManager* ucn_plugin_module_manager_construct (GType object_type);
@@ -73,6 +75,7 @@ GParamSpec* ucn_param_spec_plugin_module_manager (const gchar* name, const gchar
 gpointer ucn_value_get_plugin_module_manager (const GValue* value);
 void ucn_value_set_plugin_module_manager (GValue* value, gpointer v_object);
 GType ucn_plugin_module_manager_get_type (void);
+GType ucn_plugin_module_manager_register_type (GTypeModule * module);
 gpointer ucn_plugin_module_manager_ref (gpointer instance);
 void ucn_plugin_module_manager_unref (gpointer instance);
 

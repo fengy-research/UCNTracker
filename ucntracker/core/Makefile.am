@@ -7,9 +7,26 @@ libcore_la_SOURCES =  \
 	$(VALASOURCES:.vala=.c)	\
 	$(VALASOURCES:.vala=.h)
 
-VALASOURCES = plugin-manager.vala
+VALASOURCES = \
+	curve.vala \
+	experiment.vala \
+	intersection.vala \
+	part.vala \
+	ptype.vala \
+	run.vala \
+	surface.vala \
+	track.vala \
+	types.vala \
+	vector.vala \
+	vertex.vala \
+	volume-ball.vala \
+	volume-box.vala \
+	volume-cylinder.vala \
+	volume-simple.vala \
+	volume.vala \
+	plugin-manager.vala
 
-BUILT_SOURCES = vala-stamp
-vala-stamp: $(VALASOURCES)
-	$(VALAC) --library=core --basedir=$(top_srcdir)/ucntracker -C $^ ../builder/builder.vapi --pkg gsl
-	touch $@
+BUILT_SOURCES = vala-ccode
+VALAFLAGS=
+VALAPKGS = ../builder/builder.vapi --pkg gsl --pkg gmodule-2.0
+@VALA_CCODE_RULES@

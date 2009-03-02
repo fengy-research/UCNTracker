@@ -20,7 +20,10 @@ namespace Device {
 		public void run1() {
 			double next_t = timestamp + dt;
 			foreach(Track track in active_tracks) {
-				if(track.timestamp < next_t) track.evolve(next_t);
+				while(!track.terminated &&
+					track.now.timestamp < next_t) {
+				//track.evolve();
+				}
 			}
 		}
 		public signal void finish();

@@ -1,5 +1,5 @@
 
-#include <core/plugin-manager.h>
+#include "plugin-manager.h"
 #include <gmodule.h>
 #include <gobject/gvaluecollector.h>
 
@@ -34,6 +34,30 @@ static void _g_list_free_g_object_unref (GList* self);
 static gpointer ucn_plugin_module_manager_parent_class = NULL;
 static void ucn_plugin_module_manager_finalize (UCNPluginModuleManager* obj);
 
+
+
+gboolean ucn_core_init (GTypeModule* module) {
+	g_return_val_if_fail (module != NULL, FALSE);
+	ucn_device_experiment_register_type (module);
+	ucn_geometry_intersection_register_type (module);
+	ucn_device_part_register_type (module);
+	ucn_device_ptype_register_type (module);
+	ucn_device_run_register_type (module);
+	ucn_geometry_surface_register_type (module);
+	ucn_geometry_tube_register_type (module);
+	ucn_geometry_plane_register_type (module);
+	ucn_device_track_register_type (module);
+	ucn_geometry_ball_register_type (module);
+	ucn_geometry_box_register_type (module);
+	ucn_geometry_cylinder_register_type (module);
+	ucn_geometry_convex_register_type (module);
+	ucn_geometry_volume_register_type (module);
+	ucn_plugin_module_register_type (module);
+	ucn_plugin_module_manager_register_type (module);
+	/*Initialize some global variables.*/
+	g_message ("plugin-manager.vala:11: UCN library initialized.");
+	return TRUE;
+}
 
 
 UCNPluginModule* ucn_plugin_module_construct (GType object_type, const char* filename, const char* init_func) {
@@ -138,12 +162,15 @@ static void ucn_plugin_module_finalize (GObject* obj) {
 }
 
 
+static GType ucn_plugin_module_type_id = 0;
 GType ucn_plugin_module_get_type (void) {
-	static GType ucn_plugin_module_type_id = 0;
-	if (ucn_plugin_module_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (UCNPluginModuleClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) ucn_plugin_module_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (UCNPluginModule), 0, (GInstanceInitFunc) ucn_plugin_module_instance_init, NULL };
-		ucn_plugin_module_type_id = g_type_register_static (G_TYPE_TYPE_MODULE, "UCNPluginModule", &g_define_type_info, 0);
-	}
+	return ucn_plugin_module_type_id;
+}
+
+
+GType ucn_plugin_module_register_type (GTypeModule * module) {
+	static const GTypeInfo g_define_type_info = { sizeof (UCNPluginModuleClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) ucn_plugin_module_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (UCNPluginModule), 0, (GInstanceInitFunc) ucn_plugin_module_instance_init, NULL };
+	ucn_plugin_module_type_id = g_type_module_register_type (module, G_TYPE_TYPE_MODULE, "UCNPluginModule", &g_define_type_info, 0);
 	return ucn_plugin_module_type_id;
 }
 
@@ -305,14 +332,17 @@ static void ucn_plugin_module_manager_finalize (UCNPluginModuleManager* obj) {
 }
 
 
+static GType ucn_plugin_module_manager_type_id = 0;
 GType ucn_plugin_module_manager_get_type (void) {
-	static GType ucn_plugin_module_manager_type_id = 0;
-	if (ucn_plugin_module_manager_type_id == 0) {
-		static const GTypeValueTable g_define_type_value_table = { ucn_value_plugin_module_manager_init, ucn_value_plugin_module_manager_free_value, ucn_value_plugin_module_manager_copy_value, ucn_value_plugin_module_manager_peek_pointer, "p", ucn_value_plugin_module_manager_collect_value, "p", ucn_value_plugin_module_manager_lcopy_value };
-		static const GTypeInfo g_define_type_info = { sizeof (UCNPluginModuleManagerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) ucn_plugin_module_manager_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (UCNPluginModuleManager), 0, (GInstanceInitFunc) ucn_plugin_module_manager_instance_init, &g_define_type_value_table };
-		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
-		ucn_plugin_module_manager_type_id = g_type_register_fundamental (g_type_fundamental_next (), "UCNPluginModuleManager", &g_define_type_info, &g_define_type_fundamental_info, 0);
-	}
+	return ucn_plugin_module_manager_type_id;
+}
+
+
+GType ucn_plugin_module_manager_register_type (GTypeModule * module) {
+	static const GTypeValueTable g_define_type_value_table = { ucn_value_plugin_module_manager_init, ucn_value_plugin_module_manager_free_value, ucn_value_plugin_module_manager_copy_value, ucn_value_plugin_module_manager_peek_pointer, "p", ucn_value_plugin_module_manager_collect_value, "p", ucn_value_plugin_module_manager_lcopy_value };
+	static const GTypeInfo g_define_type_info = { sizeof (UCNPluginModuleManagerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) ucn_plugin_module_manager_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (UCNPluginModuleManager), 0, (GInstanceInitFunc) ucn_plugin_module_manager_instance_init, &g_define_type_value_table };
+	static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
+	ucn_plugin_module_manager_type_id = g_type_register_fundamental (g_type_fundamental_next (), "UCNPluginModuleManager", &g_define_type_info, &g_define_type_fundamental_info, 0);
 	return ucn_plugin_module_manager_type_id;
 }
 

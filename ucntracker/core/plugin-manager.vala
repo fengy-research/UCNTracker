@@ -4,6 +4,13 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+	[CCode (cname = "ucn_core_init")]
+	[ModuleInit]
+	public bool init(TypeModule module) {
+		//Initialize some global variables.
+		message("UCN library initialized.");
+		return true;
+	}
 	public class PluginModule: GLib.TypeModule {
 		private static delegate void ModuleInitFunc(PluginModule module);
 		private static delegate void ModuleUninitFunc(PluginModule module);

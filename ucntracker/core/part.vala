@@ -18,6 +18,8 @@ namespace Device {
 			}
 		}
 
+		public signal void transport(Track track, Part next, Vertex v_leave, Vertex v_enter);
+
 		private MeanFreePathFunc _mean_free_path_func = _default_mean_free_path_func;
 		private string _mean_free_path_func_name = null;
 		public string mean_free_path_func {
