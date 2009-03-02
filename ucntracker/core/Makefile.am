@@ -8,25 +8,25 @@ libcore_la_SOURCES =  \
 	$(VALASOURCES:.vala=.h)
 
 VALASOURCES = \
+	types.vala \
+	vector.vala \
+	surface.vala \
+	volume.vala \
+	volume-simple.vala \
+	volume-ball.vala \
+	volume-box.vala \
+	volume-cylinder.vala \
 	curve.vala \
 	experiment.vala \
 	intersection.vala \
 	part.vala \
 	ptype.vala \
 	run.vala \
-	surface.vala \
 	track.vala \
-	types.vala \
-	vector.vala \
 	vertex.vala \
-	volume-ball.vala \
-	volume-box.vala \
-	volume-cylinder.vala \
-	volume-simple.vala \
-	volume.vala \
-	plugin-manager.vala
+	core.vala 
 
 BUILT_SOURCES = vala-ccode
-VALAFLAGS=
+VALAFLAGS= --library=core --basedir=$(top_srcdir)
 VALAPKGS = ../builder/builder.vapi --pkg gsl --pkg gmodule-2.0
 @VALA_CCODE_RULES@

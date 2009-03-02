@@ -1,6 +1,6 @@
 
-#ifndef __PLUGIN_MANAGER_H__
-#define __PLUGIN_MANAGER_H__
+#ifndef __UCNTRACKER_CORE_PLUGIN_MANAGER_H__
+#define __UCNTRACKER_CORE_PLUGIN_MANAGER_H__
 
 #include <glib.h>
 #include <glib-object.h>
@@ -20,6 +20,7 @@ G_BEGIN_DECLS
 typedef struct _UCNPluginModule UCNPluginModule;
 typedef struct _UCNPluginModuleClass UCNPluginModuleClass;
 typedef struct _UCNPluginModulePrivate UCNPluginModulePrivate;
+typedef gboolean (*UCNPluginModuleModuleInitFunc) (UCNPluginModule* module);
 
 #define UCN_TYPE_PLUGIN_MODULE_MANAGER (ucn_plugin_module_manager_get_type ())
 #define UCN_PLUGIN_MODULE_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), UCN_TYPE_PLUGIN_MODULE_MANAGER, UCNPluginModuleManager))
@@ -37,7 +38,7 @@ struct _UCNPluginModule {
 	GTypeModule parent_instance;
 	UCNPluginModulePrivate * priv;
 	char* filename;
-	char* init_func;
+	char* init_func_name;
 };
 
 struct _UCNPluginModuleClass {
@@ -60,15 +61,14 @@ struct _UCNParamSpecPluginModuleManager {
 };
 
 
-gboolean ucn_core_init (GTypeModule* module);
 UCNPluginModule* ucn_plugin_module_construct (GType object_type, const char* filename, const char* init_func);
 UCNPluginModule* ucn_plugin_module_new (const char* filename, const char* init_func);
-UCNPluginModule* ucn_plugin_module_construct_static (GType object_type, const char* init_func);
-UCNPluginModule* ucn_plugin_module_new_static (const char* init_func);
+UCNPluginModule* ucn_plugin_module_construct_static (GType object_type, UCNPluginModuleModuleInitFunc init_func);
+UCNPluginModule* ucn_plugin_module_new_static (UCNPluginModuleModuleInitFunc init_func);
 GType ucn_plugin_module_get_type (void);
 GType ucn_plugin_module_register_type (GTypeModule * module);
 void ucn_plugin_module_manager_query (UCNPluginModuleManager* self, const char* filename);
-void ucn_plugin_module_manager_query_static (UCNPluginModuleManager* self, const char* init_func);
+void ucn_plugin_module_manager_query_static (UCNPluginModuleManager* self, UCNPluginModuleModuleInitFunc init_func);
 UCNPluginModuleManager* ucn_plugin_module_manager_construct (GType object_type);
 UCNPluginModuleManager* ucn_plugin_module_manager_new (void);
 GParamSpec* ucn_param_spec_plugin_module_manager (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);

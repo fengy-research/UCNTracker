@@ -49,14 +49,14 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libcore_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am__objects_1 = libcore_la-curve.lo libcore_la-experiment.lo \
-	libcore_la-intersection.lo libcore_la-part.lo \
-	libcore_la-ptype.lo libcore_la-run.lo libcore_la-surface.lo \
-	libcore_la-track.lo libcore_la-types.lo libcore_la-vector.lo \
-	libcore_la-vertex.lo libcore_la-volume-ball.lo \
+am__objects_1 = libcore_la-types.lo libcore_la-vector.lo \
+	libcore_la-surface.lo libcore_la-volume.lo \
+	libcore_la-volume-simple.lo libcore_la-volume-ball.lo \
 	libcore_la-volume-box.lo libcore_la-volume-cylinder.lo \
-	libcore_la-volume-simple.lo libcore_la-volume.lo \
-	libcore_la-plugin-manager.lo
+	libcore_la-curve.lo libcore_la-experiment.lo \
+	libcore_la-intersection.lo libcore_la-part.lo \
+	libcore_la-ptype.lo libcore_la-run.lo libcore_la-track.lo \
+	libcore_la-vertex.lo libcore_la-core.lo
 am__objects_2 =
 am_libcore_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libcore_la_OBJECTS = $(am_libcore_la_OBJECTS)
@@ -194,26 +194,26 @@ libcore_la_SOURCES = \
 	$(VALASOURCES:.vala=.h)
 
 VALASOURCES = \
+	types.vala \
+	vector.vala \
+	surface.vala \
+	volume.vala \
+	volume-simple.vala \
+	volume-ball.vala \
+	volume-box.vala \
+	volume-cylinder.vala \
 	curve.vala \
 	experiment.vala \
 	intersection.vala \
 	part.vala \
 	ptype.vala \
 	run.vala \
-	surface.vala \
 	track.vala \
-	types.vala \
-	vector.vala \
 	vertex.vala \
-	volume-ball.vala \
-	volume-box.vala \
-	volume-cylinder.vala \
-	volume-simple.vala \
-	volume.vala \
-	plugin-manager.vala
+	core.vala 
 
 BUILT_SOURCES = vala-ccode
-VALAFLAGS = 
+VALAFLAGS = --library=core --basedir=$(top_srcdir)
 VALAPKGS = ../builder/builder.vapi --pkg gsl --pkg gmodule-2.0
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -267,11 +267,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/libcore_la-core.Plo
 include ./$(DEPDIR)/libcore_la-curve.Plo
 include ./$(DEPDIR)/libcore_la-experiment.Plo
 include ./$(DEPDIR)/libcore_la-intersection.Plo
 include ./$(DEPDIR)/libcore_la-part.Plo
-include ./$(DEPDIR)/libcore_la-plugin-manager.Plo
 include ./$(DEPDIR)/libcore_la-ptype.Plo
 include ./$(DEPDIR)/libcore_la-run.Plo
 include ./$(DEPDIR)/libcore_la-surface.Plo
@@ -305,6 +305,62 @@ include ./$(DEPDIR)/libcore_la-volume.Plo
 #	source='$<' object='$@' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(LTCOMPILE) -c -o $@ $<
+
+libcore_la-types.lo: types.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-types.lo -MD -MP -MF "$(DEPDIR)/libcore_la-types.Tpo" -c -o libcore_la-types.lo `test -f 'types.c' || echo '$(srcdir)/'`types.c; \
+	then mv -f "$(DEPDIR)/libcore_la-types.Tpo" "$(DEPDIR)/libcore_la-types.Plo"; else rm -f "$(DEPDIR)/libcore_la-types.Tpo"; exit 1; fi
+#	source='types.c' object='libcore_la-types.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-types.lo `test -f 'types.c' || echo '$(srcdir)/'`types.c
+
+libcore_la-vector.lo: vector.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-vector.lo -MD -MP -MF "$(DEPDIR)/libcore_la-vector.Tpo" -c -o libcore_la-vector.lo `test -f 'vector.c' || echo '$(srcdir)/'`vector.c; \
+	then mv -f "$(DEPDIR)/libcore_la-vector.Tpo" "$(DEPDIR)/libcore_la-vector.Plo"; else rm -f "$(DEPDIR)/libcore_la-vector.Tpo"; exit 1; fi
+#	source='vector.c' object='libcore_la-vector.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-vector.lo `test -f 'vector.c' || echo '$(srcdir)/'`vector.c
+
+libcore_la-surface.lo: surface.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-surface.lo -MD -MP -MF "$(DEPDIR)/libcore_la-surface.Tpo" -c -o libcore_la-surface.lo `test -f 'surface.c' || echo '$(srcdir)/'`surface.c; \
+	then mv -f "$(DEPDIR)/libcore_la-surface.Tpo" "$(DEPDIR)/libcore_la-surface.Plo"; else rm -f "$(DEPDIR)/libcore_la-surface.Tpo"; exit 1; fi
+#	source='surface.c' object='libcore_la-surface.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-surface.lo `test -f 'surface.c' || echo '$(srcdir)/'`surface.c
+
+libcore_la-volume.lo: volume.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume.Tpo" -c -o libcore_la-volume.lo `test -f 'volume.c' || echo '$(srcdir)/'`volume.c; \
+	then mv -f "$(DEPDIR)/libcore_la-volume.Tpo" "$(DEPDIR)/libcore_la-volume.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume.Tpo"; exit 1; fi
+#	source='volume.c' object='libcore_la-volume.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume.lo `test -f 'volume.c' || echo '$(srcdir)/'`volume.c
+
+libcore_la-volume-simple.lo: volume-simple.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume-simple.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume-simple.Tpo" -c -o libcore_la-volume-simple.lo `test -f 'volume-simple.c' || echo '$(srcdir)/'`volume-simple.c; \
+	then mv -f "$(DEPDIR)/libcore_la-volume-simple.Tpo" "$(DEPDIR)/libcore_la-volume-simple.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume-simple.Tpo"; exit 1; fi
+#	source='volume-simple.c' object='libcore_la-volume-simple.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume-simple.lo `test -f 'volume-simple.c' || echo '$(srcdir)/'`volume-simple.c
+
+libcore_la-volume-ball.lo: volume-ball.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume-ball.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume-ball.Tpo" -c -o libcore_la-volume-ball.lo `test -f 'volume-ball.c' || echo '$(srcdir)/'`volume-ball.c; \
+	then mv -f "$(DEPDIR)/libcore_la-volume-ball.Tpo" "$(DEPDIR)/libcore_la-volume-ball.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume-ball.Tpo"; exit 1; fi
+#	source='volume-ball.c' object='libcore_la-volume-ball.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume-ball.lo `test -f 'volume-ball.c' || echo '$(srcdir)/'`volume-ball.c
+
+libcore_la-volume-box.lo: volume-box.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume-box.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume-box.Tpo" -c -o libcore_la-volume-box.lo `test -f 'volume-box.c' || echo '$(srcdir)/'`volume-box.c; \
+	then mv -f "$(DEPDIR)/libcore_la-volume-box.Tpo" "$(DEPDIR)/libcore_la-volume-box.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume-box.Tpo"; exit 1; fi
+#	source='volume-box.c' object='libcore_la-volume-box.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume-box.lo `test -f 'volume-box.c' || echo '$(srcdir)/'`volume-box.c
+
+libcore_la-volume-cylinder.lo: volume-cylinder.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume-cylinder.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume-cylinder.Tpo" -c -o libcore_la-volume-cylinder.lo `test -f 'volume-cylinder.c' || echo '$(srcdir)/'`volume-cylinder.c; \
+	then mv -f "$(DEPDIR)/libcore_la-volume-cylinder.Tpo" "$(DEPDIR)/libcore_la-volume-cylinder.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume-cylinder.Tpo"; exit 1; fi
+#	source='volume-cylinder.c' object='libcore_la-volume-cylinder.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume-cylinder.lo `test -f 'volume-cylinder.c' || echo '$(srcdir)/'`volume-cylinder.c
 
 libcore_la-curve.lo: curve.c
 	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-curve.lo -MD -MP -MF "$(DEPDIR)/libcore_la-curve.Tpo" -c -o libcore_la-curve.lo `test -f 'curve.c' || echo '$(srcdir)/'`curve.c; \
@@ -348,33 +404,12 @@ libcore_la-run.lo: run.c
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-run.lo `test -f 'run.c' || echo '$(srcdir)/'`run.c
 
-libcore_la-surface.lo: surface.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-surface.lo -MD -MP -MF "$(DEPDIR)/libcore_la-surface.Tpo" -c -o libcore_la-surface.lo `test -f 'surface.c' || echo '$(srcdir)/'`surface.c; \
-	then mv -f "$(DEPDIR)/libcore_la-surface.Tpo" "$(DEPDIR)/libcore_la-surface.Plo"; else rm -f "$(DEPDIR)/libcore_la-surface.Tpo"; exit 1; fi
-#	source='surface.c' object='libcore_la-surface.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-surface.lo `test -f 'surface.c' || echo '$(srcdir)/'`surface.c
-
 libcore_la-track.lo: track.c
 	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-track.lo -MD -MP -MF "$(DEPDIR)/libcore_la-track.Tpo" -c -o libcore_la-track.lo `test -f 'track.c' || echo '$(srcdir)/'`track.c; \
 	then mv -f "$(DEPDIR)/libcore_la-track.Tpo" "$(DEPDIR)/libcore_la-track.Plo"; else rm -f "$(DEPDIR)/libcore_la-track.Tpo"; exit 1; fi
 #	source='track.c' object='libcore_la-track.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-track.lo `test -f 'track.c' || echo '$(srcdir)/'`track.c
-
-libcore_la-types.lo: types.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-types.lo -MD -MP -MF "$(DEPDIR)/libcore_la-types.Tpo" -c -o libcore_la-types.lo `test -f 'types.c' || echo '$(srcdir)/'`types.c; \
-	then mv -f "$(DEPDIR)/libcore_la-types.Tpo" "$(DEPDIR)/libcore_la-types.Plo"; else rm -f "$(DEPDIR)/libcore_la-types.Tpo"; exit 1; fi
-#	source='types.c' object='libcore_la-types.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-types.lo `test -f 'types.c' || echo '$(srcdir)/'`types.c
-
-libcore_la-vector.lo: vector.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-vector.lo -MD -MP -MF "$(DEPDIR)/libcore_la-vector.Tpo" -c -o libcore_la-vector.lo `test -f 'vector.c' || echo '$(srcdir)/'`vector.c; \
-	then mv -f "$(DEPDIR)/libcore_la-vector.Tpo" "$(DEPDIR)/libcore_la-vector.Plo"; else rm -f "$(DEPDIR)/libcore_la-vector.Tpo"; exit 1; fi
-#	source='vector.c' object='libcore_la-vector.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-vector.lo `test -f 'vector.c' || echo '$(srcdir)/'`vector.c
 
 libcore_la-vertex.lo: vertex.c
 	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-vertex.lo -MD -MP -MF "$(DEPDIR)/libcore_la-vertex.Tpo" -c -o libcore_la-vertex.lo `test -f 'vertex.c' || echo '$(srcdir)/'`vertex.c; \
@@ -383,47 +418,12 @@ libcore_la-vertex.lo: vertex.c
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-vertex.lo `test -f 'vertex.c' || echo '$(srcdir)/'`vertex.c
 
-libcore_la-volume-ball.lo: volume-ball.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume-ball.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume-ball.Tpo" -c -o libcore_la-volume-ball.lo `test -f 'volume-ball.c' || echo '$(srcdir)/'`volume-ball.c; \
-	then mv -f "$(DEPDIR)/libcore_la-volume-ball.Tpo" "$(DEPDIR)/libcore_la-volume-ball.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume-ball.Tpo"; exit 1; fi
-#	source='volume-ball.c' object='libcore_la-volume-ball.lo' libtool=yes \
+libcore_la-core.lo: core.c
+	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-core.lo -MD -MP -MF "$(DEPDIR)/libcore_la-core.Tpo" -c -o libcore_la-core.lo `test -f 'core.c' || echo '$(srcdir)/'`core.c; \
+	then mv -f "$(DEPDIR)/libcore_la-core.Tpo" "$(DEPDIR)/libcore_la-core.Plo"; else rm -f "$(DEPDIR)/libcore_la-core.Tpo"; exit 1; fi
+#	source='core.c' object='libcore_la-core.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume-ball.lo `test -f 'volume-ball.c' || echo '$(srcdir)/'`volume-ball.c
-
-libcore_la-volume-box.lo: volume-box.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume-box.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume-box.Tpo" -c -o libcore_la-volume-box.lo `test -f 'volume-box.c' || echo '$(srcdir)/'`volume-box.c; \
-	then mv -f "$(DEPDIR)/libcore_la-volume-box.Tpo" "$(DEPDIR)/libcore_la-volume-box.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume-box.Tpo"; exit 1; fi
-#	source='volume-box.c' object='libcore_la-volume-box.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume-box.lo `test -f 'volume-box.c' || echo '$(srcdir)/'`volume-box.c
-
-libcore_la-volume-cylinder.lo: volume-cylinder.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume-cylinder.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume-cylinder.Tpo" -c -o libcore_la-volume-cylinder.lo `test -f 'volume-cylinder.c' || echo '$(srcdir)/'`volume-cylinder.c; \
-	then mv -f "$(DEPDIR)/libcore_la-volume-cylinder.Tpo" "$(DEPDIR)/libcore_la-volume-cylinder.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume-cylinder.Tpo"; exit 1; fi
-#	source='volume-cylinder.c' object='libcore_la-volume-cylinder.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume-cylinder.lo `test -f 'volume-cylinder.c' || echo '$(srcdir)/'`volume-cylinder.c
-
-libcore_la-volume-simple.lo: volume-simple.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume-simple.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume-simple.Tpo" -c -o libcore_la-volume-simple.lo `test -f 'volume-simple.c' || echo '$(srcdir)/'`volume-simple.c; \
-	then mv -f "$(DEPDIR)/libcore_la-volume-simple.Tpo" "$(DEPDIR)/libcore_la-volume-simple.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume-simple.Tpo"; exit 1; fi
-#	source='volume-simple.c' object='libcore_la-volume-simple.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume-simple.lo `test -f 'volume-simple.c' || echo '$(srcdir)/'`volume-simple.c
-
-libcore_la-volume.lo: volume.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-volume.lo -MD -MP -MF "$(DEPDIR)/libcore_la-volume.Tpo" -c -o libcore_la-volume.lo `test -f 'volume.c' || echo '$(srcdir)/'`volume.c; \
-	then mv -f "$(DEPDIR)/libcore_la-volume.Tpo" "$(DEPDIR)/libcore_la-volume.Plo"; else rm -f "$(DEPDIR)/libcore_la-volume.Tpo"; exit 1; fi
-#	source='volume.c' object='libcore_la-volume.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-volume.lo `test -f 'volume.c' || echo '$(srcdir)/'`volume.c
-
-libcore_la-plugin-manager.lo: plugin-manager.c
-	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libcore_la-plugin-manager.lo -MD -MP -MF "$(DEPDIR)/libcore_la-plugin-manager.Tpo" -c -o libcore_la-plugin-manager.lo `test -f 'plugin-manager.c' || echo '$(srcdir)/'`plugin-manager.c; \
-	then mv -f "$(DEPDIR)/libcore_la-plugin-manager.Tpo" "$(DEPDIR)/libcore_la-plugin-manager.Plo"; else rm -f "$(DEPDIR)/libcore_la-plugin-manager.Tpo"; exit 1; fi
-#	source='plugin-manager.c' object='libcore_la-plugin-manager.lo' libtool=yes \
-#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-plugin-manager.lo `test -f 'plugin-manager.c' || echo '$(srcdir)/'`plugin-manager.c
+#	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libcore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libcore_la-core.lo `test -f 'core.c' || echo '$(srcdir)/'`core.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

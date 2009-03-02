@@ -1,9 +1,8 @@
 
-#include "plugin-manager.h"
+#include <ucntracker/core/plugin-manager.h>
 #include <gmodule.h>
 #include <gobject/gvaluecollector.h>
 
-typedef void (*UCNPluginModuleModuleInitFunc) (UCNPluginModule* module);
 typedef void (*UCNPluginModuleModuleUninitFunc) (UCNPluginModule* module);
 
 
@@ -36,36 +35,14 @@ static void ucn_plugin_module_manager_finalize (UCNPluginModuleManager* obj);
 
 
 
-gboolean ucn_core_init (GTypeModule* module) {
-	g_return_val_if_fail (module != NULL, FALSE);
-	ucn_device_experiment_register_type (module);
-	ucn_geometry_intersection_register_type (module);
-	ucn_device_part_register_type (module);
-	ucn_device_ptype_register_type (module);
-	ucn_device_run_register_type (module);
-	ucn_geometry_surface_register_type (module);
-	ucn_geometry_tube_register_type (module);
-	ucn_geometry_plane_register_type (module);
-	ucn_device_track_register_type (module);
-	ucn_geometry_ball_register_type (module);
-	ucn_geometry_box_register_type (module);
-	ucn_geometry_cylinder_register_type (module);
-	ucn_geometry_convex_register_type (module);
-	ucn_geometry_volume_register_type (module);
-	ucn_plugin_module_register_type (module);
-	ucn_plugin_module_manager_register_type (module);
-	/*Initialize some global variables.*/
-	g_message ("plugin-manager.vala:11: UCN library initialized.");
-	return TRUE;
-}
-
-
 UCNPluginModule* ucn_plugin_module_construct (GType object_type, const char* filename, const char* init_func) {
 	UCNPluginModule * self;
 	char* _tmp1;
 	const char* _tmp0;
 	char* _tmp3;
 	const char* _tmp2;
+	GModule* _tmp4;
+	void* pointer;
 	g_return_val_if_fail (filename != NULL, NULL);
 	g_return_val_if_fail (init_func != NULL, NULL);
 	self = g_object_newv (object_type, 0, NULL);
@@ -74,7 +51,12 @@ UCNPluginModule* ucn_plugin_module_construct (GType object_type, const char* fil
 	self->filename = (_tmp1 = (_tmp0 = filename, (_tmp0 == NULL) ? NULL : g_strdup (_tmp0)), self->filename = (g_free (self->filename), NULL), _tmp1);
 	_tmp3 = NULL;
 	_tmp2 = NULL;
-	self->init_func = (_tmp3 = (_tmp2 = init_func, (_tmp2 == NULL) ? NULL : g_strdup (_tmp2)), self->init_func = (g_free (self->init_func), NULL), _tmp3);
+	self->init_func_name = (_tmp3 = (_tmp2 = self->init_func_name, (_tmp2 == NULL) ? NULL : g_strdup (_tmp2)), self->init_func_name = (g_free (self->init_func_name), NULL), _tmp3);
+	_tmp4 = NULL;
+	self->priv->library = (_tmp4 = g_module_open (filename, 0), (self->priv->library == NULL) ? NULL : (self->priv->library = (g_module_close (self->priv->library), NULL)), _tmp4);
+	pointer = NULL;
+	g_module_symbol (self->priv->library, self->init_func_name, &pointer);
+	self->priv->init = (UCNPluginModuleModuleInitFunc) pointer;
 	return self;
 }
 
@@ -84,37 +66,25 @@ UCNPluginModule* ucn_plugin_module_new (const char* filename, const char* init_f
 }
 
 
-UCNPluginModule* ucn_plugin_module_construct_static (GType object_type, const char* init_func) {
+UCNPluginModule* ucn_plugin_module_construct_static (GType object_type, UCNPluginModuleModuleInitFunc init_func) {
 	UCNPluginModule * self;
 	char* _tmp0;
-	char* _tmp2;
-	const char* _tmp1;
-	g_return_val_if_fail (init_func != NULL, NULL);
 	self = g_object_newv (object_type, 0, NULL);
 	_tmp0 = NULL;
 	self->filename = (_tmp0 = NULL, self->filename = (g_free (self->filename), NULL), _tmp0);
-	_tmp2 = NULL;
-	_tmp1 = NULL;
-	self->init_func = (_tmp2 = (_tmp1 = init_func, (_tmp1 == NULL) ? NULL : g_strdup (_tmp1)), self->init_func = (g_free (self->init_func), NULL), _tmp2);
+	self->priv->init = init_func;
 	return self;
 }
 
 
-UCNPluginModule* ucn_plugin_module_new_static (const char* init_func) {
+UCNPluginModule* ucn_plugin_module_new_static (UCNPluginModuleModuleInitFunc init_func) {
 	return ucn_plugin_module_construct_static (UCN_TYPE_PLUGIN_MODULE, init_func);
 }
 
 
 static gboolean ucn_plugin_module_real_load (GTypeModule* base) {
 	UCNPluginModule * self;
-	GModule* _tmp0;
-	void* pointer;
 	self = (UCNPluginModule*) base;
-	_tmp0 = NULL;
-	self->priv->library = (_tmp0 = g_module_open (self->filename, 0), (self->priv->library == NULL) ? NULL : (self->priv->library = (g_module_close (self->priv->library), NULL)), _tmp0);
-	pointer = NULL;
-	g_module_symbol (self->priv->library, self->init_func, &pointer);
-	self->priv->init = (UCNPluginModuleModuleInitFunc) pointer;
 	if (self->priv->init != NULL) {
 		self->priv->init (self);
 		return TRUE;
@@ -156,7 +126,7 @@ static void ucn_plugin_module_finalize (GObject* obj) {
 	UCNPluginModule * self;
 	self = UCN_PLUGIN_MODULE (obj);
 	self->filename = (g_free (self->filename), NULL);
-	self->init_func = (g_free (self->init_func), NULL);
+	self->init_func_name = (g_free (self->init_func_name), NULL);
 	(self->priv->library == NULL) ? NULL : (self->priv->library = (g_module_close (self->priv->library), NULL));
 	G_OBJECT_CLASS (ucn_plugin_module_parent_class)->finalize (obj);
 }
@@ -194,11 +164,10 @@ void ucn_plugin_module_manager_query (UCNPluginModuleManager* self, const char* 
 }
 
 
-void ucn_plugin_module_manager_query_static (UCNPluginModuleManager* self, const char* init_func) {
+void ucn_plugin_module_manager_query_static (UCNPluginModuleManager* self, UCNPluginModuleModuleInitFunc init_func) {
 	UCNPluginModule* module;
 	UCNPluginModule* _tmp0;
 	g_return_if_fail (self != NULL);
-	g_return_if_fail (init_func != NULL);
 	module = ucn_plugin_module_new_static (init_func);
 	_tmp0 = NULL;
 	self->priv->modules = g_list_prepend (self->priv->modules, (_tmp0 = module, (_tmp0 == NULL) ? NULL : g_object_ref (_tmp0)));

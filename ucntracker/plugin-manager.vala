@@ -4,34 +4,27 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	[CCode (cname = "ucn_core_init")]
-	[ModuleInit]
-	public bool init(TypeModule module) {
-		//Initialize some global variables.
-		message("UCN library initialized.");
-		return true;
-	}
 	public class PluginModule: GLib.TypeModule {
-		private static delegate void ModuleInitFunc(PluginModule module);
+		public static delegate bool ModuleInitFunc(PluginModule module);
 		private static delegate void ModuleUninitFunc(PluginModule module);
 		public string filename;
-		public string init_func;
+		public string init_func_name;
 		private Module library;
 		ModuleInitFunc init;
 		ModuleUninitFunc uninit;
 		public PluginModule(string filename, string init_func) {
 			this.filename = filename;
-			this.init_func = init_func;
-		}
-		public PluginModule.@static (string init_func) {
-			this.filename = null;
-			this.init_func = init_func;
-		}
-		public override bool load() {
+			this.init_func_name = init_func_name;
 			library = Module.open(filename, 0);
 			void * pointer;
-			library.symbol(init_func, out pointer);
+			library.symbol(init_func_name, out pointer);
 			init = (ModuleInitFunc) pointer;
+		}
+		public PluginModule.@static (ModuleInitFunc init_func) {
+			this.filename = null;
+			this.init = init_func;
+		}
+		public override bool load() {
 			if(init != null) {
 				init(this);
 				return true;
@@ -54,7 +47,7 @@ namespace UCNTracker {
 			modules.prepend(module);
 			module.use();
 		}
-		public void query_static(string init_func) {
+		public void query_static(PluginModule.ModuleInitFunc init_func) {
 			PluginModule module = new PluginModule.@static(init_func);
 			modules.prepend(module);
 			module.use();
