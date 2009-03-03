@@ -1,8 +1,8 @@
 include ../Makefile.tests
 
-LDADD = ../libucntracker.la
+LDADD = ../library/libucntracker.la
 
-VAPIDEPENDS = $(top_srcdir)/ucntracker/ucntracker.vapi
+VAPIDEPENDS = ../core/core.vapi ../builder/builder.vapi ../library/ucntracker.vapi
 
 noinst_PROGRAMS = \
 	test-linking \
