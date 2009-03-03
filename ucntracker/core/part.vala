@@ -18,7 +18,12 @@ namespace Device {
 			}
 		}
 
-		public signal void transport(Track track, Part next, Vertex v_leave, Vertex v_enter);
+		/**
+		 * emitted when a track tries to go through a surface.
+		 * next == null if the track is getting into the ambient.
+		 */
+		public signal void transport(Track track, Part? next, Vertex v_leave, Vertex v_enter);
+		public signal void hit(Track track, Vertex vertex);
 
 		private MeanFreePathFunc _mean_free_path_func = _default_mean_free_path_func;
 		private string _mean_free_path_func_name = null;

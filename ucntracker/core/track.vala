@@ -14,7 +14,7 @@ namespace Device {
 			public weak Volume volume;
 			public double timestamp;
 			public State(){}
-			public void locate(Experiment experiment) {
+			public void locate_in(Experiment experiment) {
 				experiment.locate(vertex, out part, out volume);
 			}
 		}
@@ -30,17 +30,7 @@ namespace Device {
 		public double free_path_length;
 
 
-		private bool _terminated = false;
-		public bool terminated { get { return _terminated;}
-		set { 
-			_terminated = value;
-			if(value == false)
-			run.active_tracks.remove(this);
-			else /*reactivating a track, which should not likely happen*/
-			run.active_tracks.prepend(this);
-		}
-		}
-
+		public bool terminated = false;
 		public Track(Run run, PType type, Vertex head) {
 			this.run = run;
 	   		this.experiment = run.experiment;
@@ -48,19 +38,18 @@ namespace Device {
 
 			now.vertex = head;
 			now.timestamp = run.timestamp;
-			now.locate(experiment);
+			now.locate_in(experiment);
 
-			if(this.now.part != null) {
-				run.active_tracks.prepend(this);
-			} else {
-				this._terminated = true;
-			}
-			run.tracks.prepend(this);
 		}
-		public Track fork(Run run, PType ptype, Vertex head) {
-			Track child = new Track(run, ptype, head);
-			child.parent = this;
-			return child;
+		public Track.fork(Track parent, PType ptype, Vertex head) {
+			this.run = parent.run;
+	   		this.experiment = parent.experiment;
+			this.parent = parent;
+			this.ptype = ptype;
+
+			now.vertex = head;
+			now.timestamp = parent.now.timestamp;
+			now.locate_in(experiment);
 		}
 
 		public void acc_free_path(State next) {
@@ -73,6 +62,7 @@ namespace Device {
 		private State next;
 
 		public void integrate(ref State future, double dt) {
+			future.vertex = now.vertex;
 			Vector vel = now.vertex.velocity;
 			future.vertex.position.x += vel.x * dt;
 			future.vertex.position.y += vel.y * dt;
@@ -92,31 +82,41 @@ namespace Device {
 		}
 
 		public void evolve() {
-			assert(_terminated == false);
+			assert(terminated == false);
 
+			if(now.part == null) {
+				terminated = false;
+				run.terminate_track(this);
+				return;
+			}
 			double dt;
 			State next = State();
 			integrate_adaptive(ref next, out dt);
-			next.locate(experiment);
-
-			if(next.part == null) {
-				/* if we go out of the world, terminate*/
-				this.terminated = true;
-				return;
-			}
+			message("next: %lf %lf %lf", 
+					next.vertex.position.x,
+					next.vertex.position.y,
+					next.vertex.position.z);
+			next.locate_in(experiment);
 
 			if(now.volume == next.volume) {
 				acc_free_path(next);
+				/*FIXME: use mfp!*/
+				now.part.hit(this, now.vertex);
 				now = next;
 				return;
 			}
 
 
+
 			double dt_leave;
-			double dt_enter;
+			/* assign a value to shut up the compiler,
+			 * dt_enter is used only if is_enter is true, which means
+			 * out dt_enter is excuted. */
+			double dt_enter = 0.0;
 
 			bool is_leave = now.volume.intersect(cfunc, 0, dt, out dt_leave);
-			bool is_enter = next.volume.intersect(cfunc, 0, dt, out dt_enter);
+			bool is_enter = (next.part != null) 
+				&& next.volume.intersect(cfunc, 0, dt, out dt_enter);
 
 			State leave = State();
 			State enter = State();
