@@ -14,7 +14,9 @@ libucntracker_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) \
 
 libucntracker_la_LDFLAGS = 
 
-BUILT_SOURCES = vala-ccode ucntracker.vapi
+BUILT_SOURCES = vala-ccode 
+
+EXTRA_DIST = ucntracker.vapi
 
 VALASOURCES = ucntracker.vala plugin-manager.vala
 VALAFLAGS = --library ucntracker-temp --basedir=$(top_srcdir)
