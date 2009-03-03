@@ -30,6 +30,7 @@ AC_CONFIG_FILES([
 				ucntracker/tests/Makefile
 				ucntracker/builder/Makefile
 				ucntracker/core/Makefile
+				ucntracker/library/Makefile
 				])
 
 AC_OUTPUT
