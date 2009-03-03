@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>UCNTracker</title>
+<style>
+</style>
+</head>
+<body>
+<pre>Welcome to UCNTracker 
+=========================
+  Last update Monday, March 02 2009.
+
+Introduction
+============
+  This part is missing.
+
+Source
+======
+  Currently there is no public writable repository. Also, because
+  the codebase is at a very initial stage, the commit topics are 
+  senseless.
+
+  A read-only repository is at
+    git clone git://129.79.155.240/~fengyu/UCNTracker
+
+  git is the version control tool used by major free softwares projects.
+  A tutorial is available at 
+    <a href="http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html">http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html</a>
+
+Dependency
+==========
+  The package depends on
+    GLIB 2.10+:
+      <a href="http://ftp.gnome.org/pub/gnome/sources/glib/">http://ftp.gnome.org/pub/gnome/sources/glib/</a>
+      In general, any version newer than 2.10 should work.
+    VALA 0.5.7:
+      <a href="http://download.gnome.org/sources/vala/0.5/">http://download.gnome.org/sources/vala/0.5/</a>
+      I have prebuilt packages on RHEL5 and Fedora 10.
+
+Compiling
+=========
+  # these commands should be sufficient 
+  $ ./autogen.sh
+  $ make
+
+Code Layout
+===========
+  UCNTracker       : git repository root
+  |-- autotools    : macros and scripts used by autotools
+  `-- ucntracker   : the main ucntracker library is built here
+      |-- builder  : UCNBuilder, the geometry xml parser.
+      |-- core     : the real ucntracker
+      |-- library  : the library interface
+      `-- tests    : very minimal test cases
+
+  This layout is up to several changes, eg:
+   (1) there is no place for plugin-modules(such as new geometry objects)
+   (2) there is no place for bundled applications
+
+Examples
+========
+  Currently minimal examples/test cases are given at ucntracker/tests.
+  Not suitable to be documented yet.
+
+Installation
+===============
+  Nothing is yet installed. 
+  The library will be installed to /usr/lib/libucntracker.so.
+
+License
+=======
+  To be determined. 
+  The code under builder directory are covered by LGPL v2.0 since they are mostly stolen from GTK+.
+
+</pre>
+</body>
+</html>
