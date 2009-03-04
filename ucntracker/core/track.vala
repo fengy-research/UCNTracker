@@ -45,10 +45,9 @@ namespace Device {
 	   		this.experiment = run.experiment;
 			this.ptype = type;
 
-			now.vertex = head;
-			now.timestamp = run.timestamp;
-			now.locate_in(experiment);
-
+			tail.vertex = head;
+			tail.timestamp = run.timestamp;
+			tail.locate_in(experiment);
 		}
 		public Track.fork(Track parent, PType ptype, Vertex head) {
 			this.run = parent.run;
@@ -56,28 +55,28 @@ namespace Device {
 			this.parent = parent;
 			this.ptype = ptype;
 
-			now.vertex = head;
-			now.timestamp = parent.now.timestamp;
-			now.locate_in(experiment);
+			tail.vertex = head;
+			tail.timestamp = parent.tail.timestamp;
+			tail.locate_in(experiment);
 		}
 
 		public double distance_to (Vertex v) {
 			/*FIXME: use S.G's suggestion, parabolic appr.*/
-			return v.position.distance(now.vertex.position);
+			return v.position.distance(tail.vertex.position);
 		}
 		private weak Experiment experiment;
 
-		public State now;
+		public State tail;
 		private State next;
 
 		public void integrate(ref State future, double dt) {
-			future.vertex = now.vertex.clone();
-			Vector vel = now.vertex.velocity;
+			future.vertex = tail.vertex.clone();
+			Vector vel = tail.vertex.velocity;
 			future.vertex.position.x += vel.x * dt;
 			future.vertex.position.y += vel.y * dt;
 			future.vertex.position.z += vel.z * dt;
-			future.vertex.velocity = now.vertex.velocity;
-			future.timestamp = now.timestamp + dt;
+			future.vertex.velocity = tail.vertex.velocity;
+			future.timestamp = tail.timestamp + dt;
 		}
 		public const double TIME_STEP_SIZE = 1.0;
 		public void integrate_adaptive(ref State future, out double dt) {
@@ -87,14 +86,16 @@ namespace Device {
 		public Vector cfunc(double dt) {
 			State future = State();
 			integrate(ref future, dt);
-			message("dt = %lf now.position = %lf %lf %lf vertex.position = %lf %lf %lf",
+			/*
+			message("dt = %lf tail.position = %lf %lf %lf vertex.position = %lf %lf %lf",
 					dt,	
-					now.vertex.position.x,
-					now.vertex.position.y,
-					now.vertex.position.z,
+					tail.vertex.position.x,
+					tail.vertex.position.y,
+					tail.vertex.position.z,
 					future.vertex.position.x,
 					future.vertex.position.y,
 					future.vertex.position.z);
+					*/
 
 			return future.vertex.position;
 		}
@@ -102,7 +103,7 @@ namespace Device {
 		public void evolve() {
 			assert(terminated == false);
 
-			if(now.part == null) {
+			if(tail.part == null) {
 				terminated = false;
 				run.terminate_track(this);
 				return;
@@ -116,9 +117,9 @@ namespace Device {
 					next.vertex.position.z);
 			next.locate_in(experiment);
 
-			if(now.volume == next.volume) {
-				now.part.hit(this, next.vertex);
-				now = next;
+			if(tail.volume == next.volume) {
+				tail.part.hit(this, next.timestamp, next.vertex);
+				tail = next;
 				return;
 			}
 
@@ -130,13 +131,13 @@ namespace Device {
 			 * out dt_enter is excuted. */
 			double dt_enter = 0.0;
 
-			bool is_leave = now.volume.intersect(cfunc, 0, dt, out dt_leave);
+			bool is_leave = tail.volume.intersect(cfunc, 0, dt, out dt_leave);
 			bool is_enter = (next.part != null) 
 				&& next.volume.intersect(cfunc, 0, dt, out dt_enter);
 
 			State leave = State();
 			State enter = State();
-			message("%s %s", is_leave.to_string(), is_enter.to_string());
+			//message("%s %s", is_leave.to_string(), is_enter.to_string());
 			if(is_leave && is_enter) {
 				integrate(ref leave, dt_leave);
 				integrate(ref enter, dt_enter);
@@ -149,10 +150,12 @@ namespace Device {
 				integrate(ref enter, dt_enter);
 				leave = enter;
 			}
-			now.part.transport(this, next.part, leave.vertex, enter.vertex);
-			leave.part = now.part;
-			leave.volume = now.volume;
-			now = leave;
+			tail.part.hit(this, dt_leave + tail.timestamp, leave.vertex);
+			leave.part = tail.part;
+			leave.volume = tail.volume;
+			tail = leave;
+			tail.part.transport(this, next.part, leave.vertex, enter.vertex);
+			tail.part.hit(this, dt_leave + tail.timestamp, leave.vertex);
 			return;
 		}
 	}

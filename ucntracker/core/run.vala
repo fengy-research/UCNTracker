@@ -17,7 +17,7 @@ namespace Device {
 		public Track add_track(PType ptype, Vertex head) {
 			Track track = new Track(this, ptype, head);
 			tracks.prepend(track);
-			if(track.now.part != null) {
+			if(track.tail.part != null) {
 				track.terminated = false;
 				active_tracks.prepend(track);
 			} else {
@@ -28,7 +28,7 @@ namespace Device {
 		public Track fork_track(Track parent, PType ptype, Vertex head) {
 			Track track = new Track.fork(parent, ptype, head);
 			tracks.prepend(track);
-			if(track.now.part != null) {
+			if(track.tail.part != null) {
 				track.terminated = false;
 				active_tracks.prepend(track);
 			} else {
@@ -54,7 +54,7 @@ namespace Device {
 			double next_t = timestamp + dt;
 			foreach(Track track in active_tracks) {
 				while(!track.terminated &&
-				    track.now.timestamp < next_t) {
+				    track.tail.timestamp < next_t) {
 					track.evolve();
 				}
 			}

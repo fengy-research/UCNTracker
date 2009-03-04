@@ -11,7 +11,7 @@ namespace Geometry {
 			Vector point = params->curve(s);
 			assert(params->volume != null);
 			double rt = params->volume.sfunc(point);
-			message("solver_function(%lf) returns %lf", s, rt);
+			//message("solver_function(%lf) returns %lf", s, rt);
 			return rt;
 		}
 		public const double Precision = 1.0e-9;

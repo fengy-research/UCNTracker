@@ -107,7 +107,8 @@ namespace Geometry {
 		 * The default implementation returns a numerical
 		 * result calculated from sfunc.
 		 */
-		public virtual void grad(Vector point, out Vector grad) {
+		public virtual Vector grad(Vector point) {
+			Vector grad = Vector(0.0, 0.0, 0.0);
 			Vector px0 = point;
 			Vector py0 = point;
 			Vector pz0 = point;
@@ -124,6 +125,7 @@ namespace Geometry {
 			grad.x = (sfunc(px1) - sfunc(px0)) / delta2;
 			grad.y = (sfunc(py1) - sfunc(py0)) / delta2;
 			grad.z = (sfunc(pz1) - sfunc(pz0)) / delta2;
+			return grad;
 		}
 
 		public void world_to_body(ref Vector point) {

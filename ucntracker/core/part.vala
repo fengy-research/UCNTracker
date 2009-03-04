@@ -23,7 +23,7 @@ namespace Device {
 		 * next == null if the track is getting into the ambient.
 		 */
 		public signal void transport(Track track, Part? next, Vertex v_leave, Vertex v_enter);
-		public signal void hit(Track track, Vertex vertex);
+		public signal void hit(Track track, double t, Vertex vertex);
 
 
 		public bool locate(Vertex vertex, out unowned Volume child) {

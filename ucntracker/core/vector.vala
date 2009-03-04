@@ -27,6 +27,27 @@ namespace Geometry {
 			/*FIXME: magic number should be controlable*/
 			return distance(v) < 1.0e-6; 
 		}
+		/***
+		 * Mirror a vector
+		 * V' = 2 (V * A) A - V
+		 **********/
+		public void mirror (Vector axis) {
+			double va = 2.0 * axis.dot(this);
+			x = va * axis.x - x;
+			y = va * axis.y - y;
+			z = va * axis.z - z;
+		}
+		/***
+		 * Reflect a vector according to the norm direction
+		 * of a given surface.
+		 * V' = - (2 (V * A) A - V)
+		 **********/
+		public void reflect (Vector n) {
+			double va = 2.0 * n.dot(this);
+			x -= va * n.x;
+			y -= va * n.y;
+			z -= va * n.z;
+		}
 		public double norm() {
 			return sqrt(norm2());
 		}

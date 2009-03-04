@@ -12,9 +12,9 @@ public int main(string[] args) {
 	    <object class="UCNExperiment" id="experiment">
 		<child>
 		<object class="UCNDevicePart" id="part1">
-			<child type="volume"><object class="UCNGeometryBox" id="part1box">
+			<child type="volume"><object class="UCNGeometryBall" id="part1box">
 			<property name="center">1, 2, 3</property>
-			<property name="size">2,2,2</property>
+			<property name="radius">2</property>
 			</object></child>
  		</object>
 		</child>
@@ -36,17 +36,27 @@ public int main(string[] args) {
 	experiment.finish += (obj, run) => {
 		message("run finished");
 	};
-	part1.hit += (obj, track, vertex) => {
+	part1.hit += (obj, track, t, vertex) => {
 		double length = track.get_double("length");
 		length += track.distance_to(vertex);
-		message("hit: length = %f", length);
+		message("hit: %lf new length = %f", t, length);
 		track.set_double("length", length);
 	};
 	part1.transport += (obj, track, next_part, v_leave, v_enter) => {
-		v_leave.velocity.x = - v_leave.velocity.x;
-		v_leave.velocity.y = - v_leave.velocity.y;
-		v_leave.velocity.z = - v_leave.velocity.z;
-		message("transport");	
+		Vector norm = track.tail.volume.grad(v_leave.position);
+		v_leave.velocity.reflect(norm);
+
+		message("norm %lf %lf %lf", 
+			norm.x,
+			norm.y,
+			norm.z);
+
+		/*
+		message("transport %lf %lf %lf", 
+			v_leave.velocity.x,
+			v_leave.velocity.y,
+			v_leave.velocity.z
+				);	*/
 	};
 	experiment.run();
 	return 0;
