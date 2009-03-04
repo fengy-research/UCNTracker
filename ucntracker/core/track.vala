@@ -13,7 +13,9 @@ namespace Device {
 			public weak Part part;
 			public weak Volume volume;
 			public double timestamp;
-			public State(){}
+			public State(){
+				vertex = new Vertex();
+			}
 			public void locate_in(Experiment experiment) {
 				experiment.locate(vertex, out part, out volume);
 			}
@@ -23,13 +25,20 @@ namespace Device {
 
 		public PType ptype;
 		public Track parent;
-
-		/**
-		 * in units of mean_free_paths, always.
-		 */
-		public double free_path_length;
-
-
+		private Datalist<void*> data;
+		public void set_double(string name, double val) {
+			double* pointer = (double*)data.get_data(name);
+			if(pointer == null) {
+				pointer = new double[1];
+				data.set_data_full(name, pointer, g_free);
+			}
+			*pointer = val;
+		}
+		public double get_double(string name) {
+			double * pointer = (double*)data.get_data(name);
+			if(pointer != null) return *pointer;	
+			return 0.0;
+		}
 		public bool terminated = false;
 		public Track(Run run, PType type, Vertex head) {
 			this.run = run;
@@ -52,9 +61,9 @@ namespace Device {
 			now.locate_in(experiment);
 		}
 
-		public void acc_free_path(State next) {
-			free_path_length += next.vertex.position.distance(now.vertex.position)
-					/ now.part.mean_free_path(now.vertex);
+		public double distance_to (Vertex v) {
+			/*FIXME: use S.G's suggestion, parabolic appr.*/
+			return v.position.distance(now.vertex.position);
 		}
 		private weak Experiment experiment;
 
@@ -62,7 +71,7 @@ namespace Device {
 		private State next;
 
 		public void integrate(ref State future, double dt) {
-			future.vertex = now.vertex;
+			future.vertex = now.vertex.clone();
 			Vector vel = now.vertex.velocity;
 			future.vertex.position.x += vel.x * dt;
 			future.vertex.position.y += vel.y * dt;
@@ -78,6 +87,15 @@ namespace Device {
 		public Vector cfunc(double dt) {
 			State future = State();
 			integrate(ref future, dt);
+			message("dt = %lf now.position = %lf %lf %lf vertex.position = %lf %lf %lf",
+					dt,	
+					now.vertex.position.x,
+					now.vertex.position.y,
+					now.vertex.position.z,
+					future.vertex.position.x,
+					future.vertex.position.y,
+					future.vertex.position.z);
+
 			return future.vertex.position;
 		}
 
@@ -99,9 +117,7 @@ namespace Device {
 			next.locate_in(experiment);
 
 			if(now.volume == next.volume) {
-				acc_free_path(next);
-				/*FIXME: use mfp!*/
-				now.part.hit(this, now.vertex);
+				now.part.hit(this, next.vertex);
 				now = next;
 				return;
 			}
@@ -120,6 +136,7 @@ namespace Device {
 
 			State leave = State();
 			State enter = State();
+			message("%s %s", is_leave.to_string(), is_enter.to_string());
 			if(is_leave && is_enter) {
 				integrate(ref leave, dt_leave);
 				integrate(ref enter, dt_enter);
@@ -133,7 +150,8 @@ namespace Device {
 				leave = enter;
 			}
 			now.part.transport(this, next.part, leave.vertex, enter.vertex);
-			acc_free_path(leave);
+			leave.part = now.part;
+			leave.volume = now.volume;
 			now = leave;
 			return;
 		}

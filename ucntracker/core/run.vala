@@ -46,7 +46,7 @@ namespace Device {
 		}
 		public void run() {
 			while(active_tracks != null) {
-				message("Number of active tracks: %u", active_tracks.length());
+			//	message("Number of active tracks: %u", active_tracks.length());
 				run1();
 			}
 		}

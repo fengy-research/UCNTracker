@@ -36,10 +36,16 @@ public int main(string[] args) {
 	experiment.finish += (obj, run) => {
 		message("run finished");
 	};
-	part1.hit += (obj, vertex) => {
-		message("hit!");
+	part1.hit += (obj, track, vertex) => {
+		double length = track.get_double("length");
+		length += track.distance_to(vertex);
+		message("hit: length = %f", length);
+		track.set_double("length", length);
 	};
-	part1.transport += (obj, track, next, v_leave, v_enter) => {
+	part1.transport += (obj, track, next_part, v_leave, v_enter) => {
+		v_leave.velocity.x = - v_leave.velocity.x;
+		v_leave.velocity.y = - v_leave.velocity.y;
+		v_leave.velocity.z = - v_leave.velocity.z;
 		message("transport");	
 	};
 	experiment.run();

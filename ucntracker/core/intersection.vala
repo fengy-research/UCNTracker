@@ -11,11 +11,14 @@ namespace Geometry {
 			Vector point = params->curve(s);
 			assert(params->volume != null);
 			double rt = params->volume.sfunc(point);
+			message("solver_function(%lf) returns %lf", s, rt);
 			return rt;
 		}
 		public const double Precision = 1.0e-9;
 		public static bool solve(Volume volume, CurveFunc curve, 
 				double s_min, double s_max, out double s) {
+			s_min -= Precision;
+			s_max += Precision;
 			Vector point_in = curve(s_min);
 			Vector point_out = curve(s_max);
 			double sfunc_in = volume.sfunc(point_in);

@@ -19,11 +19,11 @@ VALASOURCES = \
 	curve.vala \
 	experiment.vala \
 	intersection.vala \
-	part.vala \
 	ptype.vala \
 	run.vala \
-	track.vala \
 	vertex.vala \
+	track.vala \
+	part.vala \
 	core.vala 
 
 BUILT_SOURCES = vala-ccode
