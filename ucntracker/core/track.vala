@@ -13,19 +13,23 @@ namespace Device {
 			public weak Part part;
 			public weak Volume volume;
 			public double timestamp;
+
 			public State(){
 				vertex = new Vertex();
 			}
+
 			public void locate_in(Experiment experiment) {
 				experiment.locate(vertex, out part, out volume);
 			}
 		}
+
 	public class Track {
 		public weak Run run;
 
 		public PType ptype;
 		public Track parent;
 		private Datalist<void*> data;
+
 		public void set_double(string name, double val) {
 			double* pointer = (double*)data.get_data(name);
 			if(pointer == null) {
@@ -34,24 +38,28 @@ namespace Device {
 			}
 			*pointer = val;
 		}
+
 		public double get_double(string name) {
 			double * pointer = (double*)data.get_data(name);
 			if(pointer != null) return *pointer;	
 			return 0.0;
 		}
+
 		public bool terminated = false;
+
 		public Track(Run run, PType type, Vertex head) {
 			this.run = run;
-	   		this.experiment = run.experiment;
+			this.experiment = run.experiment;
 			this.ptype = type;
 
 			tail.vertex = head;
 			tail.timestamp = run.timestamp;
 			tail.locate_in(experiment);
 		}
+
 		public Track.fork(Track parent, PType ptype, Vertex head) {
 			this.run = parent.run;
-	   		this.experiment = parent.experiment;
+			this.experiment = parent.experiment;
 			this.parent = parent;
 			this.ptype = ptype;
 
@@ -64,6 +72,7 @@ namespace Device {
 			/*FIXME: use S.G's suggestion, parabolic appr.*/
 			return v.position.distance(tail.vertex.position);
 		}
+
 		private weak Experiment experiment;
 
 		public State tail;
@@ -78,11 +87,14 @@ namespace Device {
 			future.vertex.velocity = tail.vertex.velocity;
 			future.timestamp = tail.timestamp + dt;
 		}
+
 		public const double TIME_STEP_SIZE = 1.0;
+
 		public void integrate_adaptive(ref State future, out double dt) {
 			dt = TIME_STEP_SIZE;
 			integrate(ref future, dt);
 		}
+
 		public Vector cfunc(double dt) {
 			State future = State();
 			integrate(ref future, dt);
@@ -111,19 +123,17 @@ namespace Device {
 			double dt;
 			State next = State();
 			integrate_adaptive(ref next, out dt);
-			message("next: %lf %lf %lf", 
-					next.vertex.position.x,
-					next.vertex.position.y,
-					next.vertex.position.z);
-			next.locate_in(experiment);
+			message("next: %lf %lf %lf",
+			    next.vertex.position.x,
+			    next.vertex.position.y,
+			    next.vertex.position.z);
+			    next.locate_in(experiment);
 
 			if(tail.volume == next.volume) {
 				tail.part.hit(this, next.timestamp, next.vertex);
 				tail = next;
 				return;
 			}
-
-
 
 			double dt_leave;
 			/* assign a value to shut up the compiler,
@@ -132,12 +142,13 @@ namespace Device {
 			double dt_enter = 0.0;
 
 			bool is_leave = tail.volume.intersect(cfunc, 0, dt, out dt_leave);
-			bool is_enter = (next.part != null) 
-				&& next.volume.intersect(cfunc, 0, dt, out dt_enter);
+			bool is_enter = (next.part != null)
+			        && next.volume.intersect(cfunc, 0, dt, out dt_enter);
 
 			State leave = State();
 			State enter = State();
 			//message("%s %s", is_leave.to_string(), is_enter.to_string());
+
 			if(is_leave && is_enter) {
 				integrate(ref leave, dt_leave);
 				integrate(ref enter, dt_enter);
@@ -150,12 +161,24 @@ namespace Device {
 				integrate(ref enter, dt_enter);
 				leave = enter;
 			}
-			tail.part.hit(this, dt_leave + tail.timestamp, leave.vertex);
-			leave.part = tail.part;
-			leave.volume = tail.volume;
-			tail = leave;
-			tail.part.transport(this, next.part, leave.vertex, enter.vertex);
-			tail.part.hit(this, dt_leave + tail.timestamp, leave.vertex);
+
+			tail.part.hit(this, leave.timestamp, leave.vertex);
+			tail.vertex = leave.vertex;
+			tail.timestamp = leave.timestamp;
+
+			bool transported = true;
+			tail.part.transport(this, next.part, 
+			       leave.vertex, enter.vertex, out transported);
+
+			if(transported == false) {
+				tail.part.hit(this, leave.timestamp, leave.vertex);
+			} else {
+				next.part.hit(this, enter.timestamp, enter.vertex);
+				tail.part = next.part;
+				tail.volume = next.volume;
+				tail.vertex = enter.vertex;
+				tail.timestamp = enter.timestamp;
+			}
 			return;
 		}
 	}

@@ -7,11 +7,13 @@ namespace Geometry {
 		public double x;
 		public double y;
 		public double z;
+
 		public Vector(double x, double y, double z) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
 		}
+
 		[CCode (instance_pos = 2)]
 		public bool parse(string foo) {
 			string[] words = foo.split(",");
@@ -23,10 +25,12 @@ namespace Geometry {
 			z = words[2].to_double();
 			return true;
 		}
+
 		public bool equal(Vector v) {
 			/*FIXME: magic number should be controlable*/
 			return distance(v) < 1.0e-6; 
 		}
+
 		/***
 		 * Mirror a vector
 		 * V' = 2 (V * A) A - V
@@ -37,6 +41,7 @@ namespace Geometry {
 			y = va * axis.y - y;
 			z = va * axis.z - z;
 		}
+
 		/***
 		 * Reflect a vector according to the norm direction
 		 * of a given surface.
@@ -48,21 +53,25 @@ namespace Geometry {
 			y -= va * n.y;
 			z -= va * n.z;
 		}
+
 		public double norm() {
 			return sqrt(norm2());
 		}
+
 		public double norm2() {
 			return x*x + y*y + z*z;
 		}
+
 		public double dot(Vector v) {
 			return x * v.x + y * v.y + z * v.z;
 		}
+
 		public Vector cross(Vector v) {
 			/*not used yet*/
 			Vector rt = Vector(
-				y * v.z - z * v.y,
-				z * v.x - x * v.z,
-				x * v.y - y * v.x);
+			    y * v.z - z * v.y,
+			    z * v.x - x * v.z,
+			    x * v.y - y * v.x);
 			return rt;
 		}
 		public double distance(Vector v) {
@@ -70,45 +79,48 @@ namespace Geometry {
 			double dy = v.y - y;
 			double dz = v.z - z;
 			return sqrt(dx * dx + dy * dy + dz * dz);
-
 		}
+
 		public void rotate_i(EulerAngles r) {
 			Vector tmp = {
-				r.matrix[0,0] * x +
-				r.matrix[1,0] * y +
-				r.matrix[2,0] * z,
-				r.matrix[0,1] * x +
-				r.matrix[1,1] * y +
-				r.matrix[2,1] * z,
-				r.matrix[0,2] * x +
-				r.matrix[1,2] * y +
-				r.matrix[2,2] * z
+			  r.matrix[0,0] * x +
+			  r.matrix[1,0] * y +
+			  r.matrix[2,0] * z,
+			  r.matrix[0,1] * x +
+			  r.matrix[1,1] * y +
+			  r.matrix[2,1] * z,
+			  r.matrix[0,2] * x +
+			  r.matrix[1,2] * y +
+			  r.matrix[2,2] * z
 			};
 			x = tmp.x;
 			y = tmp.y;
 			z = tmp.z;
 		}
+
 		public void translate_i(Vector a) {
 			x -= a.x;
 			y -= a.y;
 			z -= a.z;
 		}
+
 		public void rotate(EulerAngles r) {
 			Vector tmp = {
-				r.matrix[0,0] * x +
-				r.matrix[0,1] * y +
-				r.matrix[0,2] * z,
-				r.matrix[1,0] * x +
-				r.matrix[1,1] * y +
-				r.matrix[1,2] * z,
-				r.matrix[2,0] * x +
-				r.matrix[2,1] * y +
-				r.matrix[2,2] * z
+			  r.matrix[0,0] * x +
+			  r.matrix[0,1] * y +
+			  r.matrix[0,2] * z,
+			  r.matrix[1,0] * x +
+			  r.matrix[1,1] * y +
+			  r.matrix[1,2] * z,
+			  r.matrix[2,0] * x +
+			  r.matrix[2,1] * y +
+			  r.matrix[2,2] * z
 			};
 			x = tmp.x;
 			y = tmp.y;
 			z = tmp.z;
 		}
+
 		public void translate(Vector a) {
 			x += a.x;
 			y += a.y;
@@ -126,6 +138,7 @@ namespace Geometry {
 		public double beta;  // between z and Z
 		public double gamma; // between the line of nodes X
 		public double[3,3] matrix;
+
 		public EulerAngles(double alpha, double beta, double gamma) {
 			this.alpha = alpha;
 			this.beta = beta;
@@ -147,6 +160,7 @@ namespace Geometry {
 			matrix[2,1] = sb * cg;
 			matrix[2,2] = cb;
 		}
+
 		[CCode (instance_pos = 2)]
 		public bool parse(string foo) {
 			string[] words = foo.split(",");

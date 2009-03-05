@@ -9,6 +9,7 @@ namespace Device {
 		public Vector position;
 		public Vector velocity;
 		public double weight;
+
 		public Vertex clone() {
 			Vertex rt = new Vertex();
 			rt.position = position;

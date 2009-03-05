@@ -11,18 +11,20 @@ namespace Geometry {
 		private Vector _center = Vector(0.0, 0.0, 0.0);
 		private EulerAngles _rotation = EulerAngles(0.0, 0.0, 0.0);
 		public double bounding_radius { get; protected set; }
+
 		public Vector center {
 			get {
 				return _center;
-			} 
+			}
 			set {
 				_center = value;
 			}
 		}
+
 		public EulerAngles rotation {
 			get {
 				return _rotation;
-			} 
+			}
 			set {
 				_rotation = value;
 			}
@@ -132,6 +134,7 @@ namespace Geometry {
 			point.translate_i(center);
 			point.rotate_i(rotation);
 		}
+
 		public void body_to_world(ref Vector point) {
 			point.rotate(rotation);
 			point.translate(center);

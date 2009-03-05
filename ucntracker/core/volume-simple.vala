@@ -6,6 +6,7 @@ namespace UCNTracker {
 namespace Geometry {
 	public abstract class Convex : Volume {
 		protected Surface[] surfaces = null;
+
 		public override double sfunc(Vector point) {
 			Vector p = point;	
 			world_to_body(ref p);

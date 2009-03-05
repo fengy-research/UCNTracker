@@ -14,6 +14,7 @@ namespace Device {
 		const double dt = 0.2;
 		public List<Track> tracks;
 		public List<weak Track> active_tracks;
+
 		public Track add_track(PType ptype, Vertex head) {
 			Track track = new Track(this, ptype, head);
 			tracks.prepend(track);
@@ -25,6 +26,7 @@ namespace Device {
 			}
 			return track;
 		}
+
 		public Track fork_track(Track parent, PType ptype, Vertex head) {
 			Track track = new Track.fork(parent, ptype, head);
 			tracks.prepend(track);
@@ -44,12 +46,14 @@ namespace Device {
 		public Run(Experiment experiment) {
 			this.experiment = experiment;
 		}
+
 		public void run() {
 			while(active_tracks != null) {
-			//	message("Number of active tracks: %u", active_tracks.length());
+				//message("Number of active tracks: %u", active_tracks.length());
 				run1();
 			}
 		}
+
 		private void run1() {
 			double next_t = timestamp + dt;
 			foreach(Track track in active_tracks) {

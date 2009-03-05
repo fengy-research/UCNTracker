@@ -8,11 +8,15 @@ namespace UCNTracker {
 public class Experiment: Object, Buildable {
 	public List<Part> parts;
 	public List<Run> runs;
+
 	public void add_child(Builder builder, GLib.Object child, string? type) {
 		if(child is Part) {
-			parts.prepend(child as Part);
+			parts.insert_sorted(child as Part,
+			      (CompareFunc) Part.layer_compare_func);
+			message("add_child");
 		}
 	}
+
 	public signal void prepare(Run run);
 	public signal void finish(Run run);
 	public void run() {
@@ -22,7 +26,9 @@ public class Experiment: Object, Buildable {
 		run.run();
 		finish(run);
 	}
-	public bool locate(Vertex vertex, out unowned Part located, out unowned Volume volume) {
+
+	public bool locate(Vertex vertex,
+	       out unowned Part located, out unowned Volume volume) {
 		foreach(Part part in parts) {
 			if(part.locate(vertex, out volume)) {
 				located = part;

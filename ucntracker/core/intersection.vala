@@ -7,16 +7,20 @@ namespace Geometry {
 			public CurveFunc curve;
 			public double value;
 		}
-		private static double intersect_solver_function (double s, solver_params* params) {
+
+		private static double intersect_solver_function (
+		        double s, solver_params* params) {
 			Vector point = params->curve(s);
 			assert(params->volume != null);
 			double rt = params->volume.sfunc(point);
 			//message("solver_function(%lf) returns %lf", s, rt);
 			return rt;
 		}
+
 		public const double Precision = 1.0e-9;
-		public static bool solve(Volume volume, CurveFunc curve, 
-				double s_min, double s_max, out double s) {
+
+		public static bool solve(Volume volume, CurveFunc curve,
+		        double s_min, double s_max, out double s) {
 			s_min -= Precision;
 			s_max += Precision;
 			Vector point_in = curve(s_min);
@@ -48,7 +52,9 @@ namespace Geometry {
 			int iter = 0;
 			int max_iter = 100;
 			Gsl.Function f = {intersect_solver_function, &params};
-			Gsl.RootFsolver solver = new Gsl.RootFsolver(Gsl.RootFsolverTypes.brent);
+			Gsl.RootFsolver solver =
+			    new Gsl.RootFsolver(Gsl.RootFsolverTypes.brent);
+
 			solver.set (&f, s_min, s_max);
 			int status = Gsl.Status.CONTINUE;
 			do {
@@ -60,14 +66,16 @@ namespace Geometry {
 					break;
 				}
 			} while(status == Gsl.Status.CONTINUE && iter < max_iter);
+
 			if(iter == max_iter) {
 				s = solver.root;
-				warning("solver exceeds max num of interations. assuming no solution.");
+				warning("solver exceeds max num of interations. "
+				    + "assuming no solution.");
 				return false;
 			}
 			s = solver.root;
+
 			return converged;
-		
 		}
 	}
 }
