@@ -63,7 +63,6 @@ namespace Device {
 				loop.quit();
 				return false;
 			}
-			message("Number of active tracks: %u", active_tracks.length());
 			double next_t = timestamp + dt;
 			foreach(Track track in active_tracks) {
 				while(!track.terminated &&
