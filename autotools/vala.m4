@@ -17,6 +17,8 @@ dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  US
 dnl
 dnl Author:
 dnl 	Mathias Hasselmann <mathias.hasselmann@gmx.de>
+dnl Modified by:
+dnl 	Yu Feng
 dnl --------------------------------------------------------------------------
 
 dnl VALA_PROG_VALAC([MINIMUM-VERSION])

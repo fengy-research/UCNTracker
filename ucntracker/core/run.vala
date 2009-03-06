@@ -12,6 +12,8 @@ namespace Device {
 		 */
 		public double timestamp;
 		const double dt = 0.2;
+		private MainContext context;
+		private MainLoop loop;
 		public List<Track> tracks;
 		public List<weak Track> active_tracks;
 
@@ -27,8 +29,8 @@ namespace Device {
 			return track;
 		}
 
-		public Track fork_track(Track parent, PType ptype, Vertex head) {
-			Track track = new Track.fork(parent, ptype, head);
+		public Track fork_track(Track parent, PType ptype, State fork_state) {
+			Track track = new Track.fork(parent, ptype, fork_state);
 			tracks.prepend(track);
 			if(track.tail.part != null) {
 				track.terminated = false;
@@ -44,17 +46,24 @@ namespace Device {
 		}
 
 		public Run(Experiment experiment) {
+			this.context = new MainContext();
+			this.loop = new MainLoop(context, false);
 			this.experiment = experiment;
 		}
 
 		public void run() {
-			while(active_tracks != null) {
-				//message("Number of active tracks: %u", active_tracks.length());
-				run1();
-			}
+			IdleSource idle = new IdleSource();
+			idle.set_callback(run1, null);
+			idle.attach(context);
+			loop.run();
 		}
 
-		private void run1() {
+		private bool run1() {
+			if(active_tracks == null) {
+				loop.quit();
+				return false;
+			}
+			message("Number of active tracks: %u", active_tracks.length());
 			double next_t = timestamp + dt;
 			foreach(Track track in active_tracks) {
 				while(!track.terminated &&
@@ -63,6 +72,7 @@ namespace Device {
 				}
 			}
 			timestamp += dt;
+			return true;
 		}
 	}
 }}

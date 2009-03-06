@@ -18,6 +18,12 @@ namespace Device {
 				vertex = new Vertex();
 			}
 
+			public State.clone(State src) {
+				this.vertex = src.vertex.clone();
+				this.part = src.part;
+				this.volume = src.volume;
+				this.timestamp = src.timestamp;
+			}
 			public void locate_in(Experiment experiment) {
 				experiment.locate(vertex, out part, out volume);
 			}
@@ -57,15 +63,13 @@ namespace Device {
 			tail.locate_in(experiment);
 		}
 
-		public Track.fork(Track parent, PType ptype, Vertex head) {
+		public Track.fork(Track parent, PType ptype, State state) {
 			this.run = parent.run;
 			this.experiment = parent.experiment;
 			this.parent = parent;
 			this.ptype = ptype;
 
-			tail.vertex = head;
-			tail.timestamp = parent.tail.timestamp;
-			tail.locate_in(experiment);
+			this.tail = state;
 		}
 
 		public double distance_to (Vertex v) {
@@ -123,10 +127,12 @@ namespace Device {
 			double dt;
 			State next = State();
 			integrate_adaptive(ref next, out dt);
+			/*
 			message("next: %lf %lf %lf",
 			    next.vertex.position.x,
 			    next.vertex.position.y,
 			    next.vertex.position.z);
+			*/
 			    next.locate_in(experiment);
 
 			if(tail.volume == next.volume) {
@@ -155,11 +161,11 @@ namespace Device {
 			}
 			if(is_leave) {
 				integrate(ref leave, dt_leave);
-				enter = leave;
+				enter = State.clone(leave);
 			}
 			if(is_enter) {
 				integrate(ref enter, dt_enter);
-				leave = enter;
+				leave = State.clone(enter);
 			}
 
 			leave.part = tail.part;
@@ -172,12 +178,17 @@ namespace Device {
 			tail.timestamp = leave.timestamp;
 
 			bool transported = true;
-			tail.part.transport(this, leave, enter, out transported);
+			tail.part.transport(this, leave, enter, &transported);
 
+			message("%s", transported.to_string());
 			if(transported == false) {
 				tail.part.hit(this, leave);
 			} else {
-				next.part.hit(this, enter);
+				if(next.part != null)
+					next.part.hit(this, enter);
+				/* else we are moving out from the geometry.
+				 * in the next evolve the track would be terminated.
+				 * */
 				tail.part = next.part;
 				tail.volume = next.volume;
 				tail.vertex = enter.vertex;

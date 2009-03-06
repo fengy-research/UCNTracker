@@ -12,7 +12,7 @@ public int main(string[] args) {
 <interface>
 <object class="UCNExperiment" id="experiment">
  <child>
-  <object class="UCNDevicePart" id="enviroment">
+  <object class="UCNDevicePart" id="environment">
    <child type="volume">
     <object class="UCNGeometryBall" id="envball">
      <property name="center">0, 0, 0</property>
@@ -38,6 +38,7 @@ public int main(string[] args) {
 """, -1);
 
 	Experiment experiment = builder.get_object("experiment") as Experiment;
+	Part environment = builder.get_object("environment") as Part;
 	Part part1 = builder.get_object("part1") as Part;
 
 	experiment.prepare += (obj, run) => {
@@ -54,10 +55,14 @@ public int main(string[] args) {
 		message("run finished");
 	};
 
+
+	environment.hit += (obj, track, state) => {
+		message("environment %p %lf", track, state.timestamp);
+	};
 	part1.hit += (obj, track, state) => {
 		double length = track.get_double("length");
 		length += track.distance_to(state.vertex);
-		message("hit: %lf new length = %f", state.timestamp, length);
+		message("part1 %p %lf length = %f", track, state.timestamp, length);
 		track.set_double("length", length);
 	};
 
@@ -66,18 +71,9 @@ public int main(string[] args) {
 		Vector norm = track.tail.volume.grad(leave.vertex.position);
 		leave.vertex.velocity.reflect(norm);
 		
-		transported = false;
-		message("norm %lf %lf %lf",
-		    norm.x,
-		    norm.y,
-		    norm.z);
-		
-		/*
-		message("transport %lf %lf %lf",
-		    v_leave.velocity.x,
-		    v_leave.velocity.y,
-		    v_leave.velocity.z
-		);*/
+		track.run.fork_track(track, track.ptype, enter);
+		*transported = false;
+		message("fork %p", track);
 	};
 
 	experiment.run();
