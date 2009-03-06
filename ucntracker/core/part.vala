@@ -38,10 +38,10 @@ namespace Device {
 		 * in either case, the handler can fork the track at the surface
 		 * to produce the track for the other case.
 		 */
-		public signal void transport(Track track, Part? next,
-		       Vertex v_leave, Vertex v_enter, out bool transported);
+		public signal void transport(Track track,
+		       State s_leave, State s_enter, out bool transported);
 
-		public signal void hit(Track track, double t, Vertex vertex);
+		public signal void hit(Track track, State next);
 
 		public bool locate(Vertex vertex, out unowned Volume child) {
 			foreach(Volume volume in volumes) {

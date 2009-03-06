@@ -30,7 +30,7 @@ public int main(string[] args) {
      <property name="radius">2</property>
     </object>
    </child>
-    <property name="layer">-1</property>
+    <property name="layer">0</property>
   </object>
  </child>
 </object>
@@ -54,17 +54,17 @@ public int main(string[] args) {
 		message("run finished");
 	};
 
-	part1.hit += (obj, track, t, vertex) => {
+	part1.hit += (obj, track, state) => {
 		double length = track.get_double("length");
-		length += track.distance_to(vertex);
-		message("hit: %lf new length = %f", t, length);
+		length += track.distance_to(state.vertex);
+		message("hit: %lf new length = %f", state.timestamp, length);
 		track.set_double("length", length);
 	};
 
-	part1.transport += (obj, track, next_part, v_leave, v_enter, transported)
+	part1.transport += (obj, track, leave, enter, transported)
 	  => {
-		Vector norm = track.tail.volume.grad(v_leave.position);
-		v_leave.velocity.reflect(norm);
+		Vector norm = track.tail.volume.grad(leave.vertex.position);
+		leave.vertex.velocity.reflect(norm);
 		
 		transported = false;
 		message("norm %lf %lf %lf",

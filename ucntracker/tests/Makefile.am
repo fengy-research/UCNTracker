@@ -7,5 +7,6 @@ VAPIDEPENDS = ../core/core.vapi ../builder/builder.vapi ../library/ucntracker.va
 noinst_PROGRAMS = \
 	test-linking \
 	test-xml \
-	test-evolve
+	test-evolve \
+	test-primitives
 

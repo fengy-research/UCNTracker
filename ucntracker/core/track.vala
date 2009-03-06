@@ -130,7 +130,7 @@ namespace Device {
 			    next.locate_in(experiment);
 
 			if(tail.volume == next.volume) {
-				tail.part.hit(this, next.timestamp, next.vertex);
+				tail.part.hit(this, next);
 				tail = next;
 				return;
 			}
@@ -162,18 +162,22 @@ namespace Device {
 				leave = enter;
 			}
 
-			tail.part.hit(this, leave.timestamp, leave.vertex);
+			leave.part = tail.part;
+			leave.volume = tail.volume;
+			enter.part = next.part;
+			enter.volume = next.volume;
+
+			tail.part.hit(this, leave);
 			tail.vertex = leave.vertex;
 			tail.timestamp = leave.timestamp;
 
 			bool transported = true;
-			tail.part.transport(this, next.part, 
-			       leave.vertex, enter.vertex, out transported);
+			tail.part.transport(this, leave, enter, out transported);
 
 			if(transported == false) {
-				tail.part.hit(this, leave.timestamp, leave.vertex);
+				tail.part.hit(this, leave);
 			} else {
-				next.part.hit(this, enter.timestamp, enter.vertex);
+				next.part.hit(this, enter);
 				tail.part = next.part;
 				tail.volume = next.volume;
 				tail.vertex = enter.vertex;

@@ -36,9 +36,11 @@ namespace Geometry {
 		 * @open: if true, treat the volume as an open one,
 		 *        so that the surface is not sampled.
 		 */
-		public virtual void sample(out Vector point, bool open) {
+		public virtual Vector sample(bool open) {
 			double x, y, z;
 			double r;
+			/* workaround bug 574352 */
+			Vector point = Vector(0.0, 0.0, 0.0);
 			Sense s = Sense.OUT;
 			do{
 				Gsl.Randist.dir_3d( rng, out x, out y, out z);
@@ -48,6 +50,7 @@ namespace Geometry {
 				body_to_world(ref point);
 				s = sense(point);
 			} while(s == Sense.OUT || (open && s == Sense.ON));
+			return point;
 		}
 
 		/**

@@ -4,7 +4,7 @@ using Math;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 namespace Geometry {
-	public abstract class Convex : Volume {
+	public abstract class Primitive : Volume {
 		protected Surface[] surfaces = null;
 
 		public override double sfunc(Vector point) {
