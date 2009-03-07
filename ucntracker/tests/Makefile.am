@@ -1,12 +1,13 @@
 include ../Makefile.tests
 
-LDADD = ../library/libucntracker.la
+LDADD = ../libucntracker.la
 
-VAPIDEPENDS = ../core/core.vapi ../builder/builder.vapi ../library/ucntracker.vapi
+VAPIDEPENDS = ../core/core.vapi ../builder/builder.vapi ../library/init.vapi
 
 noinst_PROGRAMS = \
 	test-linking \
 	test-xml \
 	test-evolve \
-	test-primitives
+	test-primitives \
+	test-anonymouse
 

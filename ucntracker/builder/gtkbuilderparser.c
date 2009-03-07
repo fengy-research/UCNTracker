@@ -351,9 +351,8 @@ parse_object (ParserData   *data,
 
   if (!object_id)
     {
-      object_id = g_strdup_printf("AN%08X", (data->anonymous_object_count)++);
-//      error_missing_attribute (data, element_name, "id", error);
-      return;
+      object_id = g_strdup_printf("#AN%08X", (data->anonymous_object_count)++);
+      /* don't panic, generate an unique name for it*/
     }
 
   ++data->cur_object_level;
