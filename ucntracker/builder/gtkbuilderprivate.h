@@ -101,6 +101,7 @@ typedef struct {
   gboolean inside_requested_object;
   gint requested_object_level;
   gint cur_object_level;
+  gint anonymous_object_count;
 } ParserData;
 
 typedef GType (*GTypeGetFunc) (void);
