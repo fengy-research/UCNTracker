@@ -61,7 +61,7 @@ public int main(string[] args) {
 	};
 	part1.hit += (obj, track, state) => {
 		double length = track.get_double("length");
-		length += track.distance_to(state.vertex);
+		length += track.estimate_distance(state);
 		message("part1 %p %lf length = %f", track, state.timestamp, length);
 		track.set_double("length", length);
 	};

@@ -72,11 +72,6 @@ namespace Device {
 			this.tail = state;
 		}
 
-		public double distance_to (Vertex v) {
-			/*FIXME: use S.G's suggestion, parabolic appr.*/
-			return v.position.distance(tail.vertex.position);
-		}
-
 		private weak Experiment experiment;
 
 		public State tail;
