@@ -131,6 +131,9 @@ namespace Geometry {
 			y += a.y;
 			z += a.z;
 		}
+		public string to_string(string format="%lf %lf %lf") {
+			return format.printf(x, y, z);
+		}
 	}
 
 	public struct EulerAngles {
@@ -171,9 +174,13 @@ namespace Geometry {
 			string[] words = foo.split(",");
 			if(words == null || words.length != 3) return false;
 			alpha = words[0].to_double();
-			beta =	words[1].to_double();
+			beta = words[1].to_double();
 			gamma = words[2].to_double();
 			return true;
+		}
+
+		public string to_string(string format="%lf %lf %lf") {
+			return format.printf(alpha, beta, gamma);
 		}
 	}
 }
