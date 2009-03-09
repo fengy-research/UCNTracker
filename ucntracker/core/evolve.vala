@@ -5,9 +5,58 @@ namespace Device {
 	public class Evolution {
 		private weak Track track;
 		public const double TIME_STEP_SIZE = 1.0;
+		private Gsl.OdeivStep ode_step;
+
+		private Gsl.OdeivSystem ode_system;
+		private Gsl.OdeivControl ode_control;
+		private Gsl.OdeivEvolve ode_evolve;
 
 		public Evolution(Track track) {
+			ode_system.function = F;
+			ode_system.jacobian = J;
+			ode_system.dimension = 6;
+			ode_system.params = this;
+			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk8pd, 6);
+			ode_control = new Gsl.OdeivControl.y(1.0e-8, 0.0);
+			ode_evolve = new Gsl.OdeivEvolve(6);
 			this.track = track;
+		}
+
+		private static int F(double t, 
+			[CCode (array_length = false)]
+			double[] y, 
+			[CCode (array_length = false)]
+			double[] dydt, void * params) {
+		    Evolution ev = (Evolution)params;
+		    Vector vel = ev.track.tail.vertex.velocity;
+		    dydt[0] = vel.x;
+		    dydt[1] = vel.y;
+		    dydt[2] = vel.z;
+		    dydt[3] = 0.0;
+		    dydt[4] = 0.0;
+		    dydt[5] = 0.0;
+
+		    return Gsl.Status.SUCCESS;
+		}
+		private static int J(double t, 
+			[CCode (array_length = false)]
+			double[] y, 
+			[CCode (array_length = false)]
+			double[] dfdy, 
+			[CCode (array_length = false)]
+			double[] dfdt, void * params) {
+		    Evolution ev = (Evolution)params;
+			for(int i = 0; i< 6; i++) 
+			for(int j = 0; j< 6; j++) {
+				dfdy[i*6 + j] = 0.0;
+			}
+		    dfdt[0] = 0.0;
+		    dfdt[1] = 0.0;
+		    dfdt[2] = 0.0;
+		    dfdt[3] = 0.0;
+		    dfdt[4] = 0.0;
+		    dfdt[5] = 0.0;
+		    return Gsl.Status.SUCCESS;
 		}
 		public void integrate(ref State future, double dt) {
 			future.vertex = track.tail.vertex.clone();
