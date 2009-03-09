@@ -11,6 +11,8 @@ namespace Device {
 		private Gsl.OdeivControl ode_control;
 		private Gsl.OdeivEvolve ode_evolve;
 
+		private double step_size;
+
 		public Evolution(Track track) {
 			ode_system.function = F;
 			ode_system.jacobian = J;
@@ -19,6 +21,7 @@ namespace Device {
 			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk8pd, 6);
 			ode_control = new Gsl.OdeivControl.y(1.0e-8, 0.0);
 			ode_evolve = new Gsl.OdeivEvolve(6);
+			step_size = TIME_STEP_SIZE;
 			this.track = track;
 		}
 
@@ -59,18 +62,32 @@ namespace Device {
 		    return Gsl.Status.SUCCESS;
 		}
 		public void integrate(ref State future, double dt) {
-			future.vertex = track.tail.vertex.clone();
-			Vector vel = track.tail.vertex.velocity;
-			future.vertex.position.x += vel.x * dt;
-			future.vertex.position.y += vel.y * dt;
-			future.vertex.position.z += vel.z * dt;
-			future.vertex.velocity = track.tail.vertex.velocity;
-			future.timestamp = track.tail.timestamp + dt;
+			double [] y = new double[6];
+			double t0 = track.tail.timestamp;
+			double t1 = t0 + dt;
+
+			y[0] = track.tail.vertex.position.x;
+			y[1] = track.tail.vertex.position.y;
+			y[2] = track.tail.vertex.position.z;
+			y[3] = track.tail.vertex.velocity.x;
+			y[4] = track.tail.vertex.velocity.y;
+			y[5] = track.tail.vertex.velocity.z;
+
+			ode_evolve.reset();
+			while(t0 < t1) {
+				ode_evolve.apply(ode_control, ode_step, &ode_system,
+				ref t0, t1, ref step_size, y);
+			}
+			future.timestamp = t0;
+			future.vertex.position.x = y[0];
+			future.vertex.position.y = y[1];
+			future.vertex.position.z = y[2];
+			future.vertex.velocity.x = y[3];
+			future.vertex.velocity.y = y[4];
+			future.vertex.velocity.z = y[5];
+			//message("%lf %lf %lf %lf %lf %lf", y[0], y[1], y[2], y[3], y[4], y[5]);
 		}
-		public void integrate_adaptive(ref State future, out double dt) {
-			dt = TIME_STEP_SIZE;
-			integrate(ref future, dt);
-		}
+
 		public Vector cfunc(double dt) {
 			State future = State();
 			integrate(ref future, dt);
@@ -93,9 +110,9 @@ namespace Device {
 			if(track.tail.part == null) {
 				return true;
 			}
-			double dt;
+			double dt = TIME_STEP_SIZE;
 			State next = State();
-			integrate_adaptive(ref next, out dt);
+			integrate(ref next, dt);
 			/*
 			message("next: %lf %lf %lf",
 			    next.vertex.position.x,

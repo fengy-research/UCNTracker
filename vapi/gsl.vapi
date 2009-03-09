@@ -3514,7 +3514,7 @@ namespace Gsl
 		
 		[CCode (cname="gsl_odeiv_evolve_alloc")]
 		public OdeivEvolve (size_t dim);
-		public int apply (OdeivControl con, OdeivStep step, OdeivSystem* dydt, [CCode (array_length = false)] double[] t, double t1, [CCode (array_length = false)] double[] h, [CCode (array_length = false)] double[] y);
+		public int apply (OdeivControl con, OdeivStep step, OdeivSystem* dydt, ref double t, double t1, ref double h, [CCode (array_length = false)] double[] y);
 		public int reset ();
 	}
 	
