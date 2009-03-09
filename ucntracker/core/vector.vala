@@ -16,10 +16,11 @@ namespace Geometry {
 
 		[CCode (instance_pos = 2)]
 		public bool parse(string foo) {
-			string[] words = foo.split(",");
-			if(words == null || words.length != 3) {
+			string[] words = foo.split(" ");
+			if(words == null || words.length != 3) 
+				words = foo.split(",");
+			if(words == null || words.length != 3) 
 				return false;
-			}
 			x = words[0].to_double();
 			y = words[1].to_double();
 			z = words[2].to_double();
@@ -171,8 +172,11 @@ namespace Geometry {
 
 		[CCode (instance_pos = 2)]
 		public bool parse(string foo) {
-			string[] words = foo.split(",");
-			if(words == null || words.length != 3) return false;
+			string[] words = foo.split(" ");
+			if(words == null || words.length != 3) 
+				words = foo.split(",");
+			if(words == null || words.length != 3) 
+				return false;
 			alpha = words[0].to_double();
 			beta = words[1].to_double();
 			gamma = words[2].to_double();

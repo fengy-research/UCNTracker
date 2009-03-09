@@ -12,10 +12,9 @@ public int main(string[] args) {
 	builder.add_from_string(
 """
 	<interface>
-	<object class="UCNDeviceExperiment" id="experiment">
+	<object class="UCNExperiment" id="experiment">
 		<child>
 		<object class="UCNDevicePart" id="part1">
-			<property name="default-mean-free-path">2.0</property>
 			<child>
 			<object class="UCNGeometryBall" id="part1vol">
 			<property name="center">1, 2, 3</property>
@@ -24,7 +23,6 @@ public int main(string[] args) {
 		</object></child>
 		<child>
 		<object class="UCNDevicePart" id="part2">
-			<property name="mean-free-path-func">my_mfp_func</property>
 			<child>
 			<object class="UCNGeometryCylinder" id="part2vol">
 				<property name="center">0, 0, 0</property>
