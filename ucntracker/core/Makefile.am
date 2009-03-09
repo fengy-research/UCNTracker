@@ -21,6 +21,7 @@ VALASOURCES = \
 	intersection.vala \
 	run.vala \
 	vertex.vala \
+	evolve.vala \
 	track.vala \
 	part.vala \
 	core.vala 
