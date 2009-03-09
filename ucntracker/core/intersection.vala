@@ -13,16 +13,17 @@ namespace Geometry {
 			Vector point = params->curve(s);
 			assert(params->volume != null);
 			double rt = params->volume.sfunc(point);
+			params->value = rt;
 			//message("solver_function(%lf) returns %lf", s, rt);
 			return rt;
 		}
 
-		public const double Precision = 1.0e-9;
+		public const double PRECISION = 1.0e-9;
 
 		public static bool solve(Volume volume, CurveFunc curve,
 		        double s_min, double s_max, out double s) {
-			s_min -= Precision;
-			s_max += Precision;
+			s_min -= PRECISION;
+			s_max += PRECISION;
 			Vector point_in = curve(s_min);
 			Vector point_out = curve(s_max);
 			double sfunc_in = volume.sfunc(point_in);
@@ -46,11 +47,10 @@ namespace Geometry {
 			 * workaround vala bz 572079*/
 			params.volume = volume;
 			params.curve = curve;
-			params.value = 0.0;
 
 			bool converged = false;
 			int iter = 0;
-			int max_iter = 100;
+			int max_iter = 1000;
 			Gsl.Function f = {intersect_solver_function, &params};
 			Gsl.RootFsolver solver =
 			    new Gsl.RootFsolver(Gsl.RootFsolverTypes.brent);
@@ -60,7 +60,7 @@ namespace Geometry {
 			do {
 				iter ++;
 				solver.iterate();
-				status = Gsl.RootTest.residual(params.value, Precision);
+				status = Gsl.RootTest.residual(params.value, PRECISION);
 				if(status == Gsl.Status.SUCCESS) {
 					converged = true;
 					break;
@@ -68,13 +68,11 @@ namespace Geometry {
 			} while(status == Gsl.Status.CONTINUE && iter < max_iter);
 
 			if(iter == max_iter) {
-				s = solver.root;
 				warning("solver exceeds max num of interations. "
 				    + "assuming no solution.");
-				return false;
+				warning("residule = %lf", volume.sfunc(curve(s)));
 			}
 			s = solver.root;
-
 			return converged;
 		}
 	}

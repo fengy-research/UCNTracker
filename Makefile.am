@@ -1,1 +1,1 @@
-SUBDIRS = ucntracker
+SUBDIRS = ucntracker examples

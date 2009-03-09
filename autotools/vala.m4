@@ -32,14 +32,15 @@ AC_DEFUN([VALA_PROG_VALAC],[
   AC_SUBST(VALAC)
 dnl  these are not useful since autoconf doesn't allow nested
 dnl  substitutions in _SOURCES
-    VALA_CHEADERS='$(VALASOURCES:.vala=.h)';
-    VALA_CSOURCES='$(VALASOURCES:.vala=.c)';
-    VALA_CCODE='$(VALA_CHEADERS) $(VALACSOURCES)'
-    VALA_OBJECTS='$(VALASOURCES:.vala=.o)'
-    AC_SUBST(VALA_CSOURCES)
-    AC_SUBST(VALA_CHEADERS)
-    AC_SUBST(VALA_CCODE)
-    AC_SUBST(VALA_OBJECTS)
+dnl    'VALA_CHEADERS=$(VALASOURCES:.vala=.h)'
+dnl    'VALA_CSOURCES=$(VALASOURCES:.vala=.c)' \
+dnl   'VALA_CCODE=$(VALA_CHEADERS) $(VALACSOURCES)' \
+dnl    'VALA_OBJECTS=$(VALASOURCES:.vala=.o)'
+
+dnl    AC_SUBST(VALA_CSOURCES)
+dnl    AC_SUBST(VALA_CHEADERS)
+dnl    AC_SUBST(VALA_CCODE)
+dnl    AC_SUBST(VALA_OBJECTS)
   VALA_CCODE_RULES='vala-ccode: $(VALASOURCES); $(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) && touch vala-ccode'
   VALA_OBJECT_RULES='vala-object: $(VALASOURCES); $(VALAC) $(VALAFLAGS) -c $^ $(VALAPKGS) && touch vala-object'
 

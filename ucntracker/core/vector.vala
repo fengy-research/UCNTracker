@@ -66,6 +66,11 @@ namespace Geometry {
 			return x * v.x + y * v.y + z * v.z;
 		}
 
+		public void mul(double s) {
+			this.x *= s;
+			this.y *= s;
+			this.z *= s;
+		}
 		public Vector cross(Vector v) {
 			/*not used yet*/
 			Vector rt = Vector(

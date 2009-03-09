@@ -19,7 +19,6 @@ VALASOURCES = \
 	curve.vala \
 	experiment.vala \
 	intersection.vala \
-	ptype.vala \
 	run.vala \
 	vertex.vala \
 	track.vala \
@@ -27,6 +26,6 @@ VALASOURCES = \
 	core.vala 
 
 BUILT_SOURCES = vala-ccode
-VALAFLAGS= --library=core --basedir=$(top_srcdir)
-VALAPKGS = ../builder/builder.vapi --pkg gsl --pkg gmodule-2.0
+VALAFLAGS= --library=core --basedir=$(top_srcdir)/ucntracker
+VALAPKGS = ../physics/physics.vapi ../builder/builder.vapi --pkg gsl --pkg gmodule-2.0
 @VALA_CCODE_RULES@

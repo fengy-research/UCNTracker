@@ -80,7 +80,6 @@ namespace Device {
 		private weak Experiment experiment;
 
 		public State tail;
-		private State next;
 
 		public void integrate(ref State future, double dt) {
 			future.vertex = tail.vertex.clone();
@@ -116,6 +115,10 @@ namespace Device {
 			return future.vertex.position;
 		}
 
+		public double estimate_distance(State next) {
+			/*FIXME: use a parabola*/
+			return tail.vertex.position.distance(next.vertex.position);
+		}
 		public void evolve() {
 			assert(terminated == false);
 
@@ -180,7 +183,7 @@ namespace Device {
 			bool transported = true;
 			tail.part.transport(this, leave, enter, &transported);
 
-			message("%s", transported.to_string());
+		//	message("%s", transported.to_string());
 			if(transported == false) {
 				tail.part.hit(this, leave);
 			} else {

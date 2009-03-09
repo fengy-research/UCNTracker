@@ -1,7 +1,6 @@
 using GLib;
 using Math;
 
-using UCNTracker.Geometry;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	[CompactType]
