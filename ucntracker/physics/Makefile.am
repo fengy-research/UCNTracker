@@ -1,0 +1,18 @@
+VALASOURCES = random.vala \
+			ptype.vala \
+			physics.vala
+
+noinst_LTLIBRARIES = libphysics.la
+
+libphysics_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS)
+libphysics_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS)  -I$(top_srcdir) -I$(top_srcdir)/ucntracker -DG_LOG_DOMAIN=\"UCNTracker\"
+
+
+libphysics_la_SOURCES =  \
+	$(VALASOURCES:.vala=.c)	\
+	$(VALASOURCES:.vala=.h)
+
+VALAFLAGS= --library=physics --basedir=$(top_srcdir)/ucntracker
+VALAPKGS = --pkg gsl
+BUILT_SOURCES = vala-ccode
+@VALA_CCODE_RULES@
