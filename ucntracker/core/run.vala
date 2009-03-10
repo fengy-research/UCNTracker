@@ -10,6 +10,8 @@ namespace Device {
 		/* The current time of this run,
 		 * individual tracks can be ahead of this stamp 
 		 */
+		public double time_limit = double.MAX;
+
 		public double timestamp;
 		const double dt = 0.2;
 		private MainContext context;
@@ -51,6 +53,8 @@ namespace Device {
 			this.experiment = experiment;
 		}
 
+		public signal void track_motion_notify(Track track, State prev);
+
 		public void run() {
 			IdleSource idle = new IdleSource();
 			idle.set_callback(run1, null);
@@ -59,7 +63,7 @@ namespace Device {
 		}
 
 		private bool run1() {
-			if(active_tracks == null) {
+			if(active_tracks == null || timestamp > time_limit) {
 				loop.quit();
 				return false;
 			}

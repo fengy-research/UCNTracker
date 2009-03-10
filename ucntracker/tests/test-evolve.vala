@@ -43,11 +43,17 @@ public int main(string[] args) {
 
 	experiment.prepare += (obj, run) => {
 		Vertex start = new Vertex();
-		start.position = Vector(1.0, 2.0, -10.0);
+		start.position = Vector(1.0, 1.0, -10.0);
 		start.velocity = Vector(0.0, 0.0, 0.1);
 		start.weight = 1.0;
+		run.time_limit = 1000;
 		message("run started");
 		run.add_track(PType.neutron, start);
+		run.track_motion_notify += (obj, track, prev) => {
+			stdout.printf("%p %lf %s %s\n", track, track.tail.timestamp, 
+			                       track.tail.vertex.position.to_string(),
+			                       track.tail.vertex.velocity.to_string());
+		};
 		message("track added");
 	};
 

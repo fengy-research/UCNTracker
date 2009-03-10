@@ -41,6 +41,11 @@ namespace Device {
 
 		private Datalist<void*> data;
 
+		public double estimate_distance(State next) {
+			/*FIXME: use a parabola*/
+			return tail.vertex.position.distance(next.vertex.position);
+		}
+
 		public void set_vector(string name, Vector val) {
 			Vector * pointer = (Vector*) data.get_data(name);
 			if(pointer == null) {
@@ -94,15 +99,9 @@ namespace Device {
 
 		public State tail;
 
-		public double estimate_distance(State next) {
-			/*FIXME: use a parabola*/
-			return tail.vertex.position.distance(next.vertex.position);
-		}
 		public void evolve() {
 			assert(terminated == false);
-			terminated = evolution.evolve();
-			if(terminated)
-				run.terminate_track(this);
+			evolution.evolve();
 		}
 	}
 }

@@ -8,6 +8,7 @@ namespace Device {
 	public class Part: Object, Buildable {
 		public List<Volume> volumes;
 		public int layer {get; set; default = 0;}
+		public double mfp {get; set; default = 1.0;}
 
 		public void add_child(Builder builder, GLib.Object child, string? type) {
 			if(child is Volume) {
@@ -43,8 +44,12 @@ namespace Device {
 		public virtual signal void transport(Track track,
 		       State s_leave, State s_enter, bool* transported);
 
-		public virtual signal void hit(Track track, State next);
+		public virtual signal void hit(Track track, 
+				State next);
 
+		public virtual double calculate_mfp(Vertex vertex) {
+			return mfp;
+		}
 		public bool locate(Vertex vertex, out unowned Volume child) {
 			foreach(Volume volume in volumes) {
 				Sense sense = volume.sense(vertex.position);

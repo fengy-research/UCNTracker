@@ -21,7 +21,7 @@ public int main(string[] args) {
 			head.velocity = v;
 			head.weight = 1.0;
 			var track = run.add_track(PType.neutron, head);
-			head.velocity.mul(1.0);
+			head.velocity.mul(10);
 			track.set_vector("in", head.position);
 		}
 	};
@@ -41,7 +41,7 @@ public int main(string[] args) {
 	cell.transport += (obj, track, leave, enter, transported) => {
 		track.set_vector("out", leave.vertex.position);
 	};
-	cell.hit += (obj, track, state) => {
+	cell.hit += (obj, track, state, scattered) => {
 		/*
 		stdout.printf("%lf %lf %lf\n", 
 		state.vertex.position.x,
@@ -50,11 +50,13 @@ public int main(string[] args) {
 		*/
 		double length = track.get_double("length");
 		double r = UCNTracker.Random.uniform();
+		double dl = track.estimate_distance(state);
+		double dP = Math.exp( -length / MFP) - Math.exp((-length - dl)/MFP);
 		bool scatter = false;
-		if(r > Math.exp( -length / MFP)) {
+		if(r < dP) {
 			scatter = true;	
 		}
-		length += track.estimate_distance(state);
+		length += dl;
 		track.set_double("length", length);
 		if(scatter) {
 			track.set_double("#scatters", track.get_double("#scatters") + 1.0);
@@ -63,6 +65,8 @@ public int main(string[] args) {
 			UCNTracker.Random.dir_3d(out v.x, out v.y, out v.z);
 			v.mul(norm);
 			state.vertex.velocity = v;
+			*scattered = true;
+			message("%p %s", track, state.vertex.position.to_string());
 		}
 	};
 	experiment.run();

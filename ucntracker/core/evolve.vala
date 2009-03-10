@@ -13,6 +13,8 @@ namespace Device {
 
 		private double step_size;
 
+		private double free_length;
+
 		public Evolution(Track track) {
 			ode_system.function = F;
 			ode_system.jacobian = J;
@@ -61,36 +63,33 @@ namespace Device {
 		    dfdt[5] = 0.0;
 		    return Gsl.Status.SUCCESS;
 		}
-		public void integrate(ref State future, double dt) {
-			double [] y = new double[6];
+
+		public void reintegrate_to(ref State future, double dt) {
+			double [] y = track.tail.vertex.to_array();
+			double [] yerr = new double[6];
+			double t0 = track.tail.timestamp;
+			ode_step.reset();
+			ode_step.apply(t0, dt, y, yerr, null, null, &ode_system);
+			future.vertex.from_array(y);
+			future.timestamp = t0 + dt;
+		}
+		public void integrate(ref State future, ref double dt) {
+			double [] y = track.tail.vertex.to_array();
 			double t0 = track.tail.timestamp;
 			double t1 = t0 + dt;
 
-			y[0] = track.tail.vertex.position.x;
-			y[1] = track.tail.vertex.position.y;
-			y[2] = track.tail.vertex.position.z;
-			y[3] = track.tail.vertex.velocity.x;
-			y[4] = track.tail.vertex.velocity.y;
-			y[5] = track.tail.vertex.velocity.z;
+			ode_evolve.apply(ode_control, ode_step, &ode_system,
+			ref t0, t1, ref step_size, y);
+			dt = t0 - track.tail.timestamp;
 
-			ode_evolve.reset();
-			while(t0 < t1) {
-				ode_evolve.apply(ode_control, ode_step, &ode_system,
-				ref t0, t1, ref step_size, y);
-			}
 			future.timestamp = t0;
-			future.vertex.position.x = y[0];
-			future.vertex.position.y = y[1];
-			future.vertex.position.z = y[2];
-			future.vertex.velocity.x = y[3];
-			future.vertex.velocity.y = y[4];
-			future.vertex.velocity.z = y[5];
+			future.vertex.from_array(y);
 			//message("%lf %lf %lf %lf %lf %lf", y[0], y[1], y[2], y[3], y[4], y[5]);
 		}
 
 		public Vector cfunc(double dt) {
 			State future = State();
-			integrate(ref future, dt);
+			reintegrate_to(ref future, dt);
 			/*
 			message("dt = %lf tail.position = %lf %lf %lf vertex.position = %lf %lf %lf",
 					dt,	
@@ -105,26 +104,46 @@ namespace Device {
 			return future.vertex.position;
 		}
 
+
+		private void move_to(State next) {
+			double dl = track.estimate_distance(next)
+				/ track.tail.part.calculate_mfp(next.vertex);
+			double dP = Math.exp( -free_length)
+				  - Math.exp((-free_length - dl));
+			double r = Random.uniform();
+			if(r < dP) {
+				track.tail.part.hit(track, next);
+				free_length = 0.0;
+			} else {
+				free_length += dl;
+			}
+			/* in volume scattering, simply push the adjusted
+			 * next to the tail*/
+			var prev = track.tail;
+			track.tail = next;
+			/* then invoke the track_motion notify */
+			track.run.track_motion_notify(track, prev);
+		}
 		/* return TRUE if terminated.*/
-		public bool evolve() {
+		public void evolve() {
 			if(track.tail.part == null) {
-				return true;
+				track.run.terminate_track(track);
+				return;
 			}
 			double dt = TIME_STEP_SIZE;
 			State next = State();
-			integrate(ref next, dt);
+			integrate(ref next, ref dt);
 			/*
 			message("next: %lf %lf %lf",
 			    next.vertex.position.x,
 			    next.vertex.position.y,
 			    next.vertex.position.z);
 			*/
-			    next.locate_in(track.experiment);
+			next.locate_in(track.experiment);
 
 			if(track.tail.volume == next.volume) {
-				track.tail.part.hit(track, next);
-				track.tail = next;
-				return false;
+				move_to(next);
+				return;
 			}
 
 			double dt_leave;
@@ -142,15 +161,15 @@ namespace Device {
 			//message("%s %s", is_leave.to_string(), is_enter.to_string());
 
 			if(is_leave && is_enter) {
-				integrate(ref leave, dt_leave);
-				integrate(ref enter, dt_enter);
+				reintegrate_to(ref leave, dt_leave);
+				reintegrate_to(ref enter, dt_enter);
 			}
 			if(is_leave) {
-				integrate(ref leave, dt_leave);
+				reintegrate_to(ref leave, dt_leave);
 				enter = State.clone(leave);
 			}
 			if(is_enter) {
-				integrate(ref enter, dt_enter);
+				reintegrate_to(ref enter, dt_enter);
 				leave = State.clone(enter);
 			}
 
@@ -159,28 +178,20 @@ namespace Device {
 			enter.part = next.part;
 			enter.volume = next.volume;
 
-			track.tail.part.hit(track, leave);
-			track.tail.vertex = leave.vertex;
-			track.tail.timestamp = leave.timestamp;
-
 			bool transported = true;
 			track.tail.part.transport(track, leave, enter, &transported);
 
 		//	message("%s", transported.to_string());
 			if(transported == false) {
-				track.tail.part.hit(track, leave);
+				move_to(leave);
 			} else {
-				if(next.part != null)
-					next.part.hit(track, enter);
-				/* else we are moving out from the geometry.
-				 * in the next evolve the track would be terminated.
-				 * */
 				track.tail.part = next.part;
 				track.tail.volume = next.volume;
 				track.tail.vertex = enter.vertex;
 				track.tail.timestamp = enter.timestamp;
+				free_length = 0.0;
 			}
-			return false;
+			return;
 		}
 	}
 }

@@ -24,8 +24,8 @@ static void __lambda1 (UCNExperiment* obj, UCNDeviceRun* run);
 static void ___lambda1_ucn_experiment_finish (UCNExperiment* _sender, UCNDeviceRun* run, gpointer self);
 static void __lambda2 (UCNDevicePart* obj, UCNDeviceTrack* track, const UCNDeviceState* leave, const UCNDeviceState* enter, gboolean* transported);
 static void ___lambda2_ucn_device_part_transport (UCNDevicePart* _sender, UCNDeviceTrack* track, const UCNDeviceState* s_leave, const UCNDeviceState* s_enter, gboolean* transported, gpointer self);
-static void __lambda3 (UCNDevicePart* obj, UCNDeviceTrack* track, const UCNDeviceState* state);
-static void ___lambda3_ucn_device_part_hit (UCNDevicePart* _sender, UCNDeviceTrack* track, const UCNDeviceState* next, gpointer self);
+static void __lambda3 (UCNDevicePart* obj, UCNDeviceTrack* track, const UCNDeviceState* state, gboolean* scattered);
+static void ___lambda3_ucn_device_part_hit (UCNDevicePart* _sender, UCNDeviceTrack* track, const UCNDeviceState* next, gboolean* scattered, gpointer self);
 
 
 
@@ -53,7 +53,7 @@ static void __lambda0 (UCNExperiment* obj, UCNDeviceRun* run) {
 			head->velocity = v;
 			head->weight = 1.0;
 			track = ucn_device_run_add_track (run, ucn_ptype_neutron, head);
-			ucn_geometry_vector_mul (&head->velocity, 1.0);
+			ucn_geometry_vector_mul (&head->velocity, (double) 10);
 			ucn_device_track_set_vector (track, "in", &head->position);
 			(head == NULL) ? NULL : (head = (ucn_device_vertex_unref (head), NULL));
 			(track == NULL) ? NULL : (track = (ucn_device_track_unref (track), NULL));
@@ -116,9 +116,11 @@ static void ___lambda2_ucn_device_part_transport (UCNDevicePart* _sender, UCNDev
 }
 
 
-static void __lambda3 (UCNDevicePart* obj, UCNDeviceTrack* track, const UCNDeviceState* state) {
+static void __lambda3 (UCNDevicePart* obj, UCNDeviceTrack* track, const UCNDeviceState* state, gboolean* scattered) {
 	double length;
 	double r;
+	double dl;
+	double dP;
 	gboolean scatter;
 	g_return_if_fail (obj != NULL);
 	g_return_if_fail (track != NULL);
@@ -130,28 +132,35 @@ static void __lambda3 (UCNDevicePart* obj, UCNDeviceTrack* track, const UCNDevic
 	*/
 	length = ucn_device_track_get_double (track, "length");
 	r = ucn_random_uniform ();
+	dl = ucn_device_track_estimate_distance (track, &(*state));
+	dP = exp ((-length) / MFP) - exp (((-length) - dl) / MFP);
 	scatter = FALSE;
-	if (r > exp ((-length) / MFP)) {
+	if (r < dP) {
 		scatter = TRUE;
 	}
-	length = length + ucn_device_track_estimate_distance (track, &(*state));
+	length = length + dl;
 	ucn_device_track_set_double (track, "length", length);
 	if (scatter) {
 		double norm;
 		UCNGeometryVector _tmp0 = {0};
 		UCNGeometryVector v;
+		char* _tmp1;
 		ucn_device_track_set_double (track, "#scatters", ucn_device_track_get_double (track, "#scatters") + 1.0);
 		norm = ucn_geometry_vector_norm (&(*state).vertex->velocity);
 		v = (ucn_geometry_vector_init (&_tmp0, 0.0, 0.0, 0.0), _tmp0);
 		ucn_random_dir_3d (&v.x, &v.y, &v.z);
 		ucn_geometry_vector_mul (&v, norm);
 		(*state).vertex->velocity = v;
+		*scattered = TRUE;
+		_tmp1 = NULL;
+		g_message ("main.vala:69: %p %s", track, _tmp1 = ucn_geometry_vector_to_string (&(*state).vertex->position, "%lf %lf %lf"));
+		_tmp1 = (g_free (_tmp1), NULL);
 	}
 }
 
 
-static void ___lambda3_ucn_device_part_hit (UCNDevicePart* _sender, UCNDeviceTrack* track, const UCNDeviceState* next, gpointer self) {
-	__lambda3 (_sender, track, next);
+static void ___lambda3_ucn_device_part_hit (UCNDevicePart* _sender, UCNDeviceTrack* track, const UCNDeviceState* next, gboolean* scattered, gpointer self) {
+	__lambda3 (_sender, track, next, scattered);
 }
 
 
