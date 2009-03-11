@@ -34,6 +34,8 @@ namespace Device {
 
 		public PType ptype {get; private set;}
 		public Track parent {get; private set;}
+		/*accessed in Evolvution */
+		public double length {get; internal set; default = 0.0;}
 		/*accessed in Run*/
 		public bool terminated {get; set; default = false;}
 

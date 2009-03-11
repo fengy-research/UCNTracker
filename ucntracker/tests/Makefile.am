@@ -9,5 +9,6 @@ noinst_PROGRAMS = \
 	test-xml \
 	test-evolve \
 	test-primitives \
-	test-anonymouse
+	test-anonymouse \
+	test-mfp
 

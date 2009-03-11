@@ -13,24 +13,24 @@ public int main(string[] args) {
 <object class="UCNExperiment" id="experiment">
  <child>
   <object class="UCNDevicePart" id="environment">
+   <property name="layer">-1</property>
    <child type="volume">
     <object class="UCNGeometryBall" id="envball">
      <property name="center">0, 0, 0</property>
      <property name="radius">100</property>
     </object>
    </child>
-   <property name="layer">-1</property>
   </object>
  </child>
  <child>
   <object class="UCNDevicePart" id="part1">
    <child type="volume">
+    <property name="layer">0</property>
     <object class="UCNGeometryBall" id="part1box">
      <property name="center">1, 2, 3</property>
      <property name="radius">2</property>
     </object>
    </child>
-    <property name="layer">0</property>
   </object>
  </child>
 </object>

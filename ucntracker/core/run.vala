@@ -13,7 +13,9 @@ namespace Device {
 		public double time_limit = double.MAX;
 
 		public double timestamp;
-		const double dt = 0.2;
+		/* in each run, move all tracks forward at least by 
+		 * SYNC_TIME_STEP*/
+		public const double SYNC_TIME_STEP = 0.2;
 		private MainContext context;
 		private MainLoop loop;
 		public List<Track> tracks;
@@ -67,14 +69,14 @@ namespace Device {
 				loop.quit();
 				return false;
 			}
-			double next_t = timestamp + dt;
+			double next_t = timestamp + SYNC_TIME_STEP;
 			foreach(Track track in active_tracks) {
 				while(!track.terminated &&
 				    track.tail.timestamp < next_t) {
 					track.evolve();
 				}
 			}
-			timestamp += dt;
+			timestamp += SYNC_TIME_STEP;
 			return true;
 		}
 	}

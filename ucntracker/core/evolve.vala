@@ -4,7 +4,11 @@ namespace UCNTracker {
 namespace Device {
 	public class Evolution {
 		private weak Track track;
-		public const double TIME_STEP_SIZE = 1.0;
+		/*INIT_STEP_SIZE is used by the OdeivEvolve */
+		public const double INIT_STEP_SIZE = 1.0;
+		/* HOPS_PER_MFP is used to determinate the next
+		 * dt to call move_to() */
+		public const double HOPS_PER_MFP = 10.0;
 		private Gsl.OdeivStep ode_step;
 
 		private Gsl.OdeivSystem ode_system;
@@ -23,7 +27,7 @@ namespace Device {
 			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk8pd, 6);
 			ode_control = new Gsl.OdeivControl.y(1.0e-8, 0.0);
 			ode_evolve = new Gsl.OdeivEvolve(6);
-			step_size = TIME_STEP_SIZE;
+			step_size = INIT_STEP_SIZE;
 			this.track = track;
 		}
 
@@ -104,24 +108,53 @@ namespace Device {
 			return future.vertex.position;
 		}
 
+		private void move_to(State next, bool do_not_scatter) {
+			double dl = track.estimate_distance(next);
+			/*First do physical length accounting*/
+			track.length += dl;
+			/*Then do mean free length accounting*/
+			dl /= track.tail.part.calculate_mfp(next.vertex);
 
-		private void move_to(State next) {
-			double dl = track.estimate_distance(next)
-				/ track.tail.part.calculate_mfp(next.vertex);
+			/**** 
+			 * see if an interaction occurred
+			 * during this motion period
+			 * Formula from Wikipedia entry Mean Free Path
+			 * ** */
 			double dP = Math.exp( -free_length)
 				  - Math.exp((-free_length - dl));
 			double r = Random.uniform();
-			if(r < dP) {
+
+			if(!do_not_scatter && r < dP) {
+				/*
+				 * if scattering occurred, emit the hit signal
+				 * and reset the free_length accounting.
+				 * */
 				track.tail.part.hit(track, next);
 				free_length = 0.0;
 			} else {
+				/* nothing happened, accumulate the free_length
+				 * accounting*/
 				free_length += dl;
 			}
-			/* in volume scattering, simply push the adjusted
-			 * next to the tail*/
+			/* After Scattering, simply push the adjusted
+			 * state to the tail*/
+
 			var prev = track.tail;
 			track.tail = next;
-			/* then invoke the track_motion notify */
+
+			/*****
+			 * Always invoke the track_motion notify 
+			 *
+			 * NOTE:
+			 * Signals are slow.
+			 * GLib will skip the signal emission if
+			 * no handler is registered on track_motion_notify.
+			 * Productive code should only register to
+			 * hit for implementing physics.
+			 *
+			 * We don't expect users really register to this
+			 * unless it is a visualizer it is debugging.
+			 * */
 			track.run.track_motion_notify(track, prev);
 		}
 		/* return TRUE if terminated.*/
@@ -130,7 +163,11 @@ namespace Device {
 				track.run.terminate_track(track);
 				return;
 			}
-			double dt = TIME_STEP_SIZE;
+			double dt = track.tail.part.calculate_mfp(track.tail.vertex) /
+			        (HOPS_PER_MFP * track.tail.vertex.velocity.norm());
+
+			//message("mfp = %lf dt = %lf",
+			//track.tail.part.calculate_mfp(track.tail.vertex), dt);
 			State next = State();
 			integrate(ref next, ref dt);
 			/*
@@ -142,7 +179,7 @@ namespace Device {
 			next.locate_in(track.experiment);
 
 			if(track.tail.volume == next.volume) {
-				move_to(next);
+				move_to(next, false);
 				return;
 			}
 
@@ -181,15 +218,12 @@ namespace Device {
 			bool transported = true;
 			track.tail.part.transport(track, leave, enter, &transported);
 
-		//	message("%s", transported.to_string());
 			if(transported == false) {
-				move_to(leave);
+				move_to(leave, false);
 			} else {
-				track.tail.part = next.part;
-				track.tail.volume = next.volume;
-				track.tail.vertex = enter.vertex;
-				track.tail.timestamp = enter.timestamp;
+				move_to(leave, true);
 				free_length = 0.0;
+				move_to(enter, true);
 			}
 			return;
 		}
