@@ -299,7 +299,7 @@ namespace Gdk.GL
 	}
 	
 	[CCode (lower_case_cprefix="gdk_pixmap_")]
-	namespace GdkPixmapExtension
+	namespace GdkPixmap
 	{
 		public static weak Gdk.GL.Pixmap set_gl_capability (Gdk.Pixmap pixmap, Gdk.GL.Config glconfig, [CCode (array_length = false)] int[] attrib_list);
 		public static void unset_gl_capability (Gdk.Pixmap pixmap);
@@ -316,7 +316,7 @@ namespace Gdk.GL
 	}
 	
 	[CCode (lower_case_cprefix="gdk_window_")]
-	namespace GdkWindowExtension
+	namespace GdkWindow
 	{
 		public static weak Gdk.GL.Window set_gl_capability (Gdk.Window window, Gdk.GL.Config glconfig, [CCode (array_length = false)] int[] attrib_list);
 		public static void unset_gl_capability (Gdk.Window window);
@@ -334,7 +334,7 @@ namespace Gtk.GL
 	public static bool parse_args ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
 	
 	[CCode (lower_case_cprefix="gtk_widget_")]
-	namespace GtkWidgetExtension
+	namespace GtkWidget
 	{
 		public static bool set_gl_capability (Gtk.Widget widget, Gdk.GL.Config glconfig, Gdk.GL.Context? share_list, bool direct, int render_type);
 		public static bool is_gl_capable (Gtk.Widget widget);
