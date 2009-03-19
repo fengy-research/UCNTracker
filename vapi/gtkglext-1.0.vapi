@@ -18,13 +18,13 @@
  *
  * Author:
  * 	Matias De la Puente <mfpuente.ar@gmail.com>
+ * 	Yu Feng <rainwoodman@gmail.com>
  */
 
-[CCode (lower_case_cprefix="gdk_gl_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
-namespace Gdk.GL
-{
-	[CCode (cprefix="GDK_GL_")]
-	public enum ConfigAttrib
+[CCode (lower_case_cprefix="gdk_", cprefix="Gdk")]
+namespace Gdk {
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLConfigAttrib
 	{
 		USE_GL,
 		BUFFER_SIZE,
@@ -64,8 +64,8 @@ namespace Gdk.GL
 		SAMPLES
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum ConfigCaveat
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLConfigCaveat
 	{
 		CONFIG_CAVEAT_DONT_CARE,
 		CONFIG_CAVEAT_NONE,
@@ -73,8 +73,8 @@ namespace Gdk.GL
 		NON_CONFORMANT_CONFIG
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum VisualType
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLVisualType
 	{
 		VISUAL_TYPE_DONT_CARE,
 		TRUE_COLOR,
@@ -85,31 +85,31 @@ namespace Gdk.GL
 		STATIC_GRAY
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum TransparentType
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLTransparentType
 	{
 		TRANSPARENT_NONE,
 		TRANSPARENT_RGB,
 		TRANSPARENT_INDEX
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum DrawableTypeMask
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLDrawableTypeMask
 	{
 		WINDOW_BIT,
 		PIXMAP_BIT,
 		PBUFFER_BIT
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum RenderTypeMask
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLRenderTypeMask
 	{
 		RGBA_BIT,
 		COLOR_INDEX_BIT
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum BufferMask
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLBufferMask
 	{
 		FRONT_LEFT_BUFFER_BIT,
 		FRONT_RIGHT_BUFFER_BIT,
@@ -121,8 +121,8 @@ namespace Gdk.GL
 		ACCUM_BUFFER_BIT
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum ConfigError
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLConfigError
 	{
 		BAD_SCREEN,
 		BAD_ATTRIBUTE,
@@ -133,15 +133,15 @@ namespace Gdk.GL
 		BAD_ENUM
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum RenderType
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLRenderType
 	{
 		RGBA_TYPE,
 		COLOR_INDEX_TYPE
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum DrawableAttrib
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLDrawableAttrib
 	{
 		PRESERVED_CONTENTS,
 		LARGEST_PBUFFER,
@@ -150,8 +150,8 @@ namespace Gdk.GL
 		EVENT_MASK
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum PbufferAttrib
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLPbufferAttrib
 	{
 		PBUFFER_PRESERVED_CONTENTS,
 		PBUFFER_LARGEST_PBUFFER,
@@ -159,28 +159,28 @@ namespace Gdk.GL
 		PBUFFER_WIDTH
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum EventMask
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLEventMask
 	{
 		PBUFFER_CLOBBER_MASK
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum EventType
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLEventType
 	{
 		DAMAGED,
 		SAVED
 	}
 	
-	[CCode (cprefix="GDK_GL_")]
-	public enum DrawableType
+	[CCode (cprefix="GDK_GL_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLDrawableType
 	{
 		WINDOW,
 		PBUFFER
 	}
 	
-	[CCode (cprefix="GDK_GL_MODE_")]
-	public enum ConfigMode
+	[CCode (cprefix="GDK_GL_MODE_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public enum GLConfigMode
 	{
 		RGB,
 		RGBA,
@@ -195,28 +195,34 @@ namespace Gdk.GL
 		MULTISAMPLE
 	}
 	
-	public static const uint SUCCESS;
-	public static const uint ATTRIB_LIST_NONE;
-	public static const uint DONT_CARE;
-	public static const uint NONE;
+	[CCode (cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public static const uint GL_SUCCESS;
+	[CCode (cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public static const uint GL_ATTRIB_LIST_NONE;
+	[CCode (cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public static const uint GL_DONT_CARE;
+	[CCode (cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public static const uint GL_NONE;
 	
-	[CCode (cname="GdkGLProc")]
-	public static delegate void Proc ();
-	
-	public static void init ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
-	public static bool init_check ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
-	public static bool parse_args ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
-	public static bool query_extension ();
-	public static bool query_extension_for_display (Gdk.Display display);
-	public static bool query_version (out int major, out int minor);
-	public static bool query_version_for_display (Gdk.Display display, out int major, out int minor);
-	public static bool query_gl_extension (string extension);
-	public static Proc get_proc_address (string proc_name);
-	public static weak Pango.Font font_use_pango_font (Pango.FontDescription font_desc, int first, int count, int list_base);
-	public static weak Pango.Font font_use_pango_font_for_display (Gdk.Display display, Pango.FontDescription font_desc, int first, int count, int list_base);
+	public static delegate void GLProc ();
+
+	[CCode (cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public static void gl_init ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
+	[CCode (cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public static bool gl_init_check ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
+	[CCode (cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public static bool gl_parse_args ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
+	public static bool gl_query_extension ();
+	public static bool gl_query_extension_for_display (Gdk.Display display);
+	public static bool gl_query_version (out int major, out int minor);
+	public static bool gl_query_version_for_display (Gdk.Display display, out int major, out int minor);
+	public static bool gl_query_gl_extension (string extension);
+	public static GLProc gl_get_proc_address (string proc_name);
+	public static weak Pango.Font gl_font_use_pango_font (Pango.FontDescription font_desc, int first, int count, int list_base);
+	public static weak Pango.Font gl_font_use_pango_font_for_display (Gdk.Display display, Pango.FontDescription font_desc, int first, int count, int list_base);
 		
 	[CCode (lower_case_cprefix="gdk_gl_draw_")]
-	namespace Draw
+	namespace GLDraw
 	{
 		public static void cube (bool solid, double size);
 		public static void sphere (bool solid, double radius, int slices, int stacks);
@@ -229,12 +235,12 @@ namespace Gdk.GL
 		public static void teapot (bool solid, double scale);
 	}
 
-	public class Config : GLib.Object
+	public class GLConfig : GLib.Object
 	{
-		public Config ([CCode (array_length = false)] int[] attrib_list);
-		public Config.for_screen (Gdk.Screen screen, [CCode (array_length = false)] int[] attib_list);
-		public Config.by_mode (ConfigMode mode);
-		public Config.by_mode_for_screen (Gdk.Screen screen, ConfigMode mode);
+		public GLConfig ([CCode (array_length = false)] int[] attrib_list);
+		public GLConfig.for_screen (Gdk.Screen screen, [CCode (array_length = false)] int[] attib_list);
+		public GLConfig.by_mode (GLConfigMode mode);
+		public GLConfig.by_mode_for_screen (Gdk.Screen screen, GLConfigMode mode);
 		public weak Gdk.Screen get_screen ();
 		public bool get_attrib (int attribute, out int @value);
 		public weak Gdk.Colormap get_colormap ();
@@ -252,97 +258,115 @@ namespace Gdk.GL
 		public bool has_accum_buffer ();
 	}
 		
-	public class Context : GLib.Object
+	public class GLContext : GLib.Object
 	{
-		public Context (Gdk.GL.Drawable gldrawable, Gdk.GL.Context share_list, bool direct, int render_type);
+		public GLContext (Gdk.GLDrawable gldrawable, Gdk.GLContext share_list, bool direct, int render_type);
 		public void destroy ();
-		public bool copy (Gdk.GL.Context src, ulong mask);
-		public weak Gdk.GL.Drawable get_gl_drawable ();
-		public weak Gdk.GL.Config get_gl_config ();
-		public weak Gdk.GL.Context get_share_list ();
+		public bool copy (Gdk.GLContext src, ulong mask);
+		public weak Gdk.GLDrawable get_gl_drawable ();
+		public weak Gdk.GLConfig get_gl_config ();
+		public weak Gdk.GLContext get_share_list ();
 		public bool is_direct ();
 		public int get_render_type ();
-		public static weak Gdk.GL.Context get_current ();
+		public static weak Gdk.GLContext get_current ();
 	}
 		
-	public class Drawable : GLib.Object
+	public class GLDrawable : GLib.Object
 	{
-		public bool make_current (Gdk.GL.Context  glcontext);
+		public bool make_current (Gdk.GLContext  glcontext);
 		public bool is_double_buffered ();
 		public void swap_buffers ();
 		public void wait_gl ();
 		public void wait_gdk ();
-		public bool gl_begin (Gdk.GL.Context glcontext);
+		public bool gl_begin (Gdk.GLContext glcontext);
 		public void gl_end ();
-		public weak Gdk.GL.Config get_gl_config ();
+		public weak Gdk.GLConfig get_gl_config ();
 		public void get_size (out int width, out int height);
-		public static Gdk.GL.Drawable get_current ();
+		public static Gdk.GLDrawable get_current ();
 	
-		/*public virtual signal Gdk.GL.Context create_new_context (Gdk.GL.Context share_list, bool direct, int render_type);
-		public virtual signal bool make_context_current (Gdk.GL.Drawable read, Gdk.GL.Context glcontext);
+		/*public virtual signal Gdk.GLContext create_new_context (Gdk.GLContext share_list, bool direct, int render_type);
+		public virtual signal bool make_context_current (Gdk.GLDrawable read, Gdk.GLContext glcontext);
 		public virtual signal bool is_double_buffered ();
 		public virtual signal void swap_buffers ();
 		public virtual signal void wait_gl ();
 		public virtual signal void wait_gdk ();
-		public virtual signal bool gl_begin (Gdk.GL.Drawable read, Gdk.GL.Context glcontext);
+		public virtual signal bool gl_begin (Gdk.GLDrawable read, Gdk.GLContext glcontext);
 		public virtual signal void gl_end ();
-		public virtual signal Gdk.GL.Config  get_gl_config ();
+		public virtual signal Gdk.GLConfig  get_gl_config ();
 		public virtual signal void get_size (out int width, out int height);
 		*/
 	}
 	
-	public class Pixmap : Gdk.Drawable
+	public class GLPixmap : Gdk.Drawable
 	{
-		public Pixmap (Gdk.GL.Config glconfig, Gdk.Pixmap pixmap, [CCode (array_length = false)] int[] attrib_list);
+		public GLPixmap (Gdk.GLConfig glconfig, Gdk.Pixmap pixmap, [CCode (array_length = false)] int[] attrib_list);
 		public void destroy ();
 		public weak Gdk.Pixmap get_pixmap ();
 	}
-	
-	[CCode (lower_case_cprefix="gdk_pixmap_")]
-	namespace GdkPixmap
-	{
-		public static weak Gdk.GL.Pixmap set_gl_capability (Gdk.Pixmap pixmap, Gdk.GL.Config glconfig, [CCode (array_length = false)] int[] attrib_list);
+
+	[CCode (cprefix="gdk_pixmap_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public class PixmapGL {
+		public static weak Gdk.GLPixmap set_gl_capability (Gdk.Pixmap pixmap, Gdk.GLConfig glconfig, [CCode (array_length = false)] int[] attrib_list);
 		public static void unset_gl_capability (Gdk.Pixmap pixmap);
 		public static bool is_gl_capable (Gdk.Pixmap pixmap);
-		public static weak Gdk.GL.Pixmap get_gl_pixmap (Gdk.Pixmap pixmap);
-		public static weak Gdk.GL.Drawable get_gl_drawable (Gdk.Pixmap pixmap);
+		public static weak Gdk.GLPixmap get_gl_pixmap (Gdk.Pixmap pixmap);
+		public static weak Gdk.GLDrawable get_gl_drawable (Gdk.Pixmap pixmap);
 	}
 	
-	public class Window : Gdk.Drawable
+	public class GLWindow : Gdk.Drawable
 	{
-		public Window (Gdk.GL.Config glconfig, Gdk.Window window, [CCode (array_length = false)] int[] attrib_list);
+		public GLWindow (Gdk.GLConfig glconfig, Gdk.Window window, [CCode (array_length = false)] int[] attrib_list);
 		public void destroy ();
 		public weak Gdk.Window get_window ();
 	}
-	
-	[CCode (lower_case_cprefix="gdk_window_")]
-	namespace GdkWindow
-	{
-		public static weak Gdk.GL.Window set_gl_capability (Gdk.Window window, Gdk.GL.Config glconfig, [CCode (array_length = false)] int[] attrib_list);
+
+	[CCode (cprefix="gdk_window_", cheader_filename="gtkglext-1.0/gdk/gdkgl.h")]
+	public class WindowGL {
+		public static weak Gdk.GLWindow set_gl_capability (Gdk.Window window, Gdk.GLConfig glconfig, [CCode (array_length = false)] int[] attrib_list);
 		public static void unset_gl_capability (Gdk.Window window);
 		public static bool is_gl_capable (Gdk.Window window);
-		public static weak Gdk.GL.Window get_gl_window (Gdk.Window window);
-		public static weak Gdk.GL.Drawable get_gl_drawable (Gdk.Window window);
+		public static weak Gdk.GLWindow get_gl_window (Gdk.Window window);
+		public static weak Gdk.GLDrawable get_gl_drawable (Gdk.Window window);
 	}
 }
 
-[CCode (lower_case_cprefix="gtk_gl_", cheader_filename="gtkglext-1.0/gtk/gtkgl.h")]
-namespace Gtk.GL
+[CCode (lower_case_cprefix="gtk_", cprefix="Gtk")]
+namespace Gtk
 {
-	public static void init ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
-	public static bool init_check ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
-	public static bool parse_args ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
+	[CCode (cheader_filename="gtkglext-1.0/gtk/gtkgl.h")]
+	public static void gl_init ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
+	[CCode (cheader_filename="gtkglext-1.0/gtk/gtkgl.h")]
+	public static bool gl_init_check ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
+	[CCode (cheader_filename="gtkglext-1.0/gtk/gtkgl.h")]
+	public static bool gl_parse_args ([CCode (array_length_pos = 0.9)] ref weak string[] argv);
 	
-	[CCode (lower_case_cprefix="gtk_widget_")]
-	namespace GtkWidget
+	[CCode (cprefix="gtk_widget_", cheader_filename="gtkglext-1.0/gtk/gtkgl.h")]
+	public class WidgetGL
 	{
-		public static bool set_gl_capability (Gtk.Widget widget, Gdk.GL.Config glconfig, Gdk.GL.Context? share_list, bool direct, int render_type);
+		public static bool set_gl_capability (Gtk.Widget widget, Gdk.GLConfig glconfig, Gdk.GLContext? share_list, bool direct, int render_type);
 		public static bool is_gl_capable (Gtk.Widget widget);
-		public static weak Gdk.GL.Config get_gl_config (Gtk.Widget widget);
-		public static weak Gdk.GL.Context create_gl_context (Gtk.Widget widget, Gdk.GL.Context share_list, bool direct, int render_type);
-		public static weak Gdk.GL.Context get_gl_context (Gtk.Widget widget);
-		public static weak Gdk.GL.Window  get_gl_window (Gtk.Widget widget);
-		public static weak Gdk.GL.Drawable get_gl_drawable (Gtk.Widget widget);
+		public static weak Gdk.GLConfig get_gl_config (Gtk.Widget widget);
+		public static weak Gdk.GLContext create_gl_context (Gtk.Widget widget, Gdk.GLContext share_list, bool direct, int render_type);
+		public static weak Gdk.GLContext get_gl_context (Gtk.Widget widget);
+		public static weak Gdk.GLWindow  get_gl_window (Gtk.Widget widget);
+		public static weak Gdk.GLDrawable get_gl_drawable (Gtk.Widget widget);
+		public static bool gl_begin(Gtk.Widget widget) {
+			Gdk.GLContext context = get_gl_context(widget);
+			Gdk.GLDrawable drawable = get_gl_drawable(widget);
+			return drawable.gl_begin(context);
+		}
+		public static bool gl_swap(Gtk.Widget widget) {
+			Gdk.GLDrawable drawable = get_gl_drawable(widget);
+			if(drawable.is_double_buffered()) {
+				drawable.swap_buffers();
+				return true;
+			}
+			return false;
+		}
+		public static void gl_end(Gtk.Widget widget) {
+			Gdk.GLDrawable drawable = get_gl_drawable(widget);
+			drawable.gl_end();
+		}
 	}
 }
 

@@ -28,7 +28,9 @@ dnl variable VALAC is set. Optionally a minimum release number of the compiler
 dnl can be requested.
 dnl --------------------------------------------------------------------------
 AC_DEFUN([VALA_PROG_VALAC],[
-  AC_PATH_PROG([VALAC], [valac], [])
+  AC_PATH_PROG([VALAC_BIN], [valac], [])
+  AC_SUBST(VALAC_BIN)
+  VALAC="$VALAC_BIN --vapidir=\$(top_srcdir)/vapi"
   AC_SUBST(VALAC)
 dnl  these are not useful since autoconf doesn't allow nested
 dnl  substitutions in _SOURCES
@@ -47,13 +49,13 @@ dnl    AC_SUBST(VALA_OBJECTS)
   AC_SUBST(VALA_OBJECT_RULES)
   AC_SUBST(VALA_CCODE_RULES)
 
-  if test -z "x${VALAC}"; then
+  if test -z "x${VALAC_BIN}"; then
     AC_MSG_WARN([No Vala compiler found. You will not be able to recompile .vala source files.])
   elif test -n "x$1"; then
     AC_REQUIRE([AC_PROG_AWK])
     AC_MSG_CHECKING([valac is at least version $1])
 
-    if "${VALAC}" --version | "${AWK}" -v r='$1' 'function vn(s) { if (3 == split(s,v,".")) return (v[1]*1000+v[2])*1000+v[3]; else exit 2; } /^Vala / { exit vn(r) > vn($[2]) }'; then
+    if "${VALAC_BIN}" --version | "${AWK}" -v r='$1' 'function vn(s) { if (3 == split(s,v,".")) return (v[1]*1000+v[2])*1000+v[3]; else exit 2; } /^Vala / { exit vn(r) > vn($[2]) }'; then
       AC_MSG_RESULT([yes])
     else
       AC_MSG_RESULT([no])
