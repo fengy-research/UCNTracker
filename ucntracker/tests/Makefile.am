@@ -2,7 +2,9 @@ include ../Makefile.tests
 
 LDADD = ../libucntracker.la
 
-VAPIDEPENDS = ../physics/physics.vapi ../core/core.vapi ../builder/builder.vapi ../library/init.vapi
+VAPIDEPENDS = ../physics/physics.vapi ../core/core.vapi \
+../builder/builder.vapi ../library/init.vapi 
+
 
 noinst_PROGRAMS = \
 	test-linking \

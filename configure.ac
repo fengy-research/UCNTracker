@@ -20,6 +20,10 @@ PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.10 gobject-2.0 >= 2.10 gmodule-2.0 >= 2.1
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
+PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.10])
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
+
 PKG_CHECK_MODULES(GSL, [gsl])
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
@@ -28,6 +32,7 @@ AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
 				ucntracker/tests/Makefile
+				ucntracker/vis-tests/Makefile
 				ucntracker/builder/Makefile
 				ucntracker/physics/Makefile
 				ucntracker/core/Makefile

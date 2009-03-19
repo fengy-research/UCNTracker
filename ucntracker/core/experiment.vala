@@ -26,10 +26,14 @@ public class Experiment: Object, Buildable {
 		runs.prepend(run);
 		return run;
 	}
+	public void attach_run(Run run) {
+		/*The run detaches itself by returning false in Run.run1,
+		 * when it finishes.*/
+		run.source.attach(this.context);
+	}
 	public void run() {
 		loop = new MainLoop(this.context, false);
 		Run run = add_run();
-		run.source.attach(this.context);
 		loop.run();
 	}
 	public void quit() {

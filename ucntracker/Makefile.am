@@ -1,4 +1,4 @@
-SUBDIRS = builder physics core library . tests
+SUBDIRS = builder physics core library . tests vis-tests
 
 lib_LTLIBRARIES = libucntracker.la 
 libucntracker_la_SOURCES = 
