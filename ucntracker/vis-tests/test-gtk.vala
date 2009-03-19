@@ -1,6 +1,7 @@
 using GLib;
 using Gtk;
 using GL;
+using GLU;
 
 using UCNTracker;
 using UCNTracker.Geometry;
@@ -88,21 +89,25 @@ public int main(string[] args) {
 			(GLsizei)obj.allocation.width,
 			(GLsizei)obj.allocation.height);
 		WidgetGL.gl_end(obj);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective(45, 
+		(GLdouble)obj.allocation.width/ (GLdouble)obj.allocation.height,
+			               1, 10);
+		glMatrixMode(GL_MODELVIEW);
 		return true;
 	};
 	d.expose_event += (obj, event) => {
 		if(!WidgetGL.gl_begin(obj)) return false;
 		glClear(GL_COLOR_BUFFER_BIT);
-		glBegin(GL_TRIANGLES);
-			glIndexi (0);
-			glColor3f (1.0f, 0.0f, 0.0f);
-			glVertex2i (0, 1);
-			glIndexi (0);
-			glColor3f (0.0f, 1.0f, 0.0f);
-			glVertex2i (-1, -1);
-			glIndexi (0);
-			glColor3f (0.0f, 0.0f, 1.0f);
-			glVertex2i (1, -1);
+		glLoadIdentity();
+
+		gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+
+		glBegin(GL_POINTS);
+			glVertex3i (0, 1, 0);
+			glVertex3i (-1, -1, 0);
+			glVertex3i (1, -1, 0);
 		glEnd();
 		if(!WidgetGL.gl_swap(obj)) {
 			glFlush();
