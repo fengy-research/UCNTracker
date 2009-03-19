@@ -24,8 +24,8 @@ public int main(string[] args) {
  </child>
  <child>
   <object class="UCNDevicePart" id="part1">
+   <property name="layer">0</property>
    <child type="volume">
-    <property name="layer">0</property>
     <object class="UCNGeometryBall" id="part1box">
      <property name="center">1, 2, 3</property>
      <property name="radius">2</property>
@@ -59,6 +59,7 @@ public int main(string[] args) {
 
 	experiment.finish += (obj, run) => {
 		message("run finished");
+		obj.quit();
 	};
 
 

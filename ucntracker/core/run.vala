@@ -12,12 +12,14 @@ namespace Device {
 		 */
 		public double time_limit = double.MAX;
 
+		public bool running = false;
 		public double timestamp;
 		/* in each run, move all tracks forward at least by 
 		 * SYNC_TIME_STEP*/
 		public const double SYNC_TIME_STEP = 0.2;
-		private MainContext context;
-		private MainLoop loop;
+
+		public Source source {get; set; default = new IdleSource();}
+
 		public List<Track> tracks;
 		public List<weak Track> active_tracks;
 
@@ -50,24 +52,23 @@ namespace Device {
 		}
 
 		public Run(Experiment experiment) {
-			this.context = new MainContext();
-			this.loop = new MainLoop(context, false);
 			this.experiment = experiment;
+			this.source.set_callback(run1, null);
 		}
 
 		public signal void track_motion_notify(Track track, State prev);
 
-		public void run() {
-			IdleSource idle = new IdleSource();
-			idle.set_callback(run1, null);
-			idle.attach(context);
-			loop.run();
-		}
-
 		private bool run1() {
-			if(active_tracks == null || timestamp > time_limit) {
-				loop.quit();
+			if(running == true && 
+				(active_tracks == null || timestamp > time_limit)) {
+				message("%lf %lf", timestamp, time_limit);
+				running = false;
+				experiment.finish(this);
 				return false;
+			}
+			if(running == false) {
+				experiment.prepare(this);
+				running = true;
 			}
 			double next_t = timestamp + SYNC_TIME_STEP;
 			foreach(Track track in active_tracks) {

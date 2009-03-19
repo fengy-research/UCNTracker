@@ -560,9 +560,17 @@ _ucn_builder_add (UCNBuilder *builder,
       child_info->added)
     return;
 
-  object = child_info->object;
-  if (!object)
+  /* If the ref id of the child tag is give,
+ *   use the object refered by the id for the child and ignore
+ *   the child object inside.*/
+  if (child_info->ref_object_id)
+    object = ucn_builder_get_object(builder, child_info->ref_object_id);
+  else
+    object = child_info->object;
+
+  if (!object) {
     return;
+  }
 
   if (!child_info->parent)
     {

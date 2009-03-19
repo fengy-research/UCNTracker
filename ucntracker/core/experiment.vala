@@ -8,6 +8,8 @@ namespace UCNTracker {
 public class Experiment: Object, Buildable {
 	public List<Part> parts;
 	public List<Run> runs;
+	public MainContext context = null;
+	public MainLoop loop = null;
 
 	public void add_child(Builder builder, GLib.Object child, string? type) {
 		if(child is Part) {
@@ -19,14 +21,20 @@ public class Experiment: Object, Buildable {
 
 	public signal void prepare(Run run);
 	public signal void finish(Run run);
-	public void run() {
+	public Run add_run() {
 		Run run = new Run(this);
 		runs.prepend(run);
-		prepare(run);
-		run.run();
-		finish(run);
+		return run;
 	}
-
+	public void run() {
+		loop = new MainLoop(this.context, false);
+		Run run = add_run();
+		run.source.attach(this.context);
+		loop.run();
+	}
+	public void quit() {
+		loop.quit();
+	}
 	public bool locate(Vertex vertex,
 	       out unowned Part located, out unowned Volume volume) {
 		foreach(Part part in parts) {

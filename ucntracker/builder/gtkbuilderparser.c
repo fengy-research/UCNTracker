@@ -427,8 +427,10 @@ parse_child (ParserData   *data,
         child_info->type = g_strdup (values[i]);
       else if (strcmp (names[i], "internal-child") == 0)
         child_info->internal_child = g_strdup (values[i]);
-      else
-	error_invalid_attribute (data, element_name, names[i], error);
+      else if (strcmp (names[i], "ref") == 0) {
+        child_info->ref_object_id = g_strdup (values[i]);
+      } else
+        error_invalid_attribute (data, element_name, names[i], error);
     }
 
   child_info->parent = (CommonInfo*)object_info;

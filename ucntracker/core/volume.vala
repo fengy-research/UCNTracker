@@ -78,6 +78,9 @@ namespace Geometry {
 
 		/**
 		 * return the sense of the point.
+		 * - for inside;
+		 * + for outside;
+		 * 0 for on surface;
 		 */
 		public virtual Sense sense(Vector point) {
 			if(point.distance(_center) > bounding_radius + thickness) {

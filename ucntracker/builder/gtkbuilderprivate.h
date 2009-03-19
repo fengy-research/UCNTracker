@@ -49,6 +49,7 @@ typedef struct {
   CommonInfo *parent;
   gchar *type;
   gchar *internal_child;
+  gchar * ref_object_id;
   gboolean added;
 } ChildInfo;
 

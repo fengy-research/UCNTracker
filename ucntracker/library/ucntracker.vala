@@ -11,4 +11,7 @@ namespace UCNTracker {
 		manager.query_static(core_init);
 		return true;
 	}
+	public void main() {
+
+	}
 }
