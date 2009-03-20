@@ -23,7 +23,7 @@ public int main(string[] args) {
 	experiment.prepare += (obj, run) => {
 		Vertex start = new Vertex();
 		start.position = Vector(1.0, 1.2, -10.0);
-		start.velocity = Vector(0.0, 0.0, 0.1);
+		start.velocity = Vector(0.0, 0.0, 2.0);
 		start.weight = 1.0;
 		run.time_limit = 1000;
 		message("run started");
@@ -90,6 +90,12 @@ private const string GML =
      <property name="radius">100</property>
     </object>
    </child>
+  </object>
+ </child>
+ <child>
+  <object class="UCNGField" id="gfield">
+   <property name="g">0.1</property>
+   <child type="volume" ref="envball"/>
   </object>
  </child>
  <child>

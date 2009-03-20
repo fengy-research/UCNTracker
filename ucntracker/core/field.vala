@@ -18,7 +18,7 @@ namespace UCNTracker {
 		public abstract void fieldfunc(Vertex vertex, Vertex force);
 	}
 	public class GField: Field, Buildable {
-		public double _g = 980;
+		private double _g = 9.8;
 		public double g {
 			get {
 				return _g;
@@ -26,7 +26,7 @@ namespace UCNTracker {
 			set {
 				_g = value;
 				acc = _direction;
-				acc.mul(g);
+				acc.mul(_g);
 			}
 		}
 		private Vector _direction = Vector(0.0, 0.0, -1.0);
@@ -41,10 +41,19 @@ namespace UCNTracker {
 			}
 		}
 		public Vector acc {get; private set;}
-		public override void fieldfunc(Vertex phase_space_pos, 
-		               Vertex phase_space_vel) {
-			phase_space_vel.position = phase_space_pos.velocity;
-			phase_space_vel.velocity = acc;
+		construct {
+			acc = _direction;
+			acc.mul(g);
+		}
+		/**
+		 * pspace_pos: phase space position
+		 * pspace_vel: phase space velocity
+		 */
+		public override void fieldfunc(Vertex pspace_pos, 
+		               Vertex pspace_vel) {
+			pspace_vel.velocity.x += acc.x;
+			pspace_vel.velocity.y += acc.y;
+			pspace_vel.velocity.z += acc.z;
 		}
 	}
 }

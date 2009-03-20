@@ -36,13 +36,12 @@ namespace UCNTracker {
 			[CCode (array_length = false)]
 			double[] dydt, void * params) {
 		    Evolution ev = (Evolution)params;
-		    Vector vel = ev.track.tail.velocity;
-		    dydt[0] = vel.x;
-		    dydt[1] = vel.y;
-		    dydt[2] = vel.z;
-		    dydt[3] = 0.0;
-		    dydt[4] = 0.0;
-		    dydt[5] = 0.0;
+			Vertex v = new Vertex();
+			Vertex pspace_vel = new Vertex();
+			v.from_array(y);
+			ev.track.experiment.calculate_pspace_velocity(v, pspace_vel);
+
+		    pspace_vel.to_array(dydt);
 
 		    return Gsl.Status.SUCCESS;
 		}
@@ -68,8 +67,9 @@ namespace UCNTracker {
 		}
 
 		public void reintegrate_to(Vertex future, double dt) {
-			double [] y = track.tail.to_array();
+			double [] y = new double[6];
 			double [] yerr = new double[6];
+			track.tail.to_array(y);
 			double t0 = track.tail.timestamp;
 			ode_step.reset();
 			ode_step.apply(t0, dt, y, yerr, null, null, &ode_system);
@@ -77,7 +77,8 @@ namespace UCNTracker {
 			future.timestamp = t0 + dt;
 		}
 		public void integrate(Vertex future, ref double dt) {
-			double [] y = track.tail.to_array();
+			double [] y = new double [6];
+			track.tail.to_array(y);
 			double t0 = track.tail.timestamp;
 			double t1 = t0 + dt;
 
