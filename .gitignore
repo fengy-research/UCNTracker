@@ -5,9 +5,11 @@ autom4te.cache
 compile
 /config.*
 configure
+autotools/config*
 depcomp
 .deps/
 .libs/
+dolt*
 install-sh
 libtool
 ltmain.sh
@@ -17,7 +19,13 @@ stamp-h1
 *.lo
 *.tar.gz
 *.la
-*/tests/*.[ch]
+*.[ch]
+!ucntracker/builder/*.[ch]
+*.vapi
+*.gir
+!ucntracker/builder/*.vapi
 */tests/test*
 !*/tests/*.vala
+vala-ccode
 vala-stamp
+temp/
