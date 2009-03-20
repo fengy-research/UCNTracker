@@ -1,4 +1,4 @@
-AC_INIT([UCNTracker], [0.0], [fengy@indiana.edu])
+AC_INIT([UCNTracker], [0.1], [fengy@indiana.edu])
 
 AC_CONFIG_MACRO_DIR([autotools])
 AC_CONFIG_AUX_DIR([autotools])
@@ -14,7 +14,7 @@ AC_PROG_LIBTOOL
 DOLT
 AC_PROG_CC
 AM_PROG_CC_C_O
-VALA_PROG_VALAC(0.5.6)
+VALA_PROG_VALAC(0.5.7)
 AC_CHECK_LIB(m, log1p)
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.10 gobject-2.0 >= 2.10 gmodule-2.0 >= 2.10])
 AC_SUBST(GLIB_CFLAGS)
@@ -36,13 +36,13 @@ AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
 				ucntracker/tests/Makefile
-				ucntracker/vis-tests/Makefile
 				ucntracker/builder/Makefile
 				ucntracker/math/Makefile
 				ucntracker/physics/Makefile
 				ucntracker/core/Makefile
-				ucntracker/library/Makefile
-				ucntracker/visualize/Makefile
+				ucntracker/main/Makefile
+				ucntracker-vis/Makefile
+				ucntracker-vis/tests/Makefile
 				examples/Makefile
 				examples/E01/Makefile
 				])
