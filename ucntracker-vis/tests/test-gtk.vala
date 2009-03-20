@@ -35,13 +35,9 @@ public int main(string[] args) {
 		message("run finished");
 	};
 
-
-	environment.hit += (obj, track, state) => {
-		message("environment %p %lf", track, state.timestamp);
-	};
+	/*
 	part1.hit += (obj, track, state) => {
-		return;
-	};
+	};*/
 
 	part1.transport += (obj, track, leave, enter, transported)
 	  => {

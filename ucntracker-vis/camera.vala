@@ -85,7 +85,11 @@ namespace UCNTracker {
 		public override bool button_release_event(Gdk.EventButton event) {
 			get_pointer(out drag_end_x, out drag_end_y);
 			int dy = drag_end_y - drag_start_y;
-			_location.z += dy;
+			if(dy > 0)
+				_location.x *= 2;
+			else
+				_location.x /= 2;
+			message("%lf", _location.x);
 			queue_draw();
 			return true;
 		}
@@ -102,11 +106,12 @@ namespace UCNTracker {
 			glLoadIdentity();
 			gluPerspective(45,
 			(GLdouble)allocation.width/ (GLdouble)allocation.height,
-		               	   1, 100);
+		               	   0.01, 100);
 			glMatrixMode(GL_MODELVIEW);
 			WidgetGL.gl_end(this);
 			return true;
 		}
+		private Renderer renderer = new Renderer();
 		public override bool expose_event(Gdk.EventExpose event) {
 			message("expose");
 			assert(WidgetGL.gl_begin(this));
@@ -117,6 +122,7 @@ namespace UCNTracker {
 					target.x, target.y, target.z, up.x, up.y, up.z);
 
 			if(run != null) {
+				renderer.visit_experiment(run.experiment);
 				foreach (Track track in run.tracks) {
 					float r = (float)track.get_double("r");
 					float g = (float)track.get_double("g");
