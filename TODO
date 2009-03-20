@@ -1,1 +1,4 @@
-Find a better name than phase_space_position phase_space_velocity.
+o Find a better name than phase_space_position phase_space_velocity. 
+  use pspace 
+* Prepare a public git repository
+* benchmarking the field simulation. How slow it is?
