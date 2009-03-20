@@ -15,6 +15,9 @@ libtool
 ltmain.sh
 missing
 stamp-h1
+_inst/
+*.so
+*.a
 *.o
 *.lo
 *.tar.gz
