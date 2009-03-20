@@ -1,0 +1,77 @@
+Welcome to UCNTracker 
+=========================
+  Last update Monday, March 20 2009.
+
+Introduction
+============
+  This part is missing.
+
+Source
+======
+  Currently there is no public writable repository. Also, because
+  the codebase is at a very initial stage, the commit topics are 
+  senseless.
+
+  A read-only repository is at
+    git clone git://129.79.155.240/~fengyu/UCNTracker
+
+  git is the version control tool used by major free softwares projects.
+  A tutorial is available at 
+    http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html
+
+Dependency
+==========
+  The package depends on
+    glib-2.0 >= 2.10+:
+      http://ftp.gnome.org/pub/gnome/sources/glib/
+      In general, any version newer than 2.10 should work.
+    vala >= 0.5.7:
+      http://download.gnome.org/sources/vala/0.5/
+      I have prebuilt packages on RHEL5 and Fedora 10.
+    gsl >= 1.2:
+
+  For visualization the following packages are needed
+    gtk+-2.0 >= 2.12:
+      http://ftp.gnome.org/pub/gnome/sources/gtk+/
+    gtkglext-1.0 >= 1.2.0:
+      http://sourceforge.net/project/showfiles.php?group_id=54333&package_id=48997&release_id=391012
+      refer to http://bugzilla.gnome.org/show_bug.cgi?id=119189 for 
+      the progress of GtkGLExt getting into GTK.
+
+Compiling
+=========
+  # these commands should be sufficient 
+  $ ./autogen.sh
+  $ make
+
+Code Layout
+===========
+  UCNTracker       : git repository root
+  |-- autotools    : macros and scripts used by autotools
+  |-- ucntracker   : the main ucntracker library is built here
+  |   |-- builder  : UCNBuilder, the geometry xml parser.
+  |   |-- math     : math library(vectors and stuff)
+  |   |-- physics  : defining particle types
+  |   |-- core     : the tracking system
+  |   |-- library  : the library interface
+  |   |-- visualize : the GTK visualization widget
+  |   `-- tests    : very minimal test cases
+  `---examples     : bundled apps
+      |-- E01      : average length a particle goes before
+                     getting out of a sphere = 3/4.
+
+Installation
+===============
+(Draft)
+  make install DESTDIR=....
+
+  The library should be installed to
+     /usr/lib/libucntracker.so.
+  The visualization library should be installed to
+     /usr/lib/libucnvisualization.so
+
+Licenses
+========
+  LGPL v2.0.
+  Please acknowledge the authors, IUCF, and NSF in the publications.
+
