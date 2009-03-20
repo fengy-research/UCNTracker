@@ -1,7 +1,5 @@
 using GLib;
 using UCNTracker;
-using UCNTracker.Geometry;
-using UCNTracker.Device;
 
 const string template = """
 <interface>

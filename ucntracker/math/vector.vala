@@ -2,7 +2,6 @@ using GLib;
 using Math;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Geometry {
 	public struct Vector {
 		public double x;
 		public double y;
@@ -187,5 +186,4 @@ namespace Geometry {
 			return format.printf(alpha, beta, gamma);
 		}
 	}
-}
 }

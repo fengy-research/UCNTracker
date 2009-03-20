@@ -1,10 +1,8 @@
 using GLib;
 using Math;
 
-using UCNTracker.Geometry;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Device {
 	public class Track {
 		public weak Run run {get; private set;}
 
@@ -86,5 +84,4 @@ namespace Device {
 			evolution.evolve();
 		}
 	}
-}
 }

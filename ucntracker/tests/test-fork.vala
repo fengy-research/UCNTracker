@@ -1,7 +1,5 @@
 using GLib;
 using UCNTracker;
-using UCNTracker.Geometry;
-using UCNTracker.Device;
 
 public int main(string[] args) {
 
@@ -12,9 +10,9 @@ public int main(string[] args) {
 <interface>
 <object class="UCNExperiment" id="experiment">
  <child>
-  <object class="UCNDevicePart" id="enviroment">
+  <object class="UCNPart" id="enviroment">
    <child type="volume">
-    <object class="UCNGeometryBall" id="envball">
+    <object class="UCNBall" id="envball">
      <property name="center">0, 0, 0</property>
      <property name="radius">100</property>
     </object>
@@ -23,9 +21,9 @@ public int main(string[] args) {
   </object>
  </child>
  <child>
-  <object class="UCNDevicePart" id="part1">
+  <object class="UCNPart" id="part1">
    <child type="volume">
-    <object class="UCNGeometryBall" id="part1box">
+    <object class="UCNBall" id="part1box">
      <property name="center">1, 2, 3</property>
      <property name="radius">2</property>
     </object>

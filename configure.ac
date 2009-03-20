@@ -38,6 +38,7 @@ AC_CONFIG_FILES([
 				ucntracker/tests/Makefile
 				ucntracker/vis-tests/Makefile
 				ucntracker/builder/Makefile
+				ucntracker/math/Makefile
 				ucntracker/physics/Makefile
 				ucntracker/core/Makefile
 				ucntracker/library/Makefile

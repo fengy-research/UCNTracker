@@ -3,7 +3,6 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Geometry {
 	public abstract class Surface {
 		public Vector center;
 
@@ -46,5 +45,4 @@ namespace Geometry {
 			return norm.dot(p);
 		}
 	}
-}
 }

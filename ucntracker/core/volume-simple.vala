@@ -3,7 +3,10 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Geometry {
+	/****
+	 * This is to work around VALA bz 572920
+	 */
+	public static Surface ____load_surface_headers___;
 	public abstract class Primitive : Volume {
 		protected Surface[] surfaces = null;
 
@@ -29,5 +32,4 @@ namespace Geometry {
 		}
 
 	}
-}
 }

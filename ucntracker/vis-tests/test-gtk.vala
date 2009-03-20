@@ -4,9 +4,6 @@ using GL;
 using GLU;
 
 using UCNTracker;
-using UCNTracker.Geometry;
-using UCNTracker.Device;
-
 UCNTracker.Builder builder;
 UCNTracker.Camera gl;
 
@@ -85,10 +82,10 @@ private const string GML =
 <interface>
 <object class="UCNExperiment" id="experiment">
  <child>
-  <object class="UCNDevicePart" id="environment">
+  <object class="UCNPart" id="environment">
    <property name="layer">-1</property>
    <child type="volume">
-    <object class="UCNGeometryBall" id="envball">
+    <object class="UCNBall" id="envball">
      <property name="center">0, 0, 0</property>
      <property name="radius">100</property>
     </object>
@@ -96,10 +93,10 @@ private const string GML =
   </object>
  </child>
  <child>
-  <object class="UCNDevicePart" id="part1">
+  <object class="UCNPart" id="part1">
    <property name="layer">0</property>
    <child type="volume">
-    <object class="UCNGeometryBall" id="part1box">
+    <object class="UCNBall" id="part1box">
      <property name="center">1, 2, 3</property>
      <property name="radius">2</property>
     </object>

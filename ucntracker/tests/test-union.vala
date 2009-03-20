@@ -1,7 +1,5 @@
 using GLib;
 using UCNTracker;
-using UCNTracker.Geometry;
-using UCNTracker.Device;
 
 public int main(string[] args) {
 
@@ -10,15 +8,15 @@ public int main(string[] args) {
 	builder.add_from_string(
 """
 <interface>
-<object class="UCNGeometryBox" id="box1">
+<object class="UCNBox" id="box1">
  <property name="center">0, 0, 0</property>
  <property name="size">2, 2, 2</property>
 </object>
-<object class="UCNGeometryBox" id="box2">
+<object class="UCNBox" id="box2">
  <property name="center">0, 0, 1</property>
  <property name="size">1, 1, 1</property>
 </object>
-<object class="UCNGeometryUnion" id="union">
+<object class="UCNUnion" id="union">
   <child ref="box1"/>
   <child ref="box2"/>
 </object>

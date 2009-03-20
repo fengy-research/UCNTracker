@@ -1,7 +1,5 @@
 using GLib;
 using UCNTracker;
-using UCNTracker.Geometry;
-using UCNTracker.Device;
 
 public int main(string[] args) {
 
@@ -12,11 +10,11 @@ public int main(string[] args) {
 <interface>
 <object class="UCNExperiment" id="experiment">
  <child>
-  <object class="UCNDevicePart" id="env">
+  <object class="UCNPart" id="env">
    <property name="layer">-1</property>
    <property name="mfp">1000</property>
    <child type="volume">
-    <object class="UCNGeometryBox">
+    <object class="UCNBox">
      <property name="center">0, 0, 0</property>
      <property name="size">100, 100, 100</property>
     </object>
@@ -24,11 +22,11 @@ public int main(string[] args) {
   </object>
  </child>
  <child>
-  <object class="UCNDevicePart" id="thicker">
+  <object class="UCNPart" id="thicker">
    <property name="layer">0</property>
    <property name="mfp">0.1</property>
    <child type="volume">
-    <object class="UCNGeometryBox">
+    <object class="UCNBox">
      <property name="center">0, 0, 1</property>
      <property name="size">2, 2, 1</property>
     </object>
@@ -36,11 +34,11 @@ public int main(string[] args) {
   </object>
  </child>
  <child>
-  <object class="UCNDevicePart" id="thinner">
+  <object class="UCNPart" id="thinner">
    <property name="layer">0</property>
    <property name="mfp">0.01</property>
    <child type="volume">
-    <object class="UCNGeometryBox">
+    <object class="UCNBox">
      <property name="center">0, 0, 0</property>
      <property name="size">2, 2, 1</property>
     </object>

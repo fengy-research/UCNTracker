@@ -3,7 +3,6 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Geometry {
 	/***
 	 * Although the Ball is also a Primitive,
 	 * it doesn't make use of the surfaces[] array.
@@ -19,6 +18,4 @@ namespace Geometry {
 			return point.distance(center) - radius;
 		}	
 	}
-
-}
 }

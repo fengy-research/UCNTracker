@@ -1,7 +1,5 @@
 using GLib;
 using UCNTracker;
-using UCNTracker.Geometry;
-using UCNTracker.Device;
 
 public int main(string[] args) {
 	UCNTracker.init(ref args);
@@ -9,8 +7,8 @@ public int main(string[] args) {
 	builder.add_from_string(
 """
 	<interface>
-		<object class="UCNDevicePart" id="part1">
-			<child type="volume"><object class="UCNGeometryBall">
+		<object class="UCNPart" id="part1">
+			<child type="volume"><object class="UCNBall">
 			<property name="center">1, 2, 3</property>
 			<property name="radius">2.0</property>
 			</object></child>

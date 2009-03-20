@@ -3,7 +3,6 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Geometry {
 	public class Union: Volume, Buildable {
 		public List<Volume> children;
 		public void add_child(Builder builder, GLib.Object child, string? type) {
@@ -59,5 +58,4 @@ namespace Geometry {
 			}
 		}
 	}
-}
 }

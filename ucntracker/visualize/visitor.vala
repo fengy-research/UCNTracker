@@ -4,8 +4,6 @@ using GL;
 using GLU;
 using Math;
 
-using UCNTracker.Geometry;
-using UCNTracker.Device;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Renderer {

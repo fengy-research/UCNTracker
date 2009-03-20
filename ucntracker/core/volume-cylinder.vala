@@ -3,7 +3,6 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Geometry {
 	public class Cylinder : Primitive , Buildable {
 		private double _length = 0.0;
 		private double _radius = 0.0;
@@ -45,5 +44,4 @@ namespace Geometry {
 			this.radius = radius;
 		}
 	}
-}
 }

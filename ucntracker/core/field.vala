@@ -1,10 +1,8 @@
 using GLib;
 using Math;
 
-using UCNTracker.Geometry;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Device {
 	public abstract class Field: Object, Buildable {
 		public List<Volume> volumes;
 		public void add_child(Builder builder, GLib.Object child, string? type) {
@@ -49,6 +47,5 @@ namespace Device {
 			phase_space_vel.velocity = acc;
 		}
 	}
-}
 }
 	

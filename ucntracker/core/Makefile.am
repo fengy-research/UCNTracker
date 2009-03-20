@@ -9,15 +9,12 @@ libcore_la_SOURCES =  \
 
 VALASOURCES = \
 	types.vala \
-	vector.vala \
-	surface.vala \
 	volume.vala \
 	volume-simple.vala \
 	volume-boolean.vala \
 	volume-ball.vala \
 	volume-box.vala \
 	volume-cylinder.vala \
-	curve.vala \
 	experiment.vala \
 	intersection.vala \
 	run.vala \
@@ -30,5 +27,5 @@ VALASOURCES = \
 
 BUILT_SOURCES = vala-ccode
 VALAFLAGS= --library=core --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/vapi
-VALAPKGS = ../physics/physics.vapi ../builder/builder.vapi --pkg gsl --pkg gmodule-2.0
+VALAPKGS = ../math/math.vapi ../physics/physics.vapi ../builder/builder.vapi --pkg gsl --pkg gmodule-2.0
 @VALA_CCODE_RULES@

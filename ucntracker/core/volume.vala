@@ -3,7 +3,18 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Geometry {
+	public enum Sense {
+		/**
+		 * Sense is defined to describe the relative position relation
+		 * between a point and a volume.
+		 * -1 if inside
+		 * 0 if on(very close) the surface
+		 * +1 if outside
+		 */
+		IN = -1,
+		ON = 0,
+		OUT = 1
+	}
 	public abstract class Volume: Object, Buildable {
 		private Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 		private const double delta = 1.0e-3; /* Used by grad*/
@@ -146,5 +157,4 @@ namespace Geometry {
 			point.translate(center);
 		}
 	}
-}
 }

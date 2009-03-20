@@ -1,10 +1,8 @@
 using GLib;
 using Math;
 
-using UCNTracker.Geometry;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Device {
 	public class Part: Object, Buildable {
 		public List<Volume> volumes;
 		public int layer {get; set; default = 0;}
@@ -66,5 +64,4 @@ namespace Device {
 		}
 		
 	}
-}
 }

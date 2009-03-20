@@ -1,8 +1,6 @@
-using UCNTracker.Geometry;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Device {
-	public class Evolution {
+	internal class Evolution {
 
 		private weak Track track;
 		/*INIT_STEP_SIZE is used by the OdeivEvolve */
@@ -237,5 +235,4 @@ namespace Device {
 			return;
 		}
 	}
-}
 }

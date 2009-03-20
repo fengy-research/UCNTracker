@@ -14,7 +14,11 @@ VALASOURCES = \
 BUILT_SOURCES = vala-ccode
 
 VALAFLAGS= --library=visualize --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/vapi
-VALAPKGS = ../builder/builder.vapi ../physics/physics.vapi ../core/core.vapi \
+VALAPKGS = \
+../math/math.vapi \
+../builder/builder.vapi \
+../physics/physics.vapi \
+../core/core.vapi \
 --pkg glu --pkg gl --pkg gtkglext-1.0 --pkg gtk+-2.0
 
 @VALA_CCODE_RULES@
