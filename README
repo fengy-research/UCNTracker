@@ -25,23 +25,38 @@ Source
 Dependency
 ==========
   The package depends on
+
     glib-2.0 >= 2.10+:
       http://ftp.gnome.org/pub/gnome/sources/glib/
       In general, any version newer than 2.10 should work.
+      Available in RHEL 5.
+
     vala >= 0.5.7:
       http://download.gnome.org/sources/vala/0.5/
-      I have prebuilt packages on RHEL5 and Fedora 10.
-    gsl >= 1.2:
+      Prebuilt packages on RHEL5.
+      Available in Fedora 10.
+
+    gsl >= 1.10:
+      ftp://ftp.gnu.org/gnu/gsl/
+      Available in EPEL 5.
 
   For visualization the following packages are needed
     gtk+-2.0 >= 2.12:
       http://ftp.gnome.org/pub/gnome/sources/gtk+/
+      Available in RHEL 5.
+
     gtkglext-1.0 >= 1.2.0:
       http://sourceforge.net/project/showfiles.php?group_id=54333&package_id=48997&release_id=391012
-      refer to http://bugzilla.gnome.org/show_bug.cgi?id=119189 for
-      the progress of GtkGLExt getting into GTK.
 
-  Most packages are available on either RHEL5's repository or from 
+      Refer to http://bugzilla.gnome.org/show_bug.cgi?id=119189 for
+      the progress of GtkGLExt getting into GTK.
+      Prebuilt package on RHEL5.
+
+  Most packages are available on either
+    RHEL 5
+    EPEL 5
+      http://fedoraproject.org/wiki/EPEL
+    or Prebuilt by me at
       http://129.79.155.240/~fengyu/rpmbuild
 
 Compiling
