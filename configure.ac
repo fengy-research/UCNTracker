@@ -41,6 +41,7 @@ AC_CONFIG_FILES([
 				ucntracker/physics/Makefile
 				ucntracker/core/Makefile
 				ucntracker/library/Makefile
+				ucntracker/visualize/Makefile
 				examples/Makefile
 				examples/E01/Makefile
 				])

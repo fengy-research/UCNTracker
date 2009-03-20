@@ -2,9 +2,9 @@ using GLib;
 using Math;
 
 using UCNTracker.Geometry;
+using UCNTracker.Device;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-namespace Device {
 	public class Run {
 		public weak Experiment experiment;
 		/* The current time of this run,
@@ -32,10 +32,11 @@ namespace Device {
 			} else {
 				track.terminated = true;
 			}
+			track_added_notify(track);
 			return track;
 		}
 
-		public Track fork_track(Track parent, PType ptype, State fork_state) {
+		public Track fork_track(Track parent, PType ptype, Vertex fork_state) {
 			Track track = new Track.fork(parent, ptype, fork_state);
 			tracks.prepend(track);
 			if(track.tail.part != null) {
@@ -44,6 +45,7 @@ namespace Device {
 			} else {
 				track.terminated = true;
 			}
+			track_added_notify(track);
 			return track;
 		}
 		public void terminate_track(Track track) {
@@ -56,7 +58,18 @@ namespace Device {
 			this.source.set_callback(run1, null);
 		}
 
-		public signal void track_motion_notify(Track track, State prev);
+		/**
+		 * emitted when a track has moved forward.
+		 * */
+		public signal void track_motion_notify(Track track, Vertex? prev);
+		/**
+		 * emitted when the run has moved forward by a time step
+		 * */
+		public signal void run_motion_notify();
+		/**
+		 * emitted when a track is created, be it forked or directly created
+		 */
+		public signal void track_added_notify(Track track);
 
 		private bool run1() {
 			if(running == true && 
@@ -78,7 +91,8 @@ namespace Device {
 				}
 			}
 			timestamp += SYNC_TIME_STEP;
+			run_motion_notify();
 			return true;
 		}
 	}
-}}
+}

@@ -7,6 +7,7 @@ using UCNTracker.Device;
 namespace UCNTracker {
 public class Experiment: Object, Buildable {
 	public List<Part> parts;
+	public List<Field> fields;
 	public List<Run> runs;
 	public MainContext context = null;
 	public MainLoop loop = null;
@@ -15,8 +16,11 @@ public class Experiment: Object, Buildable {
 		if(child is Part) {
 			parts.insert_sorted(child as Part,
 			      (CompareFunc) Part.layer_compare_func);
-			message("add_child");
 		}
+		if(child is Field) {
+			fields.prepend(child as Field);
+		}
+		message("add_child %s", (child as Buildable).get_name());
 	}
 
 	public signal void prepare(Run run);
@@ -34,6 +38,7 @@ public class Experiment: Object, Buildable {
 	public void run() {
 		loop = new MainLoop(this.context, false);
 		Run run = add_run();
+		attach_run(run);
 		loop.run();
 	}
 	public void quit() {

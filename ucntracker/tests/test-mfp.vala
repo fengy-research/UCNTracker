@@ -76,8 +76,8 @@ public int main(string[] args) {
 
 		run.track_motion_notify += (obj, track, prev) => {
 			stdout.printf("%p %lf %s %s\n", track, track.tail.timestamp, 
-			                       track.tail.vertex.position.to_string(),
-			                       track.tail.vertex.velocity.to_string());
+			                       track.tail.position.to_string(),
+			                       track.tail.velocity.to_string());
 		};
 		message("track added");
 	};

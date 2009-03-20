@@ -3,6 +3,7 @@ using UCNTracker.Geometry;
 namespace UCNTracker {
 namespace Device {
 	public class Evolution {
+
 		private weak Track track;
 		/*INIT_STEP_SIZE is used by the OdeivEvolve */
 		public const double INIT_STEP_SIZE = 1.0;
@@ -37,7 +38,7 @@ namespace Device {
 			[CCode (array_length = false)]
 			double[] dydt, void * params) {
 		    Evolution ev = (Evolution)params;
-		    Vector vel = ev.track.tail.vertex.velocity;
+		    Vector vel = ev.track.tail.velocity;
 		    dydt[0] = vel.x;
 		    dydt[1] = vel.y;
 		    dydt[2] = vel.z;
@@ -68,17 +69,17 @@ namespace Device {
 		    return Gsl.Status.SUCCESS;
 		}
 
-		public void reintegrate_to(ref State future, double dt) {
-			double [] y = track.tail.vertex.to_array();
+		public void reintegrate_to(Vertex future, double dt) {
+			double [] y = track.tail.to_array();
 			double [] yerr = new double[6];
 			double t0 = track.tail.timestamp;
 			ode_step.reset();
 			ode_step.apply(t0, dt, y, yerr, null, null, &ode_system);
-			future.vertex.from_array(y);
+			future.from_array(y);
 			future.timestamp = t0 + dt;
 		}
-		public void integrate(ref State future, ref double dt) {
-			double [] y = track.tail.vertex.to_array();
+		public void integrate(Vertex future, ref double dt) {
+			double [] y = track.tail.to_array();
 			double t0 = track.tail.timestamp;
 			double t1 = t0 + dt;
 
@@ -86,14 +87,15 @@ namespace Device {
 			ref t0, t1, ref step_size, y);
 			dt = t0 - track.tail.timestamp;
 
+			future.from_array(y);
+			/* timestamp is also recovered from the array, which sucks*/
 			future.timestamp = t0;
-			future.vertex.from_array(y);
 			//message("%lf %lf %lf %lf %lf %lf", y[0], y[1], y[2], y[3], y[4], y[5]);
 		}
 
 		public Vector cfunc(double dt) {
-			State future = State();
-			reintegrate_to(ref future, dt);
+			Vertex future = new Vertex();
+			reintegrate_to(future, dt);
 			/*
 			message("dt = %lf tail.position = %lf %lf %lf vertex.position = %lf %lf %lf",
 					dt,	
@@ -105,15 +107,15 @@ namespace Device {
 					future.vertex.position.z);
 					*/
 
-			return future.vertex.position;
+			return future.position;
 		}
 
-		private void move_to(State next, bool do_not_scatter) {
+		private void move_to(Vertex next, bool do_not_scatter) {
 			double dl = track.estimate_distance(next);
 			/*First do physical length accounting*/
 			track.length += dl;
 			/*Then do mean free length accounting*/
-			dl /= track.tail.part.calculate_mfp(next.vertex);
+			dl /= track.tail.part.calculate_mfp(next);
 
 			/**** 
 			 * see if an interaction occurred
@@ -141,7 +143,10 @@ namespace Device {
 
 			var prev = track.tail;
 			track.tail = next;
-
+			track.history.push_tail(track.tail);
+			if(track.history.length > Track.history_length) {
+				track.history.pop_head();
+			}
 			/*****
 			 * Always invoke the track_motion notify 
 			 *
@@ -163,13 +168,13 @@ namespace Device {
 				track.run.terminate_track(track);
 				return;
 			}
-			double dt = track.tail.part.calculate_mfp(track.tail.vertex) /
-			        (HOPS_PER_MFP * track.tail.vertex.velocity.norm());
+			double dt = track.tail.part.calculate_mfp(track.tail) /
+			        (HOPS_PER_MFP * track.tail.velocity.norm());
 
 			//message("mfp = %lf dt = %lf",
 			//track.tail.part.calculate_mfp(track.tail.vertex), dt);
-			State next = State();
-			integrate(ref next, ref dt);
+			Vertex next = new Vertex();
+			integrate(next, ref dt);
 			/*
 			message("next: %lf %lf %lf",
 			    next.vertex.position.x,
@@ -193,21 +198,25 @@ namespace Device {
 			bool is_enter = (next.part != null)
 			        && next.volume.intersect(cfunc, 0, dt, out dt_enter);
 
-			State leave = State();
-			State enter = State();
+			Vertex leave = null;
+			Vertex enter = null;
 			//message("%s %s", is_leave.to_string(), is_enter.to_string());
 
 			if(is_leave && is_enter) {
-				reintegrate_to(ref leave, dt_leave);
-				reintegrate_to(ref enter, dt_enter);
+				leave = new Vertex();
+				enter = new Vertex();
+				reintegrate_to(leave, dt_leave);
+				reintegrate_to(enter, dt_enter);
 			}
 			if(is_leave) {
-				reintegrate_to(ref leave, dt_leave);
-				enter = State.clone(leave);
+				leave = new Vertex();
+				reintegrate_to(leave, dt_leave);
+				enter = leave.clone();
 			}
 			if(is_enter) {
-				reintegrate_to(ref enter, dt_enter);
-				leave = State.clone(enter);
+				enter = new Vertex();
+				reintegrate_to(enter, dt_enter);
+				leave = enter.clone();
 			}
 
 			leave.part = track.tail.part;

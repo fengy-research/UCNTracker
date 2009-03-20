@@ -5,30 +5,6 @@ using UCNTracker.Geometry;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 namespace Device {
-	/* Temporarily move out of Track, to workaround vala bug
-	 * REF needed
-	 * */
-		public struct State {
-			public Vertex vertex;
-			public weak Part part;
-			public weak Volume volume;
-			public double timestamp;
-
-			public State(){
-				vertex = new Vertex();
-			}
-
-			public State.clone(State src) {
-				this.vertex = src.vertex.clone();
-				this.part = src.part;
-				this.volume = src.volume;
-				this.timestamp = src.timestamp;
-			}
-			public void locate_in(Experiment experiment) {
-				experiment.locate(vertex, out part, out volume);
-			}
-		}
-
 	public class Track {
 		public weak Run run {get; private set;}
 
@@ -43,9 +19,13 @@ namespace Device {
 
 		private Datalist<void*> data;
 
-		public double estimate_distance(State next) {
+		public const int history_length = 100;
+
+		public Queue<Vertex> history = new Queue<Vertex>();
+
+		public double estimate_distance(Vertex next) {
 			/*FIXME: use a parabola*/
-			return tail.vertex.position.distance(next.vertex.position);
+			return tail.position.distance(next.position);
 		}
 
 		public void set_vector(string name, Vector val) {
@@ -81,25 +61,25 @@ namespace Device {
 			this.experiment = run.experiment;
 			this.ptype = type;
 
-			tail.vertex = head;
+			tail = head.clone();
 			tail.timestamp = run.timestamp;
 			tail.locate_in(experiment);
 			evolution = new Evolution(this);
 		}
 
-		public Track.fork(Track parent, PType ptype, State state) {
+		public Track.fork(Track parent, PType ptype, Vertex head) {
 			this.run = parent.run;
 			this.experiment = parent.experiment;
 			this.parent = parent;
 			this.ptype = ptype;
 
-			this.tail = state;
+			this.tail = head.clone();
 			evolution = new Evolution(this);
 		}
 
 		public weak Experiment experiment {get; private set;}
 
-		public State tail;
+		public Vertex tail;
 
 		public void evolve() {
 			assert(terminated == false);

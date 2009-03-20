@@ -31,12 +31,16 @@ namespace UCNTracker {
 		private int track_counter = 0;
 		private void track_motion_notify(Run obj, Track track, Vertex? prev) {
 			/* do nothing*/
-			message("track_counter == %d", track_counter++);
+		//	message("track_counter == %d", track_counter++);
 		}
 		private int run_counter = 0;
 		private void run_motion_notify(Run obj) {
-			message("run_counter == %d", run_counter++);
-			queue_draw();
+		//	message("run_counter == %d", run_counter++);
+			run_counter++;
+			if(run_counter > 10) {
+				run_counter = 0;
+				queue_draw();
+			}
 		}
 		private void track_added_notify(Run obj, Track track) {
 			set_track_color(track,
@@ -55,7 +59,8 @@ namespace UCNTracker {
 		             Gdk.GLRenderType.RGBA_TYPE);
 		}
 		public override bool configure_event(Gdk.EventConfigure event) {
-			WidgetGL.gl_begin(this);
+			message("configure");
+			assert(WidgetGL.gl_begin(this));
 			glViewport(0, 0, 
 				(GLsizei)allocation.width,
 				(GLsizei)allocation.height);
@@ -69,8 +74,9 @@ namespace UCNTracker {
 			return true;
 		}
 		public override bool expose_event(Gdk.EventExpose event) {
-			if(!WidgetGL.gl_begin(this)) return false;
-			glClear(GL_COLOR_BUFFER_BIT);
+			message("expose");
+			assert(WidgetGL.gl_begin(this));
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glLoadIdentity();
 
 			gluLookAt(80, 0, 0, 0, 0, 0, 0, 1, 0);

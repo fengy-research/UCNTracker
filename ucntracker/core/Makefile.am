@@ -24,6 +24,7 @@ VALASOURCES = \
 	vertex.vala \
 	evolve.vala \
 	track.vala \
+	field.vala \
 	part.vala \
 	core.vala 
 

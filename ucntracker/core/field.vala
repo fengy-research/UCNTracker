@@ -17,4 +17,38 @@ namespace Device {
 					child.get_type().name());
 			}
 		}
+		public abstract void fieldfunc(Vertex vertex, Vertex force);
+	}
+	public class GField: Field, Buildable {
+		public double _g = 980;
+		public double g {
+			get {
+				return _g;
+			}
+			set {
+				_g = value;
+				acc = _direction;
+				acc.mul(g);
+			}
+		}
+		private Vector _direction = Vector(0.0, 0.0, -1.0);
+		public Vector direction {
+			get {
+				return _direction;
+			}
+			set {
+				_direction = value;
+				acc = _direction;
+				acc.mul(g);
+			}
+		}
+		public Vector acc {get; private set;}
+		public override void fieldfunc(Vertex phase_space_pos, 
+		               Vertex phase_space_vel) {
+			phase_space_vel.position = phase_space_pos.velocity;
+			phase_space_vel.velocity = acc;
+		}
+	}
+}
+}
 	

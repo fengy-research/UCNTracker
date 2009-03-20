@@ -51,8 +51,8 @@ public int main(string[] args) {
 		run.add_track(PType.neutron, start);
 		run.track_motion_notify += (obj, track, prev) => {
 			stdout.printf("%p %lf %s %s\n", track, track.tail.timestamp, 
-			                       track.tail.vertex.position.to_string(),
-			                       track.tail.vertex.velocity.to_string());
+			                       track.tail.position.to_string(),
+			                       track.tail.velocity.to_string());
 		};
 		message("track added");
 	};
@@ -75,8 +75,8 @@ public int main(string[] args) {
 
 	part1.transport += (obj, track, leave, enter, transported)
 	  => {
-		Vector norm = track.tail.volume.grad(leave.vertex.position);
-		leave.vertex.velocity.reflect(norm);
+		Vector norm = track.tail.volume.grad(leave.position);
+		leave.velocity.reflect(norm);
 		
 		track.run.fork_track(track, track.ptype, enter);
 		*transported = false;

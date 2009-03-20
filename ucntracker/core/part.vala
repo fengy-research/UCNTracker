@@ -42,10 +42,9 @@ namespace Device {
 		 * the pointer is to workaround vala bug 574403.
 		 */
 		public virtual signal void transport(Track track,
-		       State s_leave, State s_enter, bool* transported);
+		       Vertex s_leave, Vertex s_enter, bool* transported);
 
-		public virtual signal void hit(Track track, 
-				State next);
+		public virtual signal void hit(Track track, Vertex next);
 
 		public virtual double calculate_mfp(Vertex vertex) {
 			return mfp;
