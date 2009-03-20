@@ -17,3 +17,6 @@ VALAPKGS = ../math/math.vapi ../physics/physics.vapi ../core/core.vapi ../builde
 @VALA_CCODE_RULES@
 
 
+EXTRA_DIST = $(VALASOURCES) vala-ccode init.vapi
+initinclude_HEADERS =  $(VALASOURCES:.vala=.h)
+initincludedir = $(includedir)/ucntracker/init

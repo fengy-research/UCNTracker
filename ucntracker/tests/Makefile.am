@@ -16,3 +16,4 @@ noinst_PROGRAMS = \
 	test-anonymouse \
 	test-mfp
 
+EXTRA_DIST += *.vala

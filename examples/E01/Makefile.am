@@ -11,3 +11,4 @@ example_01_LDADD = $(UCN_LIBS)
 VALAFLAGS = --vapidir=$(top_srcdir)/ucntracker
 VALAPKGS = --pkg ucntracker
 @VALA_CCODE_RULES@
+EXTRA_DIST = $(VALASOURCES) vala-ccode

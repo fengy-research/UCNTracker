@@ -29,3 +29,7 @@ BUILT_SOURCES = vala-ccode
 VALAFLAGS= --library=core --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/vapi
 VALAPKGS = ../math/math.vapi ../physics/physics.vapi ../builder/builder.vapi --pkg gsl --pkg gmodule-2.0
 @VALA_CCODE_RULES@
+
+EXTRA_DIST = $(VALASOURCES) vala-ccode core.vapi
+coreinclude_HEADERS =  $(VALASOURCES:.vala=.h)
+coreincludedir = $(includedir)/ucntracker/core

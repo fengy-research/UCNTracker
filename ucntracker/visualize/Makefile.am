@@ -22,3 +22,8 @@ VALAPKGS = \
 --pkg glu --pkg gl --pkg gtkglext-1.0 --pkg gtk+-2.0
 
 @VALA_CCODE_RULES@
+
+EXTRA_DIST = $(VALASOURCES) vala-ccode visualize.vapi
+visualizeinclude_HEADERS =  $(VALASOURCES:.vala=.h)
+visualizeincludedir = $(includedir)/ucntracker/visualize
+

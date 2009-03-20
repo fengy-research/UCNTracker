@@ -16,3 +16,7 @@ VALAFLAGS= --library=physics --basedir=$(top_srcdir)/ucntracker
 VALAPKGS = --pkg gsl
 BUILT_SOURCES = vala-ccode
 @VALA_CCODE_RULES@
+
+EXTRA_DIST = $(VALASOURCES) vala-ccode physics.vapi
+physicsinclude_HEADERS =  $(VALASOURCES:.vala=.h)
+physicsincludedir = $(includedir)/ucntracker/physics

@@ -16,3 +16,7 @@ BUILT_SOURCES = vala-ccode
 VALAFLAGS= --library=math --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/vapi
 VALAPKGS = --pkg gmodule-2.0
 @VALA_CCODE_RULES@
+
+EXTRA_DIST = $(VALASOURCES) vala-ccode math.vapi
+mathinclude_HEADERS =  $(VALASOURCES:.vala=.h)
+mathincludedir = $(includedir)/ucntracker/math

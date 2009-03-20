@@ -13,3 +13,4 @@ AM_CPPFLAGS += $(GTK_CFLAGS) $(GTKGL_CFLAGS)
 noinst_PROGRAMS = \
 	test-gtk
 
+EXTRA_DIST += *.vala

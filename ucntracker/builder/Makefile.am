@@ -13,3 +13,6 @@ libbuilder_la_SOURCES =  \
 	gtkbuilderparser.c \
 	nls.h
 
+EXTRA_DIST = builder.vapi
+builderinclude_HEADERS =  gtkbuildable.h gtkbuilder.h 
+builderincludedir = $(includedir)/ucntracker/builder
