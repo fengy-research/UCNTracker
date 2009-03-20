@@ -11,7 +11,7 @@ libucntracker_vis_la_SOURCES =  \
 	$(VALASOURCES:.vala=.h)
 
 VALASOURCES = \
-	visualize.vala
+	camera.vala
 
 BUILT_SOURCES = vala-ccode
 

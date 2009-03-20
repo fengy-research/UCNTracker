@@ -14,23 +14,17 @@ namespace UCNTracker {
 			}
 			set {
 				if(_run != null) {
-					_run.track_motion_notify -= track_motion_notify;
 					_run.run_motion_notify -= run_motion_notify;
 					_run.track_added_notify -= track_added_notify;
 				}
 				_run = value;
 				if(_run != null) {
-					_run.track_motion_notify += track_motion_notify;
 					_run.run_motion_notify += run_motion_notify;
 					_run.track_added_notify += track_added_notify;
 				}
 			}
 		}
-		private int track_counter = 0;
-		private void track_motion_notify(Run obj, Track track, Vertex? prev) {
-			/* do nothing*/
-		//	message("track_counter == %d", track_counter++);
-		}
+
 		private int run_counter = 0;
 		private void run_motion_notify(Run obj) {
 		//	message("run_counter == %d", run_counter++);
@@ -46,7 +40,31 @@ namespace UCNTracker {
 				UCNTracker.Random.uniform(),
 				UCNTracker.Random.uniform());
 		}
+		//workaround bg 576122:
+		private Vector _location = Vector(80, 0, 0);
+		private Vector _target = Vector(0, 0, 0);
+		private Vector _up = Vector(0, 0, 1);
+
+		public Vector location {
+			get {return _location;} 
+			set {_location = value;}
+		}
+		public Vector target {
+			get {return _target;} 
+			set {_target = value;}
+		}
+		public Vector up {
+			get {return _up;} 
+			set {_up = value;}
+		}
+
 		construct {
+		this.add_events(
+			Gdk.EventMask.BUTTON_MOTION_MASK |
+			Gdk.EventMask.POINTER_MOTION_HINT_MASK |
+			Gdk.EventMask.BUTTON_PRESS_MASK |
+			Gdk.EventMask.BUTTON_RELEASE_MASK
+		);
 		Gdk.GLConfig config = new Gdk.GLConfig.by_mode (
 		                  Gdk.GLConfigMode.RGB |
 		                  Gdk.GLConfigMode.DOUBLE |
@@ -55,6 +73,24 @@ namespace UCNTracker {
 		Gtk.WidgetGL.set_gl_capability (this,
 		             config, null, true,
 		             Gdk.GLRenderType.RGBA_TYPE);
+		}
+		private int drag_start_x = 0;
+		private int drag_start_y = 0;
+		private int drag_end_x = 0;
+		private int drag_end_y = 0;
+		public override bool button_press_event(Gdk.EventButton event) {
+			get_pointer(out drag_start_x, out drag_start_y);
+			return true;
+		}
+		public override bool button_release_event(Gdk.EventButton event) {
+			get_pointer(out drag_end_x, out drag_end_y);
+			int dy = drag_end_y - drag_start_y;
+			_location.z += dy;
+			queue_draw();
+			return true;
+		}
+		public override bool motion_notify_event(Gdk.EventMotion event) {
+			return true;
 		}
 		public override bool configure_event(Gdk.EventConfigure event) {
 			message("configure");
@@ -77,7 +113,8 @@ namespace UCNTracker {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glLoadIdentity();
 
-			gluLookAt(80, 0, 0, 0, 0, 0, 0, 1, 0);
+			gluLookAt(location.x, location.y, location.z,
+					target.x, target.y, target.z, up.x, up.y, up.z);
 
 			if(run != null) {
 				foreach (Track track in run.tracks) {
