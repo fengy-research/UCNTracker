@@ -1,16 +1,16 @@
 <interface>
 <object class="UCNExperiment" id="experiment">
 <child>
-	<object class="UCNDevicePart" id="cell">
+	<object class="UCNPart" id="cell">
 		<child>
 <!--
-			<object class="UCNGeometryCylinder" id="cellVolume">
+			<object class="UCNCylinder" id="cellVolume">
 			<property name="center">0, 0, 0</property>
 			<property name="length">3.5</property>
 			<property name="radius">3.5</property>
 			</object>
 -->
-			<object class="UCNGeometryBall" id="cellVolume">
+			<object class="UCNBall" id="cellVolume">
 			<property name="center">0, 0, 0</property>
 			<property name="radius">1.0</property>
 			</object>

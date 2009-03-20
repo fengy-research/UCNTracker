@@ -1,6 +1,4 @@
 using UCNTracker;
-using UCNTracker.Device;
-using UCNTracker.Geometry;
 Builder builder;
 int N_TRACKS = 2000;
 public int main(string[] args) {
@@ -42,7 +40,7 @@ public int main(string[] args) {
 		}
 	};
 	cell.transport += (obj, track, leave, enter, transported) => {
-		track.set_vector("out", leave.vertex.position);
+		track.set_vector("out", leave.position);
 	};
 	cell.hit += (obj, track, state) => {
 		/*
@@ -54,11 +52,11 @@ public int main(string[] args) {
 		track.set_double("#scatters", track.get_double("#scatters") + 1.0);
 
 		return ;
-		double norm = state.vertex.velocity.norm();
+		double norm = state.velocity.norm();
 		Vector v = Vector(0.0, 0.0, 0.0);
 		UCNTracker.Random.dir_3d(out v.x, out v.y, out v.z);
 		v.mul(norm);
-		state.vertex.velocity = v;
+		state.velocity = v;
 		//message("%p %s", track, state.vertex.position.to_string());
 	};
 	experiment.run();
