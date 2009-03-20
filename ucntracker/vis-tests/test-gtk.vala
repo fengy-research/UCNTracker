@@ -8,6 +8,7 @@ using UCNTracker.Geometry;
 using UCNTracker.Device;
 
 UCNTracker.Builder builder;
+UCNTracker.Camera gl;
 
 public int main(string[] args) {
 
@@ -24,17 +25,12 @@ public int main(string[] args) {
 
 	experiment.prepare += (obj, run) => {
 		Vertex start = new Vertex();
-		start.position = Vector(1.0, 1.0, -10.0);
+		start.position = Vector(1.0, 1.2, -10.0);
 		start.velocity = Vector(0.0, 0.0, 0.1);
 		start.weight = 1.0;
 		run.time_limit = 1000;
 		message("run started");
-		run.add_track(PType.neutron, start);
-		run.track_motion_notify += (obj, track, prev) => {
-			stdout.printf("%p %lf %s %s\n", track, track.tail.timestamp, 
-			                       track.tail.vertex.position.to_string(),
-			                       track.tail.vertex.velocity.to_string());
-		};
+		Track t = run.add_track(PType.neutron, start);
 		message("track added");
 	};
 
@@ -47,18 +43,16 @@ public int main(string[] args) {
 		message("environment %p %lf", track, state.timestamp);
 	};
 	part1.hit += (obj, track, state) => {
-		double length = track.get_double("length");
-		length += track.estimate_distance(state);
-		message("part1 %p %lf length = %f", track, state.timestamp, length);
-		track.set_double("length", length);
+		return;
 	};
 
 	part1.transport += (obj, track, leave, enter, transported)
 	  => {
-		Vector norm = track.tail.volume.grad(leave.vertex.position);
-		leave.vertex.velocity.reflect(norm);
+		Vector norm = track.tail.volume.grad(leave.position);
+		leave.velocity.reflect(norm);
 		
-		track.run.fork_track(track, track.ptype, enter);
+		Track t = track.run.fork_track(track, track.ptype, enter);
+
 		*transported = false;
 		message("fork %p", track);
 	};
@@ -66,60 +60,19 @@ public int main(string[] args) {
 	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
 	Gtk.Button button = new Gtk.Button.with_label("Start");
 	Gtk.Box vbox = new Gtk.VBox(false, 0);
-	Gtk.DrawingArea d = new Gtk.DrawingArea();
-	Gdk.GLConfig config = new Gdk.GLConfig.by_mode (
-		              Gdk.GLConfigMode.RGB |
-		              Gdk.GLConfigMode.DOUBLE |
-		              Gdk.GLConfigMode.DEPTH);
+	gl = new UCNTracker.Camera ();
+	gl.set_size_request(200, 200);
 
-	Gtk.WidgetGL.set_gl_capability (d, 
-		    config, null, true,
-		    Gdk.GLRenderType.RGBA_TYPE);
-
-	d.set_size_request(200, 200);
 	window.add(vbox);
 	vbox.pack_start(button, false, false, 0);
-	vbox.add(d);
-	d.realize += (obj) => {
-		return;
-	};
-	d.configure_event += (obj, event) => {
-		WidgetGL.gl_begin(obj);
-		glViewport(0, 0, 
-			(GLsizei)obj.allocation.width,
-			(GLsizei)obj.allocation.height);
-		WidgetGL.gl_end(obj);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(45, 
-		(GLdouble)obj.allocation.width/ (GLdouble)obj.allocation.height,
-			               1, 10);
-		glMatrixMode(GL_MODELVIEW);
-		return true;
-	};
-	d.expose_event += (obj, event) => {
-		if(!WidgetGL.gl_begin(obj)) return false;
-		glClear(GL_COLOR_BUFFER_BIT);
-		glLoadIdentity();
+	vbox.add(gl);
 
-		gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
-
-		glBegin(GL_POINTS);
-			glVertex3i (0, 1, 0);
-			glVertex3i (-1, -1, 0);
-			glVertex3i (1, -1, 0);
-		glEnd();
-		if(!WidgetGL.gl_swap(obj)) {
-			glFlush();
-		}
-		WidgetGL.gl_end(obj);
-		return true;
-	};
 	button.clicked += (obj) => {
 		message("clicked");
 		Experiment ex
 		= builder.get_object("experiment") as Experiment;
 		Run run = ex.add_run();
+		gl.run = run;
 		ex.attach_run(run);
 	};
 	window.show_all();
