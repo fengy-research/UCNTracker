@@ -6,8 +6,8 @@ namespace UCNTracker {
 	public class Cylinder : Primitive , Buildable {
 		private double _length = 0.0;
 		private double _radius = 0.0;
-		const int LEFT = 0;
-		const int RIGHT = 1;
+		const int TOP = 0;
+		const int BOTTOM = 1;
 		const int TUBE = 2;
 
 		public double length {
@@ -16,8 +16,8 @@ namespace UCNTracker {
 				_length = value;
 				bounding_radius =
 				  sqrt(_length * _length / 4.0 + _radius * _radius);
-				surfaces[LEFT].center.x = - _length / 2.0;
-				surfaces[RIGHT].center.x = _length / 2.0;
+				surfaces[BOTTOM].center.z = - _length / 2.0;
+				surfaces[TOP].center.z = _length / 2.0;
 			}
 		}
 
@@ -33,9 +33,9 @@ namespace UCNTracker {
 
 		construct {
 			surfaces = {
-				new Plane(Vector(-1.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0)),
-				new Plane(Vector(1.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0)),
-				new Tube(Vector(1.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0), 0.0)
+				new Plane(Vector(0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0)),
+				new Plane(Vector(0.0, 0.0, -1.0), Vector(0.0, 0.0, 0.0)),
+				new Tube(Vector(0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0), 0.0)
 			};
 		}
 

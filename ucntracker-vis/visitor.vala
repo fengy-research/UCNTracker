@@ -6,15 +6,14 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Renderer {
+	internal class Renderer {
 		public int layer;
 		public void visit_union(Union u) {
 		}
-		public void visit_primitive(Primitive pri) {
-			if(pri is Ball) {
-				Ball ball = pri as Ball;
-				Gdk.GLDraw.sphere (false, ball.radius, 8, 8);
-			}
+		Quadric quadric = new Quadric();
+		public Renderer() {
+			
+			quadric.QuadricDrawStyle(GLU_LINE);
 		}
 		public void visit_volume(Volume volume) {
 			glPushMatrix();
@@ -22,7 +21,20 @@ namespace UCNTracker {
 			             volume.center.y,
 			             volume.center.z);
 			if(volume is Ball) {
-				visit_primitive(volume as Primitive);
+				Ball ball = volume as Ball;
+				Gdk.GLDraw.sphere (false, ball.radius, 8, 8);
+			} else
+			if(volume is Box) {
+				Box box = volume as Box;
+				glScaled(box.size.x, box.size.y, box.size.z);
+				Gdk.GLDraw.cube (false, 1.0);
+			} else
+			if(volume is Cylinder) {
+				Cylinder c = volume as Cylinder;
+				glTranslated(0,
+			             0,
+			             -c.length/2.0);
+				quadric.Cylinder(c.radius, c.radius, c.length, 8, 8);
 			} else
 			if(volume is Union) {
 				visit_union(volume as Union);

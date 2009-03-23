@@ -60,13 +60,13 @@ public int main(string[] args) {
 	vbox.pack_start(button, false, false, 0);
 	vbox.add(gl);
 
+	Run run = experiment.add_run();
+	gl.run = run;
 	button.clicked += (obj) => {
 		message("clicked");
 		Experiment ex
 		= builder.get_object("experiment") as Experiment;
-		Run run = ex.add_run();
-		gl.run = run;
-		ex.attach_run(run);
+		ex.attach_run(gl.run);
 	};
 	window.show_all();
 	Gtk.main();
@@ -101,6 +101,24 @@ private const string GML =
     <object class="UCNBall" id="part1box">
      <property name="center">1, 2, 3</property>
      <property name="radius">2</property>
+    </object>
+   </child>
+  </object>
+ </child>
+ <child>
+  <object class="UCNPart" id="part2">
+   <property name="layer">-2</property>
+   <child type="volume">
+    <object class="UCNCylinder">
+     <property name="center">1, 2, 3</property>
+     <property name="radius">2</property>
+     <property name="length">10</property>
+    </object>
+   </child>
+   <child type="volume">
+    <object class="UCNBox">
+     <property name="center">1, 2, 3</property>
+     <property name="size">6,8,10</property>
     </object>
    </child>
   </object>
