@@ -87,20 +87,11 @@ namespace UCNTracker {
 		}
 
 		public void rotate_i(EulerAngles r) {
-			Vector tmp = {
-			  r.matrix[0,0] * x +
-			  r.matrix[1,0] * y +
-			  r.matrix[2,0] * z,
-			  r.matrix[0,1] * x +
-			  r.matrix[1,1] * y +
-			  r.matrix[2,1] * z,
-			  r.matrix[0,2] * x +
-			  r.matrix[1,2] * y +
-			  r.matrix[2,2] * z
-			};
-			x = tmp.x;
-			y = tmp.y;
-			z = tmp.z;
+			r.q.conj();
+			Vector rs = r.q.rotate_vector(this);
+			message("%s <- %s", to_string(), rs.to_string());
+			this = rs;
+			r.q.conj();
 		}
 
 		public void translate_i(Vector a) {
@@ -110,20 +101,9 @@ namespace UCNTracker {
 		}
 
 		public void rotate(EulerAngles r) {
-			Vector tmp = {
-			  r.matrix[0,0] * x +
-			  r.matrix[0,1] * y +
-			  r.matrix[0,2] * z,
-			  r.matrix[1,0] * x +
-			  r.matrix[1,1] * y +
-			  r.matrix[1,2] * z,
-			  r.matrix[2,0] * x +
-			  r.matrix[2,1] * y +
-			  r.matrix[2,2] * z
-			};
-			x = tmp.x;
-			y = tmp.y;
-			z = tmp.z;
+			Vector rs = r.q.rotate_vector(this);
+			message("%s -> %s", to_string(), rs.to_string());
+			this = rs;
 		}
 
 		public void translate(Vector a) {
@@ -136,6 +116,96 @@ namespace UCNTracker {
 		}
 	}
 
+	public struct Quaternion {
+		/*All fields read-only!*/
+		public double w;
+		public Vector v;
+		private int error_count = 0;
+		private double t2;
+		private double t3;
+		private double t4;
+		private double t5;
+		private double t6;
+		private double t7;
+		private double t8;
+		private double t9;
+		private double t10;
+		private bool dirty = true;
+		private void update_t() {
+			if(!dirty) return;
+			t2 =   w * v.x;
+			t3 =   w * v.y;
+			t4 =   w * v.z;
+			t5 =  -v.x * v.x;
+			t6 =   v.x * v.y;
+			t7 =   v.x * v.z;
+			t8 =  -v.y * v.y;
+			t9 =   v.y * v.z;
+			t10 = -v.z * v.z;
+			dirty = false;
+		}
+		public Quaternion.from_vector(Vector v) {
+			w = 0.0;
+			this.v = v;
+		}
+		public Quaternion.from_rotation(Vector axis, double angle) {
+			w = cos(angle/2.0);
+			double s = sin(angle/2.0);
+			v.x = axis.x * s;
+			v.y = axis.y * s;
+			v.z = axis.z * s;
+		}
+		public double get_angle() {
+			return atan2(w, v.norm());
+			return acos(w) * 2.0;
+		}
+		public Vector get_axis() {
+			Vector rt = v;
+			rt.mul(1.0/v.norm());
+			return rt;
+		}
+		public void mul(Quaternion q) {
+			double w0 = (w * q.w - v.x * q.v.x - v.y * q.v.y - v.z * q.v.z);
+			double x0 = (w * q.v.x + v.x * q.w + v.y * q.v.z - v.z * q.v.y);
+			double y0 = (w * q.v.y - v.x * q.v.z + v.y * q.w + v.z * q.v.x);
+			double z0 = (w * q.v.z + v.x * q.v.y - v.y * q.v.x + v.z * q.w);
+			w = w0;
+			v.x = x0;
+			v.y = y0;
+			v.z = z0;
+			error_count ++;
+			if(error_count > 100) normalize();
+			dirty = true;
+		}
+		public void conj() {
+			update_t();
+			v.x = -v.x;
+			v.y = -v.y;
+			v.z = -v.z;
+			t2 = -t2;
+			t3 = -t3;
+			t4 = -t4;
+		}
+		public void normalize() {
+			double norm2 = w * w + v.norm2();
+			double norm = sqrt(norm2);
+			w /= norm;
+			v.x /= norm;
+			v.y /= norm;
+			v.z /= norm;
+			error_count = 0;
+			update_t();
+		}
+		public Vector rotate_vector(Vector v) {
+			update_t();
+			return Vector(
+			2.0*( (t8 + t10)*v.x + (t6 -  t4)*v.y + (t3 + t7)*v.z ) + v.x,
+			2.0*( (t4 +  t6)*v.x + (t5 + t10)*v.y + (t9 - t2)*v.z ) + v.y,
+			2.0*( (t7 -  t3)*v.x + (t2 +  t9)*v.y + (t5 + t8)*v.z ) + v.z
+			);
+		}
+	}
+
 	public struct EulerAngles {
 		/***
 		 * rotation from x y z -> X Y Z.
@@ -145,28 +215,14 @@ namespace UCNTracker {
 		public double alpha; // between x and the line of nodes.
 		public double beta;  // between z and Z
 		public double gamma; // between the line of nodes X
-		public double[3,3] matrix;
+		/* q should be readonly*/
+		public Quaternion q;
 
 		public EulerAngles(double alpha, double beta, double gamma) {
 			this.alpha = alpha;
 			this.beta = beta;
 			this.gamma = gamma;
-			this.matrix = new double[3,3];
-			double ca = cos(alpha);
-			double sa = sin(alpha);
-			double cb = cos(beta);
-			double sb = sin(beta);
-			double cg = cos(gamma);
-			double sg = sin(gamma);
-			matrix[0,0] = ca * cg - sa * cb * sg;
-			matrix[0,1] = -ca * sg - sa * cb * cg;
-			matrix[0,2] = sb * sa;
-			matrix[1,0] = sa * cg + ca * cb * sg;
-			matrix[1,1] = -sa * sg + ca * cb * cg;
-			matrix[1,2] = - sb * ca;
-			matrix[2,0] = sb * sg;
-			matrix[2,1] = sb * cg;
-			matrix[2,2] = cb;
+			update_q();
 		}
 
 		[CCode (instance_pos = 2)]
@@ -179,9 +235,18 @@ namespace UCNTracker {
 			alpha = words[0].to_double();
 			beta = words[1].to_double();
 			gamma = words[2].to_double();
+			update_q();
 			return true;
 		}
 
+		/* update the quaternion */
+		private void update_q() {
+			q = Quaternion.from_rotation(Vector(0, 0, 1), alpha);
+			q.mul(Quaternion.from_rotation(Vector(1, 0, 0), beta));
+			q.mul(Quaternion.from_rotation(Vector(0, 0, 1), gamma));
+			q.normalize();
+			message("%lf %s", q.w, q.v.to_string());
+		}
 		public string to_string(string format="%lf %lf %lf") {
 			return format.printf(alpha, beta, gamma);
 		}

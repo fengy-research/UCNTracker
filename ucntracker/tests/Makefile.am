@@ -12,6 +12,7 @@ noinst_PROGRAMS = \
 	test-primitives \
 	test-union \
 	test-anonymouse \
-	test-mfp
+	test-mfp \
+	test-rotate 
 
 EXTRA_DIST += *.vala

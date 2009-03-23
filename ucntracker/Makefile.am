@@ -1,4 +1,4 @@
-SUBDIRS = builder math physics core main .
+SUBDIRS = builder math physics core main . tests
 
 lib_LTLIBRARIES = libucntracker.la 
 libucntracker_la_SOURCES = 
