@@ -89,7 +89,6 @@ namespace UCNTracker {
 		public void rotate_i(EulerAngles r) {
 			r.q.conj();
 			Vector rs = r.q.rotate_vector(this);
-			message("%s <- %s", to_string(), rs.to_string());
 			this = rs;
 			r.q.conj();
 		}
@@ -102,7 +101,6 @@ namespace UCNTracker {
 
 		public void rotate(EulerAngles r) {
 			Vector rs = r.q.rotate_vector(this);
-			message("%s -> %s", to_string(), rs.to_string());
 			this = rs;
 		}
 
@@ -245,7 +243,6 @@ namespace UCNTracker {
 			q.mul(Quaternion.from_rotation(Vector(1, 0, 0), beta));
 			q.mul(Quaternion.from_rotation(Vector(0, 0, 1), gamma));
 			q.normalize();
-			message("%lf %s", q.w, q.v.to_string());
 		}
 		public string to_string(string format="%lf %lf %lf") {
 			return format.printf(alpha, beta, gamma);
