@@ -145,6 +145,7 @@ namespace UCNTracker {
 		public Quaternion.from_vector(Vector v) {
 			w = 0.0;
 			this.v = v;
+			dirty = true;
 		}
 		public Quaternion.from_rotation(Vector axis, double angle) {
 			w = cos(angle/2.0);
@@ -152,6 +153,7 @@ namespace UCNTracker {
 			v.x = axis.x * s;
 			v.y = axis.y * s;
 			v.z = axis.z * s;
+			dirty = true;
 		}
 		public double get_angle() {
 			return atan2(w, v.norm());
@@ -159,7 +161,10 @@ namespace UCNTracker {
 		}
 		public Vector get_axis() {
 			Vector rt = v;
-			rt.mul(1.0/v.norm());
+			double n = v.norm();
+			/* if there is no rotation*/
+			if(n == 0.0) return Vector(0.0, 0.0, 1.0);
+			rt.mul(1.0/n);
 			return rt;
 		}
 		public void mul(Quaternion q) {
