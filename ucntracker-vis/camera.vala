@@ -63,7 +63,8 @@ namespace UCNTracker {
 			Gdk.EventMask.BUTTON_MOTION_MASK |
 			Gdk.EventMask.POINTER_MOTION_HINT_MASK |
 			Gdk.EventMask.BUTTON_PRESS_MASK |
-			Gdk.EventMask.BUTTON_RELEASE_MASK
+			Gdk.EventMask.BUTTON_RELEASE_MASK |
+			Gdk.EventMask.SCROLL_MASK
 		);
 		Gdk.GLConfig config = new Gdk.GLConfig.by_mode (
 		                  Gdk.GLConfigMode.RGB |
@@ -82,14 +83,38 @@ namespace UCNTracker {
 			get_pointer(out drag_start_x, out drag_start_y);
 			return true;
 		}
+		public override bool scroll_event(Gdk.EventScroll event) {
+			switch(event.direction) {
+				case Gdk.ScrollDirection.UP:
+					_location.mul(1.25);
+				break;
+				case Gdk.ScrollDirection.DOWN:
+					_location.mul(0.80);
+				break;
+			}
+			queue_draw();
+			return true;
+		}
 		public override bool button_release_event(Gdk.EventButton event) {
 			get_pointer(out drag_end_x, out drag_end_y);
 			int dy = drag_end_y - drag_start_y;
-			if(dy > 0)
-				_location.x *= 2;
-			else
-				_location.x /= 2;
-			message("%lf", _location.x);
+			int dx = drag_end_x - drag_start_x;
+			message("%u", event.button);
+			switch(event.button) {
+				case 1:
+					Quaternion q = Quaternion.from_rotation(
+							Vector(0, 0, -1), (double)dx/100.0);
+					Quaternion p = Quaternion.from_rotation(
+							Vector(0, -1, 0), (double)dy/100.0);
+					_location = q.rotate_vector(_location);
+					_location = p.rotate_vector(_location);
+					message("%s", _location.to_string());
+				break;
+				case 2:
+				break;
+				case 3:
+				break;
+			}
 			queue_draw();
 			return true;
 		}

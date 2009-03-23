@@ -17,6 +17,10 @@ namespace UCNTracker {
 		}
 		public void visit_volume(Volume volume) {
 			glPushMatrix();
+			EulerAngles e = volume.rotation;
+			Vector axis = e.q.get_axis();
+			double angle = e.q.get_angle();
+			glRotated(angle, axis.x, axis.y, axis.z);
 			glTranslated(volume.center.x,
 			             volume.center.y,
 			             volume.center.z);
