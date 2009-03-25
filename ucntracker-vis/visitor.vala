@@ -9,6 +9,10 @@ namespace UCNTracker {
 	internal class Renderer {
 		public int layer;
 		public void visit_union(Union u) {
+			foreach(Volume child in u.children) {
+				/*FIXME: hidden surface stuff!*/
+				visit_volume(child);
+			}
 		}
 		Quadric quadric = new Quadric();
 		public Renderer() {
@@ -20,7 +24,8 @@ namespace UCNTracker {
 			EulerAngles e = volume.rotation;
 			Vector axis = e.q.get_axis();
 			double angle = e.q.get_angle();
-			glRotated(angle, axis.x, axis.y, axis.z);
+			glRotated(angle * 180.0 / Math.PI, axis.x, axis.y, axis.z);
+			message("%lf %s", angle, axis.to_string());
 			glTranslated(volume.center.x,
 			             volume.center.y,
 			             volume.center.z);

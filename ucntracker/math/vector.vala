@@ -156,8 +156,7 @@ namespace UCNTracker {
 			dirty = true;
 		}
 		public double get_angle() {
-			return atan2(w, v.norm());
-			return acos(w) * 2.0;
+			return 2.0 * atan2(w, v.norm());
 		}
 		public Vector get_axis() {
 			Vector rt = v;
@@ -215,7 +214,7 @@ namespace UCNTracker {
 		 * intersection between xy and XY is the 'line of nodes'
 		 * Refer to wikepedia: Euler_angles.
 		 */
-		public double alpha; // between x and the line of nodes.
+		public double alpha; // between x and the line of nodes. in degrees
 		public double beta;  // between z and Z
 		public double gamma; // between the line of nodes X
 		/* q should be readonly*/
@@ -244,9 +243,9 @@ namespace UCNTracker {
 
 		/* update the quaternion */
 		private void update_q() {
-			q = Quaternion.from_rotation(Vector(0, 0, 1), alpha);
-			q.mul(Quaternion.from_rotation(Vector(1, 0, 0), beta));
-			q.mul(Quaternion.from_rotation(Vector(0, 0, 1), gamma));
+			q = Quaternion.from_rotation(Vector(0, 0, 1), alpha /180.0 * PI);
+			q.mul(Quaternion.from_rotation(Vector(1, 0, 0), beta/ 180.0 * PI));
+			q.mul(Quaternion.from_rotation(Vector(0, 0, 1), gamma/ 180.0 * PI));
 			q.normalize();
 		}
 		public string to_string(string format="%lf %lf %lf") {
