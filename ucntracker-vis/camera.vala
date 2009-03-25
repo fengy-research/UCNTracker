@@ -26,6 +26,9 @@ namespace UCNTracker {
 		}
 
 		private int run_counter = 0;
+
+		public bool use_solid {get; set;}
+
 		private void run_motion_notify(Run obj) {
 		//	message("run_counter == %d", run_counter++);
 			run_counter++;
@@ -147,7 +150,7 @@ namespace UCNTracker {
 					target.x, target.y, target.z, up.x, up.y, up.z);
 
 			if(run != null) {
-				renderer.visit_experiment(run.experiment);
+				renderer.render(run.experiment, use_solid);
 				foreach (Track track in run.tracks) {
 					float r = (float)track.get_double("r");
 					float g = (float)track.get_double("g");

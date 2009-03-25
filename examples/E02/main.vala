@@ -12,6 +12,7 @@ public int main(string[] args) {
 	var run = experiment.add_run();
 	camera = new Camera();
 	camera.run = run;
+	camera.use_solid = true;
 	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
 	window.add(camera);
 	window.show_all();

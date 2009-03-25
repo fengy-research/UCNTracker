@@ -10,9 +10,9 @@
 <object class="UCNUnion" id="T">
 	<child>
 		<object class="UCNCylinder" id="H">
-			<property name="center">0, 0, 0</property>
+			<property name="center">0, 0, 2</property>
 			<property name="rotation">0, 90, 0 </property>
-			<property name="length"> 8.0 </property>
+			<property name="length"> 4.0 </property>
 			<property name="radius"> 1.0</property>
 		</object>
 	</child>
