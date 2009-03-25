@@ -45,6 +45,7 @@ AC_CONFIG_FILES([
 				ucntracker-vis/tests/Makefile
 				examples/Makefile
 				examples/E01/Makefile
+				examples/E02/Makefile
 				])
 
 AC_OUTPUT
