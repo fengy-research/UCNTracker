@@ -56,6 +56,7 @@ struct _UCNBuilderPrivate
   gchar *domain;
   GHashTable *objects;
   GSList *delayed_properties;
+  GSList *delayed_children;
   GSList *signals;
   gchar *filename;
 };
@@ -545,8 +546,8 @@ _ucn_builder_construct (UCNBuilder *builder,
 }
 
 
-void
-_ucn_builder_add (UCNBuilder *builder,
+static void
+_ucn_builder_internal_add (UCNBuilder *builder,
                   ChildInfo  *child_info)
 {
   GObject *object;
@@ -560,17 +561,7 @@ _ucn_builder_add (UCNBuilder *builder,
       child_info->added)
     return;
 
-  /* If the ref id of the child tag is give,
- *   use the object refered by the id for the child and ignore
- *   the child object inside.*/
-  if (child_info->ref_object_id)
-    object = ucn_builder_get_object(builder, child_info->ref_object_id);
-  else
     object = child_info->object;
-
-  if (!object) {
-    return;
-  }
 
   if (!child_info->parent)
     {
@@ -594,6 +585,20 @@ _ucn_builder_add (UCNBuilder *builder,
   child_info->added = TRUE;
 }
 
+
+void _ucn_builder_add (UCNBuilder * builder, ChildInfo * child_info) {
+
+  /* If the ref id of the child tag is give,
+ *   use the object refered by the id for the child and ignore
+ *   the child object inside.*/
+  if (child_info->ref_object_id) {
+    builder->priv->delayed_children = 
+      g_slist_append(builder->priv->delayed_children, child_info);
+  } else {
+    _ucn_builder_internal_add(builder, child_info);
+  }
+
+}
 void
 _ucn_builder_add_signals (UCNBuilder *builder,
 			  GSList     *signals)
@@ -602,6 +607,18 @@ _ucn_builder_add_signals (UCNBuilder *builder,
                                            g_slist_copy (signals));
 }
 
+static void
+ucn_builder_apply_delayed_children (UCNBuilder *builder) {
+  GSList *l;
+  GSList *children = g_slist_reverse(builder->priv->delayed_children);
+  builder->priv->delayed_children = NULL;
+  for (l = children; l; l = l->next) {
+	ChildInfo * info = l->data;
+	info->object = ucn_builder_get_object(builder, info->ref_object_id);
+	_ucn_builder_internal_add(builder, info);
+  }
+  g_slist_free(children);
+}
 static void
 ucn_builder_apply_delayed_properties (UCNBuilder *builder)
 {
@@ -660,6 +677,7 @@ void
 _ucn_builder_finish (UCNBuilder *builder)
 {
   ucn_builder_apply_delayed_properties (builder);
+  ucn_builder_apply_delayed_children (builder);
 }
 
 /**
