@@ -1,1 +1,1 @@
-SUBDIRS = ucntracker ucntracker-vis examples
+SUBDIRS = yaml ucntracker ucntracker-vis examples
