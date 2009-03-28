@@ -19,4 +19,4 @@ noinst_PROGRAMS = test
 test_SOURCES = test.vala
 test_LDADD = libvalartl-yaml.la
 .vala.o:
-	$(VALAC) -c ./valartl-yaml.vapi $< -X -I$(top_srcdir) -X -g
+	$(VALAC) --save-temps -c ./valartl-yaml.vapi $< -X -I$(top_srcdir) -X -g
