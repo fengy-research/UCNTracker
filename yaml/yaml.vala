@@ -24,6 +24,7 @@ namespace Vala.Runtime.YAML {
 	}
 
 	public class Node : Boxed {
+		public weak Node parent;
 		public NodeType type;
 		public string key;
 		public string anchor;
@@ -57,6 +58,7 @@ namespace Vala.Runtime.YAML {
 		}
 		public string to_string_r() {
 			StringBuilder sb = new StringBuilder("");
+			bool seq_adjust = false;
 			if(key== "#doc") {
 				sb.append("---");
 				sb.append_unichar('\n');
@@ -65,6 +67,20 @@ namespace Vala.Runtime.YAML {
 					sb.append(" ");
 				}
 				sb.append("- ");
+				seq_adjust = true;
+				if(anchor != null) {
+					sb.append_unichar('&');
+					sb.append(anchor);
+					sb.append_unichar('\n');
+					seq_adjust = false;
+				}
+				if(alias != null) {
+					/*only an alias*/
+					sb.append_unichar('*');
+					sb.append(alias);
+					sb.append_unichar('\n');
+					seq_adjust = false;
+				}
 			} else {
 				for(int i = 0; i < ind; i++) {
 					sb.append(" ");
@@ -96,7 +112,6 @@ namespace Vala.Runtime.YAML {
 				}
 				sb.append_unichar('\n');
 			}
-			bool seq_adjust= (key == "#seq");
 			bool first = true;
 
 			foreach(weak Node k in mapping_list) {
@@ -142,7 +157,21 @@ namespace Vala.Runtime.YAML {
 				skip_chars('\n');
 				accept_eod_line();
 				accept_bod_line();
+				accept_comment_line();
 				if(!EOS) accept_node_line();
+			}
+		}
+		private void accept_comment_line() {
+			switch(accept_indicator()){
+				case '#':
+				accept_until('\n');
+				accept_char('\n');
+				break;
+				case 0:
+				break;
+				default:
+				rewind(1);
+				break;
 			}
 		}
 		private void accept_bod_line() {
@@ -185,22 +214,39 @@ namespace Vala.Runtime.YAML {
 			}
 		}
 		private void accept_node_line() {
-			Node k = new Node();
 			bool in_seq = false;
-			k.ind = skip_blanks();
+			int ind = skip_blanks();
 			switch(accept_indicator()) {
 				case '-':
+					Node k = new Node();
 					k.key = "#seq";
 					/*To allow aligning - with the parent node*/
-					k.ind++;
-					int ind = k.ind; /*save ind since k will be transferred*/
-					weak Node parent = pop_to_parent(k);
+					k.ind = ++ind;
+					k.parent = pop_to_parent(k);
+					message("%p %s->%s", k, k.parent.key, k.key);
 					stack.push_tail(k);
-					parent.sequence.append(# k);
-					parent.is_seq = true;
-					k = new Node();
+					k.parent.is_seq = true;
 					int extra_ind = skip_blanks();
-					k.ind = extra_ind + ind;
+					switch(accept_indicator()) {
+						case '*':
+							k.alias = accept_token();
+							accept_until('\n');
+							accept_char('\n');
+						break;
+						case '&':
+							k.anchor = accept_token();
+							skip_blanks();
+						break;
+						case '0':
+						break;
+						default:
+							rewind(1); 
+						break;
+					}
+					weak Node parent = k.parent;
+					parent.sequence.append(# k);
+					ind += extra_ind;
+					return;
 				break;
 				case 0:
 				break;
@@ -210,7 +256,15 @@ namespace Vala.Runtime.YAML {
 				break;
 			}
 
-			k.key= accept_string();
+			Node k = new Node();
+			k.ind = ind;
+			k.key = accept_string();
+			if(k.key == null) {
+				/*ignore empty(introduced by - &anchor \n*/
+				accept_until('\n');
+				accept_char('\n');
+				return;
+			}
 			skip_blanks();
 			switch(accept_indicator()) {
 				case ':':
@@ -223,10 +277,10 @@ namespace Vala.Runtime.YAML {
 			skip_blanks();
 			switch(accept_indicator()) {
 				case '&':
-					k.anchor = accept_string();
+					k.anchor = accept_token();
 				break;
 				case '*':
-					k.alias = accept_string();
+					k.alias = accept_token();
 				break;
 				case '!':
 					rewind(1);
@@ -252,11 +306,12 @@ namespace Vala.Runtime.YAML {
 			skip_blanks();
 			skip_chars('\n');
 
-			weak Node parent = pop_to_parent(k);
-			parent.is_map = true;
+			k.parent = pop_to_parent(k);
+			k.parent.is_map = true;
 			stack.push_tail(k);
 			begin_node(k);
 			weak string key = k.key;
+			weak Node parent = k.parent;
 			parent.mapping_list.append(k);
 			parent.mapping.insert(key, #k);
 		}
@@ -297,7 +352,9 @@ namespace Vala.Runtime.YAML {
 			weak Node tail = stack.peek_tail();
 			while(k.ind <= tail.ind) {
 				weak Node finished_node = stack.pop_tail();
+				message("finished node at %p", finished_node);
 				finish_node(finished_node);
+				message("succefully finished node at %p", finished_node);
 				tail = stack.peek_tail();
 			}
 			return tail;
@@ -310,6 +367,7 @@ namespace Vala.Runtime.YAML {
 			return "line %d char %d".printf(line, position);
 		}
 		private void finish_node(Node k) {
+			assert(k.key != null);
 			if(k.is_map && k.is_seq) {
 				throw new 
 				Error.MIXED_NODE_TYPE(
@@ -372,6 +430,18 @@ namespace Vala.Runtime.YAML {
 			return 0;
 		}
 
+		private string? accept_token() {
+			StringBuilder sb = new StringBuilder("");
+			unichar c;
+			while( 0 != (c = get_char())) {
+				if(c == ' '
+				|| c == '\n')
+					break;
+				sb.append_unichar(c);
+				next_char();
+			}
+			return sb.str;
+		}
 		private string? accept_string() {
 			unichar c;
 			StringBuilder sb = new StringBuilder("");

@@ -18,30 +18,30 @@ public int main() {
 	c.parse(
 """
 ---
-- object: &experiment
+- &experiment
   class: Experiment
+  children:
+  - *TPipe
+- &TPipe
+  class: Part
   layer: 1
   children:
-  - object: *TPipe
-- object: &TPipe
-  class: Part
-  children:
-  - object: *T
-- object: &T
+  - *T
+- &T
   class: Union
   children:
-  - object: &V
+  - &V
     class: Cylinder
     center: 0, 0, 0
     rotation: 0, 0, 0
     length: 8.0
     radius: 1.0
-  - object: &H
-    type: Cylinder
+  - &H
+    class: Cylinder
     center: 0, 0, 2
     rotation: 0, 90, 0
     length: 4.0
-    raius: 1.0
+    radius: 1.0
 ...
 """
 );
