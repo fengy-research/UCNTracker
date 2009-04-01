@@ -1,49 +1,51 @@
 using Vala.Runtime.YAML;
+using Vala.Runtime;
+
+enum ENUM {
+	ABCD
+}
 
 public int main() {
 	Parser p = new Parser();
-	p.key_start = (obj, key) => {
-		message("key started : %s", key.key);
+	p.node_start = (obj, node) => {
+		message("key started : %s", node.key);
 	};
-	p.key_end = (obj, key) => {
-		message("key ended   : %s", key.key);
+	p.node_end = (obj, node) => {
+		message("key ended   : %s", node.key);
 	};
 	Context c = new Context(p);
 	
-	c.add_string(
+	c.parse(
 """
---- !clarkevans.com/^invoice
-invoice: 34843
-date   : 2001-01-23
-bill-to: &id001
-    given  : Chris
-    family : Dumars
-    address:
-        lines: |
-            458 Walkman Dr.
-            Suite #292
-        city    : Royal Oak
-        state   : MI
-        postal  : 48046
-ship-to: *id001
-product:
-    - sku         : BL394D
-      quantity    : 4
-      description : Basketball
-      price       : 450.00
-    - sku         : BL4438H
-      quantity    : 1
-      description : Super Hoop
-      price       : 2392.00
-tax  : 251.42
-total: 4443.52
-comments: >
-    Late afternoon is best.
-    Backup contact is Nancy
-    Billsmer @ 338-4338.
+---
+- object: &experiment
+  class: Experiment
+  layer: 1
+  children:
+  - object: *TPipe
+- object: &TPipe
+  class: Part
+  children:
+  - object: *T
+- object: &T
+  class: Union
+  children:
+  - object: &V
+    class: Cylinder
+    center: 0, 0, 0
+    rotation: 0, 0, 0
+    length: 8.0
+    radius: 1.0
+  - object: &H
+    type: Cylinder
+    center: 0, 0, 2
+    rotation: 0, 90, 0
+    length: 4.0
+    raius: 1.0
 ...
-""");
-	foreach(weak Key k in c.documents) {
+"""
+);
+	foreach(weak YAML.Node k in c.documents) {
 		message("%s", k.to_string_r());
 	}
 	return 0;

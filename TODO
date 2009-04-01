@@ -3,3 +3,5 @@ o Find a better name than phase_space_position phase_space_velocity.
 * Prepare a public git repository
 * benchmarking the field simulation. How slow it is?
 * The T-pipe simulation in E02.
+o YAML parser
+* Deprecate builder, switch to YAML parser.

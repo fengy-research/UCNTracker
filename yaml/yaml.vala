@@ -9,18 +9,22 @@ namespace Vala.Runtime.YAML {
 		EXPECT_CHAR,
 	}
 	public class Parser : Boxed {
-		public KeyStartFunc key_start;
-		public KeyStartFunc key_end;
+		public NodeStartFunc node_start;
+		public NodeEndFunc node_end;
+		public Parser(NodeStartFunc? node_start = null, NodeEndFunc? node_end = null) {
+			this.node_start = node_start;
+			this.node_end = node_end;
+		}
 	}
 
-	public enum KeyType {
+	public enum NodeType {
 		SCALAR,
 		MAP,
 		SEQ,
 	}
 
-	public class Key : Boxed {
-		public KeyType type;
+	public class Node : Boxed {
+		public NodeType type;
 		public string key;
 		public string anchor;
 		public string alias;
@@ -29,8 +33,9 @@ namespace Vala.Runtime.YAML {
 		public bool is_seq;
 		public bool is_map;
 		public bool is_scalar;
-		public List<Key> mapping;
-		public List<Key> sequence;
+		public HashTable<unowned string, Node> mapping = new HashTable<unowned string, Node>(str_hash, str_equal);
+		public List<Node> sequence;
+		public List<unowned Node> mapping_list;
 		public int ind;
 		
 		public string to_string() {
@@ -52,15 +57,18 @@ namespace Vala.Runtime.YAML {
 		}
 		public string to_string_r() {
 			StringBuilder sb = new StringBuilder("");
-			for(int i = 0; i < ind; i++) {
-				sb.append(" ");
-			}
-			if(key == "#doc") {
+			if(key== "#doc") {
 				sb.append("---");
 				sb.append_unichar('\n');
-			} else if (key == "#seq") {
+			} else if (key== "#seq") {
+				for(int i = 0; i < ind - 1; i++) {
+					sb.append(" ");
+				}
 				sb.append("- ");
 			} else {
+				for(int i = 0; i < ind; i++) {
+					sb.append(" ");
+				}
 				sb.append(key);
 				sb.append(" : ");
 				if(anchor != null) {
@@ -88,15 +96,18 @@ namespace Vala.Runtime.YAML {
 				}
 				sb.append_unichar('\n');
 			}
+			bool seq_adjust= (key == "#seq");
 			bool first = true;
-			foreach(weak Key k in mapping) {
-				if(first && key == "#seq") {
-					sb.append(k.to_string_r().offset(ind + 2));
-					first = false;
-				} else
+
+			foreach(weak Node k in mapping_list) {
+				if(seq_adjust && first) {
+					sb.append(k.to_string_r().offset(ind + 1));
+				} else 
 					sb.append(k.to_string_r());
+				first = false;
 			}
-			foreach(weak Key k in sequence) {
+
+			foreach(weak Node k in sequence) {
 				sb.append(k.to_string_r());
 			}
 			if(key == "#doc") {
@@ -114,20 +125,25 @@ namespace Vala.Runtime.YAML {
 		private int position;
 		private int line;
 
-		private Queue<unowned Key> stack = new Queue<unowned Key>();
+		private Queue<unowned Node> stack = new Queue<unowned Node>();
 
-		public List<Key> documents;
+		public List<Node> documents;
 
 		private bool EOS = false;
 		private const int TABSTOP = 4;
 		public Context(Parser parser) {
 			this.parser = parser;
 		}
-		public void add_string(string s) {
+		public void parse(string s) {
 			buffer = s;
 			p = buffer;
 			EOS = false;
-			parse();
+			while(!EOS) {
+				skip_chars('\n');
+				accept_eod_line();
+				accept_bod_line();
+				if(!EOS) accept_node_line();
+			}
 		}
 		private void accept_bod_line() {
 			int n = skip_chars('-');
@@ -142,13 +158,13 @@ namespace Vala.Runtime.YAML {
 				bod = false;
 			}
 			if(bod || documents == null) {
-				weak Key k = null;
+				weak Node k = null;
 				/*First clean up the old document*/
 				while(null != (k = stack.pop_tail())) {
-					finish_key(k);
+					finish_node(k);
 				}
 
-				Key doc = new Key();
+				Node doc = new Node();
 				doc.ind = -2;
 				doc.key = "#doc";
 				doc.tag = tag;
@@ -160,30 +176,31 @@ namespace Vala.Runtime.YAML {
 			int n = skip_chars('.');
 			if(n >= 3) {
 				skip_chars('\n');
-				weak Key k = null;
+				weak Node k = null;
 				while(null != (k = stack.pop_tail())) {
-					finish_key(k);
+					finish_node(k);
 				}
 			} else {
 				rewind(n);
 			}
 		}
-		private void accept_key_line() {
-			Key k = new Key();
+		private void accept_node_line() {
+			Node k = new Node();
 			bool in_seq = false;
 			k.ind = skip_blanks();
-			message("ind = %d", k.ind);
 			switch(accept_indicator()) {
 				case '-':
 					k.key = "#seq";
+					/*To allow aligning - with the parent node*/
+					k.ind++;
 					int ind = k.ind; /*save ind since k will be transferred*/
-					weak Key parent = pop_to_parent(k);
+					weak Node parent = pop_to_parent(k);
 					stack.push_tail(k);
 					parent.sequence.append(# k);
 					parent.is_seq = true;
-					k = new Key();
+					k = new Node();
 					int extra_ind = skip_blanks();
-					k.ind = extra_ind + ind + 1;
+					k.ind = extra_ind + ind;
 				break;
 				case 0:
 				break;
@@ -193,7 +210,7 @@ namespace Vala.Runtime.YAML {
 				break;
 			}
 
-			k.key = accept_string();
+			k.key= accept_string();
 			skip_blanks();
 			switch(accept_indicator()) {
 				case ':':
@@ -235,12 +252,13 @@ namespace Vala.Runtime.YAML {
 			skip_blanks();
 			skip_chars('\n');
 
-			weak Key parent = pop_to_parent(k);
+			weak Node parent = pop_to_parent(k);
 			parent.is_map = true;
 			stack.push_tail(k);
-			begin_key(k);
-			message("adding to parent %s", parent.key);
-			parent.mapping.append(# k);
+			begin_node(k);
+			weak string key = k.key;
+			parent.mapping_list.append(k);
+			parent.mapping.insert(key, #k);
 		}
 		private string? accept_block_lines(int ind, bool folded) {
 			int real_ind = -1;
@@ -252,11 +270,9 @@ namespace Vala.Runtime.YAML {
 
 				accept_char('\n');
 				real_ind = skip_blanks();
-				message("real = %d, ind = %d", real_ind, ind);
 				if(real_ind <= ind) {
 					rewind(real_ind);
 					rewind(1); /* the new line*/
-					message("rewinded");
 					break;
 				}
 
@@ -277,23 +293,23 @@ namespace Vala.Runtime.YAML {
 			}
 			return null;
 		}
-		private weak Key pop_to_parent (Key k) {
-			weak Key tail = stack.peek_tail();
+		private weak Node pop_to_parent (Node k) {
+			weak Node tail = stack.peek_tail();
 			while(k.ind <= tail.ind) {
-				weak Key finished_key = stack.pop_tail();
-				finish_key(finished_key);
+				weak Node finished_node = stack.pop_tail();
+				finish_node(finished_node);
 				tail = stack.peek_tail();
 			}
 			return tail;
 		}
-		private void begin_key(Key k){
-			if(parser.key_start != null)
-				parser.key_start(this, k);
+		private void begin_node(Node k){
+			if(parser.node_start != null)
+				parser.node_start(this, k);
 		}
 		private string location() {
 			return "line %d char %d".printf(line, position);
 		}
-		private void finish_key(Key k) {
+		private void finish_node(Node k) {
 			if(k.is_map && k.is_seq) {
 				throw new 
 				Error.MIXED_NODE_TYPE(
@@ -305,21 +321,13 @@ namespace Vala.Runtime.YAML {
 				Error.MIXED_NODE_TYPE(
 				"Mixing scalar with mapping or sequence on %s at %s".printf(k.key, location()));
 			}
-			if(k.is_scalar) k.type = KeyType.SCALAR;
-			if(k.is_map) k.type = KeyType.MAP;
-			if(k.is_seq) k.type = KeyType.SEQ;
+			if(k.is_scalar) k.type = NodeType.SCALAR;
+			if(k.is_map) k.type = NodeType.MAP;
+			if(k.is_seq) k.type = NodeType.SEQ;
 
-			if(parser.key_end != null)
-				parser.key_end(this, k);
+			if(parser.node_end != null)
+				parser.node_end(this, k);
 
-		}
-		private void parse() {
-			while(!EOS) {
-				skip_chars('\n');
-				accept_eod_line();
-				accept_bod_line();
-				if(!EOS) accept_key_line();
-			}
 		}
 
 		unichar get_char() {
@@ -466,6 +474,6 @@ namespace Vala.Runtime.YAML {
 			return r;
 		}
 	}
-	public delegate bool KeyStartFunc(Context pc, Key key);
-	public delegate bool KeyEndFunc(Context pc, Key key);
+	public delegate bool NodeStartFunc(Context pc, Node node);
+	public delegate bool NodeEndFunc(Context pc, Node node);
 }

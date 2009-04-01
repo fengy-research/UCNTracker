@@ -1,5 +1,6 @@
 VALASOURCES = random.vala \
 			ptype.vala \
+			transport.vala \
 			physics.vala
 
 noinst_LTLIBRARIES = libphysics.la
@@ -13,7 +14,7 @@ libphysics_la_SOURCES =  \
 	$(VALASOURCES:.vala=.h)
 
 VALAFLAGS= --library=physics --basedir=$(top_srcdir)/ucntracker
-VALAPKGS = --pkg gsl
+VALAPKGS = --pkg gsl ../math/math.vapi
 BUILT_SOURCES = vala-ccode
 @VALA_CCODE_RULES@
 
