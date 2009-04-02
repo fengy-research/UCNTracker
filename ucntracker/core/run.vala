@@ -53,7 +53,7 @@ namespace UCNTracker {
 
 		public Run(Experiment experiment) {
 			this.experiment = experiment;
-			this.source.set_callback(run1, null);
+			this.source.set_callback(run1);
 		}
 
 		/**
