@@ -352,9 +352,7 @@ namespace Vala.Runtime.YAML {
 			weak Node tail = stack.peek_tail();
 			while(k.ind <= tail.ind) {
 				weak Node finished_node = stack.pop_tail();
-				message("finished node at %p", finished_node);
 				finish_node(finished_node);
-				message("succefully finished node at %p", finished_node);
 				tail = stack.peek_tail();
 			}
 			return tail;

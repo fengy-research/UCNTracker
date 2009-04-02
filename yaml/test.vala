@@ -5,17 +5,26 @@ enum ENUM {
 	ABCD
 }
 
-public int main() {
-	Parser p = new Parser();
-	p.node_start = (obj, node) => {
-		message("key started : %s", node.key);
-	};
-	p.node_end = (obj, node) => {
-		message("key ended   : %s", node.key);
-	};
-	Context c = new Context(p);
+public class Experiment: Object, Buildable {
 	
-	c.parse(
+	}
+public class Part : Object, Buildable {
+	
+}
+public class Union: Object, Buildable {
+	
+}
+public class Cylinder: Object, Buildable {
+	
+}
+public int main() {
+	Builder builder = new Builder();
+	typeof(Experiment);
+	typeof(Cylinder);
+	typeof(Union);
+	typeof(Part);
+
+	builder.add_from_string(
 """
 ---
 - &experiment
@@ -43,10 +52,8 @@ public int main() {
     length: 4.0
     radius: 1.0
 ...
-"""
+""",
+0
 );
-	foreach(weak YAML.Node k in c.documents) {
-		message("%s", k.to_string_r());
-	}
 	return 0;
 }
