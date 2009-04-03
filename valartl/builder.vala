@@ -19,7 +19,7 @@ namespace Vala.Runtime {
 
 		private List<deferred_child_t> deferred_children;
 
-		HashTable<unowned string, Buildable> object_hash = new HashTable<unowned string, Buildable>(direct_hash, direct_equal);
+		HashTable<string, Buildable> object_hash = new HashTable<string, Buildable>(str_hash, str_equal);
 		construct {
 			context = new YAML.Context(new YAML.Parser(node_start, node_end));
 		}
@@ -63,7 +63,10 @@ namespace Vala.Runtime {
 				}
 				Type type = type_from_name(class_name);
 				child = GLib.Object.new(type) as Buildable;
-				object_hash.insert(node.anchor, child);
+				if(node.anchor != null) {
+					child.set_name(node.anchor);
+					object_hash.insert(node.anchor, child);
+				}
 				if(children_node != null)
 					visit_node(child, children_node);
 				/*Run two, for properties*/
@@ -81,22 +84,22 @@ namespace Vala.Runtime {
 						}
 						Value value = {};
 						value_from_string(ps, map_node.value, ref value);
+						child.set_property(ps.name, value);
 						break;
 					}
 				}
 			}
 			if(parent != null && child != null) {
-				parent.add_child(this, child);
-			}
-			if(node.key == "#doc") {
-				foreach(deferred_child_t dc in deferred_children) {
-					dc.parent.add_child(this, object_hash.lookup(dc.node.key));
-				}
+				parent.add_child(this, child, null);
 			}
 		}
 		private bool node_end(YAML.Context pc, YAML.Node node) {
 			if(node.key != "#doc") return false;
 			visit_node(null, node);
+			foreach(deferred_child_t dc in deferred_children) {
+				Buildable c = object_hash.lookup(dc.node.alias);
+				dc.parent.add_child(this, c, null);
+			}
 			return false;
 		}
 		public Buildable? get_object(string name) {
@@ -115,31 +118,8 @@ namespace Vala.Runtime {
 		/* Try to resolve a method under a namespace/class
 		 * */
 		static Module module = null;
-		public static bool resolve_method (string name,
-		         string method, out void* func) {
-			StringBuilder symbol_name = new StringBuilder("");
-			unichar c = 0;
-			unichar cc = 0;
-			unichar ccc = 0;
-			weak string p;
-			int i = 0;
-			if (module == null) module = Module.open(null, 0);
-			for (p = name; 
-				(c = p.get_char()) != 0; 
-				ccc = cc, cc = c, p = p.next_char(), i++) {
-				/* skip if uppercase, first or previous is uppercase */
-				if ((c.isupper() && i > 0 && cc.islower())
-				|| (i > 2 && c.isupper() && 
-					cc.isupper() && ccc.isupper())) {
-					symbol_name.append_unichar('_');
-				}
-				symbol_name.append_unichar(c.tolower());
-			}
-			symbol_name.append_unichar('_');
-			symbol_name.append(method);
-			
-			message("_ %s  _", symbol_name.str);
-			return module.symbol(symbol_name.str, out func);
-		}
+		public extern static bool resolve_method (string name,
+		         string method, out void* func);
+
 	}
 }

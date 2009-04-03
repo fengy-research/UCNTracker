@@ -45,8 +45,7 @@ public int main() {
     rotation: 0, 0, 0
     length: 8.0
     radius: 1.0
-  - &H
-    class: Cylinder
+  - class: Cylinder
     center: 0, 0, 2
     rotation: 0, 90, 0
     length: 4.0
@@ -55,5 +54,7 @@ public int main() {
 """,
 0
 );
+	assert(builder.get_object("T") != null);
+	assert(builder.get_object("V") != null);
 	return 0;
 }

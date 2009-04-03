@@ -1,4 +1,4 @@
-lib_LTLIBRARIES = libvalartl.la
+noinst_LTLIBRARIES = libvalartl.la
 VALASOURCES = yaml.vala builder.vala buildable.vala
 
 libvalartl_la_SOURCES = $(VALASOURCES:.vala=.c) $(VALASOURCES:.vala=.h) \

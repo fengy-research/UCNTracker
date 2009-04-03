@@ -12,8 +12,9 @@ BUILT_SOURCES = vala-ccode
 
 
 VALASOURCES = ucntracker.vala plugin-manager.vala
-VALAFLAGS = --library main --basedir=$(top_srcdir)/ucntracker
-VALAPKGS = ../math/math.vapi ../physics/physics.vapi ../core/core.vapi ../builder/builder.vapi --pkg gmodule-2.0
+VALAFLAGS = --library main --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/vapi
+VALAPKGS = ../math/math.vapi ../physics/physics.vapi ../core/core.vapi \
+	--pkg gmodule-2.0 --pkg valartl
 @VALA_CCODE_RULES@
 
 

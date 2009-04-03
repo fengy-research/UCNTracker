@@ -1,5 +1,6 @@
 using GLib;
 using UCNTracker;
+using Vala.Runtime;
 
 const string gdl = """
 <interface>

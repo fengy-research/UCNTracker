@@ -1,5 +1,6 @@
 using GLib;
 using UCNTracker;
+using Vala.Runtime;
 
 public double my_mfp_func(Part part, Vertex vertex) {
 	return 1.0;
@@ -9,28 +10,29 @@ public int main(string[] args) {
 	Builder builder = new Builder();
 	builder.add_from_string(
 """
-	<interface>
-	<object class="UCNExperiment" id="experiment">
-		<child>
-		<object class="UCNPart" id="part1">
-			<child>
-			<object class="UCNBall" id="part1vol">
-			<property name="center">1, 2, 3</property>
-			<property name="radius">2.0</property>
-			</object></child>
-		</object></child>
-		<child>
-		<object class="UCNPart" id="part2">
-			<child>
-			<object class="UCNCylinder" id="part2vol">
-				<property name="center">0, 0, 0</property>
-				<property name="radius">1.0</property>
-				<property name="length">3.5</property>
-			</object></child>
-		</object></child>
-	</object>
-	</interface>
+---
+- &experiment
+  class : UCNExperiment
+  children:
+  - *part1
+  - *part2
+- &part2
+  class : UCNPart
+  children :
+  - &ball
+    class: UCNBall
+    center: 1, 2, 3
+    radius: 2.0
+  - class: UCNCylinder
+    center: 0, 0, 0
+    radius: 2.0
+    length: 3.0
+...
 """, -1);
 
+	assert(builder.get_object("ball") != null);
+	Ball ball = builder.get_object("ball") as Ball;
+	message("%s", ball.center.to_string());
+	message("%lf", ball.radius);
 	return 0;
 }

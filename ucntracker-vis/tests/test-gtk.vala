@@ -1,10 +1,9 @@
 using GLib;
-using Gtk;
 using GL;
 using GLU;
-
+using Vala.Runtime;
 using UCNTracker;
-UCNTracker.Builder builder;
+Builder builder;
 UCNTracker.Camera gl;
 
 public int main(string[] args) {
@@ -13,10 +12,11 @@ public int main(string[] args) {
 	Gtk.init(ref args);
 	Gtk.gl_init ( ref args);
 
-	builder = new UCNTracker.Builder();
+	builder = new Builder();
 	builder.add_from_string(GML, -1);
 
 	Experiment experiment = builder.get_object("experiment") as Experiment;
+	assert(experiment != null);
 	Part environment = builder.get_object("environment") as Part;
 	Part part1 = builder.get_object("part1") as Part;
 
@@ -75,6 +75,35 @@ public int main(string[] args) {
 
 private const string GML = 
 """
+---
+- &experiment
+  class : UCNExperiment
+  children :
+  - *environment
+  - *part1
+  - class : UCNGravityField
+    g : 0.1
+    children:
+    - *env
+- &environment
+  class : UCNPart
+  layer : -1
+  children:
+  - *env
+- &part1
+  class : UCNPart
+  layer : 0
+  children:
+  - class : UCNBall
+    radius : 2
+    center : 1, 2, 3
+- &env
+  class : UCNBall
+  center : 0, 0, 0
+  radius : 100
+...
+""";
+private const string useless = """
 <interface>
 <object class="UCNExperiment" id="experiment">
  <child>

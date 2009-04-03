@@ -1,5 +1,6 @@
 using GLib;
 using Math;
+using Vala.Runtime;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
@@ -17,7 +18,7 @@ namespace UCNTracker {
 		}
 		public abstract void fieldfunc(Vertex vertex, Vertex force);
 	}
-	public class GField: Field, Buildable {
+	public class GravityField: Field, Buildable {
 		private double _g = 9.8;
 		public double g {
 			get {

@@ -20,15 +20,16 @@ namespace UCNTracker {
 			}
 		}
 		private void visit_volume(Volume volume) {
+			message("visiting volume %s", volume.get_name());
 			glPushMatrix();
 			EulerAngles e = volume.rotation;
 			Vector axis = e.q.get_axis();
 			double angle = e.q.get_angle();
-			glRotated(angle * 180.0 / Math.PI, axis.x, axis.y, axis.z);
-			message("%lf %s", angle, axis.to_string());
 			glTranslated(volume.center.x,
 			             volume.center.y,
 			             volume.center.z);
+			glRotated(angle * 180.0 / Math.PI, axis.x, axis.y, axis.z);
+			message("%lf %s", angle, axis.to_string());
 			if(volume is Ball) {
 				Ball ball = volume as Ball;
 				Gdk.GLDraw.sphere (use_solid, ball.radius, 8, 8);
@@ -54,16 +55,19 @@ namespace UCNTracker {
 			glPopMatrix();
 		}
 		private void visit_field(Field f) {
+			message("visiting field %s", f.get_name());
 			foreach(Volume v in f.volumes) {
 				visit_volume(v);
 			}
 		}
 		private void visit_part(Part part) {
+			message("visiting part %s", part.get_name());
 			foreach(Volume v in part.volumes) {
 				visit_volume(v);
 			}
 		}
 		private void visit_experiment(Experiment e) {
+			message("visiting experiment %s", e.get_name());
 			foreach(Part p in e.parts) {
 				visit_part(p);
 			}

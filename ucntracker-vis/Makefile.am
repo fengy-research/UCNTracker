@@ -16,12 +16,12 @@ VALASOURCES = \
 
 BUILT_SOURCES = vala-ccode
 
-VALAFLAGS= --library=ucntracker-vis --basedir=$(top_srcdir)/ucntracker-vis --vapidir=$(top_srcdir)/vapi
-VALAPKGS = \
-../ucntracker/ucntracker.vapi \
---pkg glu --pkg gl --pkg gtkglext-1.0 --pkg gtk+-2.0
+VALAFLAGS= --library=ucntracker-vis --basedir=$(top_srcdir)/ucntracker-vis \
+	--vapidir=$(top_srcdir)/vapi --vapidir=$(top_srcdir)/ucntracker
+VALAPKGS = --pkg ucntracker \
+	--pkg glu --pkg gl --pkg gtkglext-1.0 --pkg gtk+-2.0
 
-vapi_DATA = ucntracker-vis.vapi
+vapi_DATA = ucntracker-vis.vapi ucntracker-vis.deps
 vapidir=$(datadir)/vala/vapi
 
 @VALA_CCODE_RULES@
@@ -30,3 +30,9 @@ EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker-vis.vapi
 visualizeinclude_HEADERS =  $(VALASOURCES:.vala=.h)
 visualizeincludedir = $(includedir)/ucntracker-vis
 
+ucntracker-vis.deps:
+	echo gtk+-2.0 > $@
+	echo gtkglext-1.0 >> $@
+	echo gl >> $@
+	echo glu >> $@
+	echo ucntracker >> $@

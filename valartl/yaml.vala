@@ -8,7 +8,7 @@ namespace Vala.Runtime.YAML {
 		UNEXPECTED_EOS,
 		EXPECT_CHAR,
 	}
-	public class Parser : Boxed {
+	public class Parser {
 		public NodeStartFunc node_start;
 		public NodeEndFunc node_end;
 		public Parser(NodeStartFunc? node_start = null, NodeEndFunc? node_end = null) {
@@ -23,7 +23,7 @@ namespace Vala.Runtime.YAML {
 		SEQ,
 	}
 
-	public class Node : Boxed {
+	public class Node {
 		public weak Node parent;
 		public NodeType type;
 		public string key;
@@ -132,7 +132,7 @@ namespace Vala.Runtime.YAML {
 		}
 	}
 
-	public class Context : Boxed {
+	public class Context {
 		private weak Parser parser;
 		private string buffer;
 		private weak string p;
@@ -162,15 +162,10 @@ namespace Vala.Runtime.YAML {
 			}
 		}
 		private void accept_comment_line() {
-			switch(accept_indicator()){
+			switch(accept_indicator("#")){
 				case '#':
 				accept_until('\n');
 				accept_char('\n');
-				break;
-				case 0:
-				break;
-				default:
-				rewind(1);
 				break;
 			}
 		}
@@ -216,43 +211,33 @@ namespace Vala.Runtime.YAML {
 		private void accept_node_line() {
 			bool in_seq = false;
 			int ind = skip_blanks();
-			switch(accept_indicator()) {
+			switch(accept_indicator("-")) {
 				case '-':
 					Node k = new Node();
 					k.key = "#seq";
 					/*To allow aligning - with the parent node*/
 					k.ind = ++ind;
 					k.parent = pop_to_parent(k);
-					message("%p %s->%s", k, k.parent.key, k.key);
 					stack.push_tail(k);
 					k.parent.is_seq = true;
 					int extra_ind = skip_blanks();
-					switch(accept_indicator()) {
+					bool interrupted = false;
+					switch(accept_indicator("*&")) {
 						case '*':
 							k.alias = accept_token();
 							accept_until('\n');
 							accept_char('\n');
+						interrupted = true;
 						break;
 						case '&':
 							k.anchor = accept_token();
 							skip_blanks();
 						break;
-						case '0':
-						break;
-						default:
-							rewind(1); 
-						break;
 					}
 					weak Node parent = k.parent;
 					parent.sequence.append(# k);
 					ind += extra_ind;
-					return;
-				break;
-				case 0:
-				break;
-				default:
-					throw new Error.EXPECT_BLANK(
-					"Expecting blank at %s".printf(location()));
+					if(interrupted) return;
 				break;
 			}
 
@@ -266,7 +251,7 @@ namespace Vala.Runtime.YAML {
 				return;
 			}
 			skip_blanks();
-			switch(accept_indicator()) {
+			switch(accept_indicator(":")) {
 				case ':':
 				break;
 				default:
@@ -275,7 +260,7 @@ namespace Vala.Runtime.YAML {
 				break;
 			}
 			skip_blanks();
-			switch(accept_indicator()) {
+			switch(accept_indicator("&*!|>")) {
 				case '&':
 					k.anchor = accept_token();
 				break;
@@ -343,7 +328,7 @@ namespace Vala.Runtime.YAML {
 		}
 		private string? accept_tag() {
 			skip_blanks();
-			if(accept_indicator() == '!') {
+			if(accept_indicator("!") == '!') {
 				return accept_until('\n');
 			}
 			return null;
@@ -412,16 +397,9 @@ namespace Vala.Runtime.YAML {
 				n--;
 			}
 		}
-		private unichar accept_indicator() {
+		private unichar accept_indicator(string indicators) {
 			unichar c = get_char();
-			if(c == '|'
-			|| c == '>'
-			|| c == '#'
-			|| c == '&'
-			|| c == '*'
-			|| c == '!'
-			|| c == ':'
-			|| c == '-') {
+			if(indicators.chr(-1, c)!= null) {
 				next_char();
 				return c;
 			}

@@ -199,6 +199,7 @@ static gboolean _ucn_builder_resolve_method (const gchar * name,
   
   symbol = g_string_free (symbol_name, FALSE);
 
+g_message("symbol = %s", symbol);
   rt = g_module_symbol (module, symbol, func);
   
   g_free (symbol);

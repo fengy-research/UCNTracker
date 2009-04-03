@@ -1,12 +1,10 @@
 include ../../Makefile.tests
 
-LDADD = ../../ucntracker/libucntracker.la $(GTK_LIBS) $(GTKGL_LIBS) \
+LDADD = ../../ucntracker/libucntracker.la ../../valartl/libvalartl.la $(GTK_LIBS) $(GTKGL_LIBS) \
 ../libucntracker-vis.la
 
-VAPIDEPENDS = ../../ucntracker/ucntracker.vapi \
-../ucntracker-vis.vapi \
---pkg gtk+-2.0 \
---pkg gtkglext-1.0 --pkg gl --pkg glu
+VALAFLAGS = --vapidir=.. --vapidir=../../vapi --vapidir=../../ucntracker
+VALAPKGS = --pkg ucntracker-vis
 
 AM_CPPFLAGS += $(GTK_CFLAGS) $(GTKGL_CFLAGS) -I../
 

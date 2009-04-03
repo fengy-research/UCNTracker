@@ -4,7 +4,7 @@ AM_LDFLAGS = -export-dynamic -rdynamic
 
 SUFFIXES = .c .vala
 .vala.c:
-	$(VALAC) -C $< $(VAPIDEPENDS) --pkg gsl 
+	$(VALAC) $(VALAFLAGS) -C $< $(VALAPKGS)
 	touch $@
 
 check-local:

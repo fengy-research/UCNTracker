@@ -2,8 +2,8 @@ include ../../Makefile.tests
 
 LDADD = ../libucntracker.la
 
-VAPIDEPENDS = ../ucntracker.vapi
-
+VALAPKGS = --pkg ucntracker
+VALAFLAGS = --vapidir=..
 
 noinst_PROGRAMS = \
 	test-linking \
