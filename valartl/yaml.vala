@@ -133,7 +133,7 @@ namespace Vala.Runtime.YAML {
 	}
 
 	public class Context {
-		private weak Parser parser;
+		private Parser parser;
 		private string buffer;
 		private weak string p;
 
