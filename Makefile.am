@@ -1,1 +1,1 @@
-SUBDIRS = valartl vapi ucntracker ucntracker-vis examples
+SUBDIRS = valartl vapi ucntracker ucntracker-vis tools examples

@@ -48,6 +48,7 @@ AC_CONFIG_FILES([
 				examples/Makefile
 				examples/E01/Makefile
 				examples/E02/Makefile
+				tools/Makefile
 				])
 
 AC_OUTPUT
