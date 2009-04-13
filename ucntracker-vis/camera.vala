@@ -74,13 +74,23 @@ namespace UCNTracker {
 		private static const Gtk.ActionEntry[] ACTIONDEF = {
 			{"popup", null, "Popup", null, null, action_callback_view},
 			{"view", null, "View", null, null, action_callback_view},
-			{"view-top", null, "Top", null, null, action_callback_view}
+			{"view-top", null, "Top", null, null, action_callback_view},
+			{"view-bottom", null, "bottom", null, null, action_callback_view},
+			{"view-left", null, "Left", null, null, action_callback_view},
+			{"view-right", null, "Right", null, null, action_callback_view},
+			{"view-front", null, "Front", null, null, action_callback_view},
+			{"view-back", null, "Back", null, null, action_callback_view}
 		};
 		private static const string UIDEF = """
 <ui>
 <popup name="Popup" action="popup">
-	<menu name="View" action="view">
-		<menuitem name="Top" action="view-top"/>
+	<menu action="view">
+		<menuitem action="view-top"/>
+		<menuitem action="view-bottom"/>
+		<menuitem action="view-left"/>
+		<menuitem action="view-right"/>
+		<menuitem action="view-front"/>
+		<menuitem action="view-back"/>
 	</menu>
 </popup>
 </ui>""";
@@ -138,11 +148,8 @@ namespace UCNTracker {
 			switch(event.button) {
 				case 1:
 					Quaternion q = Quaternion.from_rotation(
-							Vector(0, 0, -1), (double)dx/100.0);
-					Quaternion p = Quaternion.from_rotation(
-							Vector(0, -1, 0), (double)dy/100.0);
+							up, (double)dx/100.0);
 					_location = q.rotate_vector(_location);
-					_location = p.rotate_vector(_location);
 					message("%s", _location.to_string());
 				break;
 				case 2:
@@ -169,6 +176,39 @@ namespace UCNTracker {
 
 		public void action_callback_view(Gtk.Action action) {
 			message("action emitted: %s", action.name);
+			double d = location.norm();
+			switch(action.name) {
+				case "view-top":
+					location = Vector(0, 0, d);
+					target = Vector(0, 0, 0);
+					up = Vector(0, 1, 0);
+				break;
+				case "view-bottom":
+					location = Vector(0, 0, -d);
+					target = Vector(0, 0, 0);
+					up = Vector(0, 1, 0);
+				break;
+				case "view-front":
+					location = Vector(d, 0, 0);
+					target = Vector(0, 0, 0);
+					up = Vector(0, 0, 1);
+				break;
+				case "view-back":
+					location = Vector(-d, 0, 0);
+					target = Vector(0, 0, 0);
+					up = Vector(0, 0, 1);
+				break;
+				case "view-left":
+					location = Vector(0, -d, 0);
+					target = Vector(0, 0, 0);
+					up = Vector(0, 0, 1);
+				break;
+				case "view-right":
+					location = Vector(0, d, 0);
+					target = Vector(0, 0, 0);
+					up = Vector(0, 0, 1);
+				break;
+			}
 		}
 
 		public override bool configure_event(Gdk.EventConfigure event) {
