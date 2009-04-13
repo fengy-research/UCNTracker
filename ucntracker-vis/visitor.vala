@@ -19,6 +19,12 @@ namespace UCNTracker {
 				visit_volume(child);
 			}
 		}
+		private void visit_intersection(Intersection i) {
+			foreach(Volume child in i.children) {
+				/*FIXME: hidden surface stuff!*/
+				visit_volume(child);
+			}
+		}
 		private void visit_volume(Volume volume) {
 			glPushMatrix();
 			EulerAngles e = volume.rotation;
@@ -51,6 +57,9 @@ namespace UCNTracker {
 			} else
 			if(volume is Union) {
 				visit_union(volume as Union);
+			} else
+			if(volume is Intersection) {
+				visit_intersection(volume as Intersection);
 			} else {
 			critical("unknown volume type");
 			Gdk.GLDraw.sphere (false, volume.bounding_radius, 8, 8);
@@ -95,6 +104,9 @@ namespace UCNTracker {
 		}
 		public void execute(uint scence_id) {
 			glCallList((GLuint)scence_id);
+		}
+		public void delete(uint scence_id) {
+			glDeleteLists((GLuint)scence_id, 1);
 		}
 	}
 }

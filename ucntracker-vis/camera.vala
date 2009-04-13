@@ -28,6 +28,10 @@ namespace UCNTracker {
 				if(_run != null) {
 					_run.run_motion_notify += run_motion_notify;
 					_run.track_added_notify += track_added_notify;
+					if(scence_id != 0) {
+						renderer.delete(scence_id);
+						scence_id = 0;
+					}
 					message("scence_id = %u", scence_id);
 				}
 			}
