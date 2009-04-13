@@ -1,6 +1,6 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	internal class Intersection {
+	internal class Intersector {
 		private struct solver_params {
 			public unowned Volume volume;
 			public CurveFunc curve;

@@ -11,6 +11,7 @@ noinst_PROGRAMS = \
 	test-evolve \
 	test-primitives \
 	test-union \
+	test-inter \
 	test-anonymouse \
 	test-mfp \
 	test-rotate 

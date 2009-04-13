@@ -17,7 +17,7 @@ VALASOURCES = \
 	volume-box.vala \
 	volume-cylinder.vala \
 	experiment.vala \
-	intersection.vala \
+	intersector.vala \
 	run.vala \
 	vertex.vala \
 	evolve.vala \

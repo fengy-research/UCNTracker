@@ -84,7 +84,7 @@ namespace UCNTracker {
 
 		public virtual bool intersect(CurveFunc curve, 
 			   double s_min, double s_max, out double s) {
-			return Intersection.solve(this, curve, s_min, s_max, out s);
+			return Intersector.solve(this, curve, s_min, s_max, out s);
 		
 		}
 
