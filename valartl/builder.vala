@@ -24,6 +24,12 @@ namespace Vala.Runtime {
 			context.parse(buffer);
 			return 0;
 		}
+		public uint add_from_file (string filename) {
+			string buffer;
+			ulong length;
+			FileUtils.get_contents(filename, out buffer, out length);
+			return add_from_string(buffer, length);
+		}
 		public extern bool value_from_string(ParamSpec pspec, string str, ref Value value) throws BuilderError;
 		private bool node_start(YAML.Context pc, YAML.Node node) {
 			return false;

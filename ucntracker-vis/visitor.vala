@@ -20,7 +20,6 @@ namespace UCNTracker {
 			}
 		}
 		private void visit_volume(Volume volume) {
-			message("visiting volume %s", volume.get_name());
 			glPushMatrix();
 			EulerAngles e = volume.rotation;
 			Vector axis = e.q.get_axis();
@@ -29,7 +28,6 @@ namespace UCNTracker {
 			             volume.center.y,
 			             volume.center.z);
 			glRotated(angle * 180.0 / Math.PI, axis.x, axis.y, axis.z);
-			message("%lf %s", angle, axis.to_string());
 			if(volume is Ball) {
 				Ball ball = volume as Ball;
 				Gdk.GLDraw.sphere (use_solid, ball.radius, 8, 8);
@@ -55,19 +53,18 @@ namespace UCNTracker {
 			glPopMatrix();
 		}
 		private void visit_field(Field f) {
-			message("visiting field %s", f.get_name());
+			glColor4d(1.0, 1.0, 1.0, 0.05);
 			foreach(Volume v in f.volumes) {
 				visit_volume(v);
 			}
 		}
 		private void visit_part(Part part) {
-			message("visiting part %s", part.get_name());
+			glColor4d(1.0, 1.0, 0.0, 0.01);
 			foreach(Volume v in part.volumes) {
 				visit_volume(v);
 			}
 		}
 		private void visit_experiment(Experiment e) {
-			message("visiting experiment %s", e.get_name());
 			foreach(Part p in e.parts) {
 				visit_part(p);
 			}
@@ -76,7 +73,11 @@ namespace UCNTracker {
 			}
 		}
 
-		public void render(Experiment e, bool use_solid) {
+		public uint render(Experiment e, bool use_solid) {
+
+			uint id = glGenLists(1);
+
+			glNewList((GLuint)id, GL_COMPILE);
 			this.use_solid = use_solid;
 			if(use_solid) {
 				quadric.QuadricDrawStyle(GLU_FILL);
@@ -84,6 +85,11 @@ namespace UCNTracker {
 				quadric.QuadricDrawStyle(GLU_LINE);
 			}
 			visit_experiment(e);
+			glEndList();
+			return id;
+		}
+		public void execute(uint scence_id) {
+			glCallList((GLuint)scence_id);
 		}
 	}
 }

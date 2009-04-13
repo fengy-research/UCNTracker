@@ -1,27 +1,26 @@
 ---
-object: &experiment
-  type: Experiment
+- &experiment
+  class: UCNExperiment
+  children:
+  - *TPipe
+- &TPipe
+  class: UCNPart
   layer: 1
   children:
-  - object: *TPipe
-object: &TPipe
-  type: Part
+  - *T
+- &T
+  class: UCNUnion
   children:
-  - object: *T
-object: &T
-  type: Union
-    children:
-    - object: &V
-        type: Cylinder
-        center: 0, 0, 0
-        rotation: 0, 0, 0
-        length: 8.0
-        radius: 1.0
-    - object: &H
-        type: Cylinder
-        center: 0, 0, 2
-        rotation: 0, 90, 0
-        length: 4.0
-        raius: 1.0
+  - &V
+    class: UCNCylinder
+    center: 0, 0, 0
+    rotation: 0, 0, 0
+    length: 8.0
+    radius: 1.0
+  - &H
+    class: UCNCylinder
+    center: 0, 2, 0
+    rotation: 0, 90, 0
+    length: 4.0
+    radius: 1.0
 ...
-        

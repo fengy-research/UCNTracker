@@ -8,6 +8,8 @@ using Math;
 namespace UCNTracker {
 	public class Camera: Gtk.DrawingArea {
 		private Run _run;
+		private uint scence_id;
+		private Renderer renderer = new Renderer();
 		public Run run {
 			get {
 				return _run;
@@ -21,6 +23,7 @@ namespace UCNTracker {
 				if(_run != null) {
 					_run.run_motion_notify += run_motion_notify;
 					_run.track_added_notify += track_added_notify;
+					scence_id = renderer.render(_run.experiment, use_solid);
 				}
 			}
 		}
@@ -30,12 +33,8 @@ namespace UCNTracker {
 		public bool use_solid {get; set;}
 
 		private void run_motion_notify(Run obj) {
-		//	message("run_counter == %d", run_counter++);
-			run_counter++;
-			if(run_counter > 10) {
-				run_counter = 0;
-				queue_draw();
-			}
+			message("run_motion_notify");
+			queue_draw();
 		}
 		private void track_added_notify(Run obj, Track track) {
 			set_track_color(track,
@@ -70,7 +69,7 @@ namespace UCNTracker {
 			Gdk.EventMask.SCROLL_MASK
 		);
 		Gdk.GLConfig config = new Gdk.GLConfig.by_mode (
-		                  Gdk.GLConfigMode.RGB |
+		                  Gdk.GLConfigMode.RGBA |
 		                  Gdk.GLConfigMode.DOUBLE |
 		                  Gdk.GLConfigMode.DEPTH);
 
@@ -102,7 +101,6 @@ namespace UCNTracker {
 			get_pointer(out drag_end_x, out drag_end_y);
 			int dy = drag_end_y - drag_start_y;
 			int dx = drag_end_x - drag_start_x;
-			message("%u", event.button);
 			switch(event.button) {
 				case 1:
 					Quaternion q = Quaternion.from_rotation(
@@ -121,15 +119,22 @@ namespace UCNTracker {
 			queue_draw();
 			return true;
 		}
-		public override bool motion_notify_event(Gdk.EventMotion event) {
-			return true;
-		}
 		public override bool configure_event(Gdk.EventConfigure event) {
 			message("configure");
 			assert(WidgetGL.gl_begin(this));
+			glClearDepth(1.0);
+			glClear(GL_DEPTH_BUFFER_BIT);
+			float[] light = {0.0f, 0.0f, 20.0f, 0.0f};
+			glLightfv(GL_LIGHT0, GL_POSITION, light);
+			glEnable(GL_LIGHTING);
+			glEnable(GL_LIGHT0);
+			glEnable(GL_DEPTH_TEST);
+
 			glViewport(0, 0, 
 				(GLsizei)allocation.width,
 				(GLsizei)allocation.height);
+
+
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			gluPerspective(45,
@@ -139,9 +144,7 @@ namespace UCNTracker {
 			WidgetGL.gl_end(this);
 			return true;
 		}
-		private Renderer renderer = new Renderer();
 		public override bool expose_event(Gdk.EventExpose event) {
-			message("expose");
 			assert(WidgetGL.gl_begin(this));
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glLoadIdentity();
@@ -150,14 +153,15 @@ namespace UCNTracker {
 					target.x, target.y, target.z, up.x, up.y, up.z);
 
 			if(run != null) {
-				renderer.render(run.experiment, use_solid);
+				renderer.execute(scence_id);
 				foreach (Track track in run.tracks) {
 					float r = (float)track.get_double("r");
 					float g = (float)track.get_double("g");
 					float b = (float)track.get_double("b");
-					glBegin(GL_POINTS);
+					glBegin(GL_LINE_STRIP);
 					glColor3f(r, g, b);
 					foreach (Vertex vertex in track.history.head) {
+						message("%s", vertex.position.to_string());
 						glVertex3f ((GLfloat)vertex.position.x,
 						        	(GLfloat)vertex.position.y,
 						        	(GLfloat)vertex.position.z);

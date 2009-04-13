@@ -1,1 +1,3 @@
-#SUBDIRS = E01 E02
+SUBDIRS = \
+E02
+#E01 
