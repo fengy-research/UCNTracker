@@ -8,6 +8,10 @@
   layer: 1
   children:
   - *T
+  - class: UCNTorus
+    center: 0, 0, 0
+    inner_radius: 1.0
+    outer_radius: 2.0
 - &T
   class: UCNUnion
   children:

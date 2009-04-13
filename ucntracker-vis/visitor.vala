@@ -32,6 +32,11 @@ namespace UCNTracker {
 				Ball ball = volume as Ball;
 				Gdk.GLDraw.sphere (use_solid, ball.radius, 8, 8);
 			} else
+			if(volume is Torus) {
+				Torus torus = volume as Torus;
+				Gdk.GLDraw.torus (use_solid, torus.inner_radius, 
+				              torus.outer_radius,8, 8);
+			} else
 			if(volume is Box) {
 				Box box = volume as Box;
 				glScaled(box.size.x, box.size.y, box.size.z);

@@ -13,6 +13,7 @@ VALASOURCES = \
 	volume-simple.vala \
 	volume-boolean.vala \
 	volume-ball.vala \
+	volume-torus.vala \
 	volume-box.vala \
 	volume-cylinder.vala \
 	experiment.vala \
