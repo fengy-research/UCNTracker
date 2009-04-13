@@ -12,7 +12,7 @@ libucntracker_vis_la_SOURCES =  \
 
 VALASOURCES = \
 	camera.vala \
-	visitor.vala 
+	renderer.vala 
 
 BUILT_SOURCES = vala-ccode
 
