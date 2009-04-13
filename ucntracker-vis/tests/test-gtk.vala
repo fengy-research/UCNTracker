@@ -40,7 +40,7 @@ public int main(string[] args) {
 	part1.hit += (obj, track, state) => {
 	};*/
 
-	part1.transport += (obj, track, leave, enter, transported)
+/*	part1.transport += (obj, track, leave, enter, transported)
 	  => {
 		Vector norm = track.tail.volume.grad(leave.position);
 		leave.velocity.reflect(norm);
@@ -49,7 +49,8 @@ public int main(string[] args) {
 
 		*transported = false;
 		message("fork %p", track);
-	};
+	};*/
+	part1.transport += part1.optic_reflect;
 
 	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
 	Gtk.Button button = new Gtk.Button.with_label("Start");

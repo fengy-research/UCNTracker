@@ -7,6 +7,7 @@ namespace UCNTracker {
 	public class Part: Object, Buildable {
 		public List<Volume> volumes;
 		public int layer {get; set; default = 0;}
+		public double potential {get; set; default = 1.0;}
 		public double mfp {get; set; default = 1.0;}
 
 		public void add_child(Builder builder, GLib.Object child, string? type) {
@@ -42,6 +43,13 @@ namespace UCNTracker {
 		 */
 		public virtual signal void transport(Track track,
 		       Vertex s_leave, Vertex s_enter, bool* transported);
+
+		public void optic_reflect(Part p, Track track,
+		       Vertex leave, Vertex enter, bool* transported) {
+			Vector norm = track.tail.volume.grad(leave.position);
+			leave.velocity.reflect(norm);
+			*transported = false;
+		}
 
 		public virtual signal void hit(Track track, Vertex next);
 
