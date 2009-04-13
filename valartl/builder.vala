@@ -85,6 +85,7 @@ namespace Vala.Runtime {
 						if(ps == null) {
 							throw new BuilderError.PROPERTY_NOT_FOUND("property %s.%s not found".printf(type.name(), map_node.key));
 						}
+						message("%s", map_node.value);
 						Value value = {};
 						value_from_string(ps, map_node.value, ref value);
 						child.set_property(ps.name, value);
