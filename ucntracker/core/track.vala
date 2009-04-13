@@ -17,15 +17,20 @@ namespace UCNTracker {
 
 		private Datalist<void*> data;
 
-		public const int history_length = 100;
-
-		public Queue<Vertex> history = new Queue<Vertex>();
-
 		public double estimate_distance(Vertex next) {
 			/*FIXME: use a parabola*/
 			return tail.position.distance(next.position);
 		}
 
+		public void* get_pointer(string name) {
+			return data.get_data(name);
+		}
+		public void steal_pointer(string name) {
+			data.remove_no_notify(name);
+		}
+		public void set_pointer(string name, void* pointer, DestroyNotify? dn = null) {
+			data.set_data_full(name, pointer, dn);
+		}
 		public void set_vector(string name, Vector val) {
 			Vector * pointer = (Vector*) data.get_data(name);
 			if(pointer == null) {

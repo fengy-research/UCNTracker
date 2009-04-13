@@ -142,10 +142,7 @@ namespace UCNTracker {
 
 			var prev = track.tail;
 			track.tail = next;
-			track.history.push_tail(track.tail);
-			if(track.history.length > Track.history_length) {
-				track.history.pop_head();
-			}
+
 			/*****
 			 * Always invoke the track_motion notify 
 			 *

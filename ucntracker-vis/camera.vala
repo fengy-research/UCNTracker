@@ -33,7 +33,9 @@ namespace UCNTracker {
 		public bool use_solid {get; set;}
 
 		private void run_motion_notify(Run obj) {
-			message("run_motion_notify");
+			foreach (Track track in run.tracks) {
+				push_track_history(track, track.tail);
+			}
 			queue_draw();
 		}
 		private void track_added_notify(Run obj, Track track) {
@@ -160,8 +162,7 @@ namespace UCNTracker {
 					float b = (float)track.get_double("b");
 					glBegin(GL_LINE_STRIP);
 					glColor3f(r, g, b);
-					foreach (Vertex vertex in track.history.head) {
-						message("%s", vertex.position.to_string());
+					foreach (Vertex vertex in get_track_history(track)) {
 						glVertex3f ((GLfloat)vertex.position.x,
 						        	(GLfloat)vertex.position.y,
 						        	(GLfloat)vertex.position.z);
@@ -184,6 +185,16 @@ namespace UCNTracker {
 			r = t.get_double("r");
 			g = t.get_double("g");
 			b = t.get_double("b");
+		}
+		public unowned List<Vertex> get_track_history(Track t) {
+			return (List<Vertex>)t.get_pointer("history");
+		}
+		public void push_track_history(Track t, Vertex v) {
+			unowned List<Vertex> hist = (List<Vertex>) t.get_pointer("history");
+			Vertex newv = v.clone();
+			hist.prepend(#newv);
+			t.steal_pointer("history");
+			t.set_pointer("history", hist, g_list_free);
 		}
 	}
 }
