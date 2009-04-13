@@ -14,7 +14,7 @@ namespace UCNTracker {
 		public double timestamp;
 		/* in each run, move all tracks forward at least by 
 		 * SYNC_TIME_STEP*/
-		public const double SYNC_TIME_STEP = 0.2;
+		public double frame_length = 0.2;
 
 		public Source source {get; set; default = new IdleSource();}
 
@@ -81,14 +81,14 @@ namespace UCNTracker {
 				experiment.prepare(this);
 				running = true;
 			}
-			double next_t = timestamp + SYNC_TIME_STEP;
+			double next_t = timestamp + frame_length;
 			foreach(Track track in active_tracks) {
 				while(!track.terminated &&
 				    track.tail.timestamp < next_t) {
 					track.evolve();
 				}
 			}
-			timestamp += SYNC_TIME_STEP;
+			timestamp += frame_length;
 			run_motion_notify();
 			return true;
 		}

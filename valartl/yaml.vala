@@ -8,6 +8,11 @@ namespace Vala.Runtime.YAML {
 		UNEXPECTED_EOS,
 		EXPECT_CHAR,
 	}
+	public enum NodeType {
+		SCALAR,
+		MAP,
+		SEQ,
+	}
 	public class Parser {
 		public NodeStartFunc node_start;
 		public NodeEndFunc node_end;
@@ -17,11 +22,6 @@ namespace Vala.Runtime.YAML {
 		}
 	}
 
-	public enum NodeType {
-		SCALAR,
-		MAP,
-		SEQ,
-	}
 
 	public class Node {
 		public weak Node parent;

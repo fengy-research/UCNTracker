@@ -26,6 +26,7 @@ public int main(string[] args) {
 		start.velocity = Vector(0.0, 0.0, 2.0);
 		start.weight = 1.0;
 		run.time_limit = 1000;
+		run.frame_length = 1.0;
 		message("run started");
 		Track t = run.add_track(PType.neutron, start);
 		message("track added");
@@ -103,54 +104,3 @@ private const string GML =
   radius : 100
 ...
 """;
-private const string useless = """
-<interface>
-<object class="UCNExperiment" id="experiment">
- <child>
-  <object class="UCNPart" id="environment">
-   <property name="layer">-1</property>
-   <child type="volume">
-    <object class="UCNBall" id="envball">
-     <property name="center">0, 0, 0</property>
-     <property name="radius">100</property>
-    </object>
-   </child>
-  </object>
- </child>
- <child>
-  <object class="UCNGField" id="gfield">
-   <property name="g">0.1</property>
-   <child type="volume" ref="envball"/>
-  </object>
- </child>
- <child>
-  <object class="UCNPart" id="part1">
-   <property name="layer">0</property>
-   <child type="volume">
-    <object class="UCNBall" id="part1box">
-     <property name="center">1, 2, 3</property>
-     <property name="radius">2</property>
-    </object>
-   </child>
-  </object>
- </child>
- <child>
-  <object class="UCNPart" id="part2">
-   <property name="layer">-2</property>
-   <child type="volume">
-    <object class="UCNCylinder">
-     <property name="center">1, 2, 3</property>
-     <property name="radius">2</property>
-     <property name="length">10</property>
-    </object>
-   </child>
-   <child type="volume">
-    <object class="UCNBox">
-     <property name="center">1, 2, 3</property>
-     <property name="size">6,8,10</property>
-    </object>
-   </child>
-  </object>
- </child>
-</object>
-</interface>""";

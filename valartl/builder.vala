@@ -7,13 +7,10 @@ namespace Vala.Runtime {
 		INVALID_VALUE,
 	}
 	public class Builder : GLib.Object {
+
 		public string prefix {get; set;}
 		private class Object : GLib.Object, Vala.Runtime.Buildable {
 
-		}
-		private class deferred_child_t {
-			public Vala.Runtime.Buildable parent;
-			public unowned YAML.Node node;
 		}
 		private YAML.Context context;
 
@@ -117,9 +114,12 @@ namespace Vala.Runtime {
 		}
 		/* Try to resolve a method under a namespace/class
 		 * */
-		static Module module = null;
 		public extern static bool resolve_method (string name,
 		         string method, out void* func);
+		private class deferred_child_t {
+			public Vala.Runtime.Buildable parent;
+			public unowned YAML.Node node;
+		}
 
 	}
 }
