@@ -60,37 +60,51 @@ namespace UCNTracker {
 
 		public Vector location {
 			get {return _location;} 
-			set {_location = value;}
+			set {_location = value;
+				queue_draw();
+			}
 		}
 		public Vector target {
 			get {return _target;} 
-			set {_target = value;}
+			set {_target = value;
+				queue_draw();
+			}
 		}
 		public Vector up {
 			get {return _up;} 
-			set {_up = value;}
+			set {_up = value;
+				queue_draw();
+			}
 		}
 
 		private static const Gtk.ActionEntry[] ACTIONDEF = {
-			{"popup", null, "Popup", null, null, action_callback_view},
-			{"view", null, "View", null, null, action_callback_view},
-			{"view-top", null, "Top", null, null, action_callback_view},
-			{"view-bottom", null, "bottom", null, null, action_callback_view},
-			{"view-left", null, "Left", null, null, action_callback_view},
-			{"view-right", null, "Right", null, null, action_callback_view},
-			{"view-front", null, "Front", null, null, action_callback_view},
-			{"view-back", null, "Back", null, null, action_callback_view}
+			{"popup", null, "Popup", null, null, action_callback_actions},
+			{"location", null, "Location", null, null, action_callback_actions},
+			{"location-top", null, "Top", null, null, action_callback_actions},
+			{"location-bottom", null, "bottom", null, null, action_callback_actions},
+			{"location-left", null, "Left", null, null, action_callback_actions},
+			{"location-right", null, "Right", null, null, action_callback_actions},
+			{"location-front", null, "Front", null, null, action_callback_actions},
+			{"location-back", null, "Back", null, null, action_callback_actions},
+			{"zoom", null, "Zoom", null, null, action_callback_actions},
+			{"zoom-in", null, "Zoom In", null, null, action_callback_actions},
+			{"zoom-out", null, "Zoom Out", null, null, action_callback_actions}
 		};
+
 		private static const string UIDEF = """
 <ui>
 <popup name="Popup" action="popup">
-	<menu action="view">
-		<menuitem action="view-top"/>
-		<menuitem action="view-bottom"/>
-		<menuitem action="view-left"/>
-		<menuitem action="view-right"/>
-		<menuitem action="view-front"/>
-		<menuitem action="view-back"/>
+	<menu action="location">
+		<menuitem action="location-top"/>
+		<menuitem action="location-bottom"/>
+		<menuitem action="location-left"/>
+		<menuitem action="location-right"/>
+		<menuitem action="location-front"/>
+		<menuitem action="location-back"/>
+	</menu>
+	<menu action="zoom">
+		<menuitem action="zoom-in"/>
+		<menuitem action="zoom-out"/>
 	</menu>
 </popup>
 </ui>""";
@@ -103,12 +117,13 @@ namespace UCNTracker {
 				Gdk.EventMask.BUTTON_RELEASE_MASK |
 				Gdk.EventMask.SCROLL_MASK
 			);
+			this.set_double_buffered(false);
 			Gdk.GLConfig config = new Gdk.GLConfig.by_mode (
-		                  	  Gdk.GLConfigMode.RGBA |
-		                  	  Gdk.GLConfigMode.DOUBLE
+		                  	  Gdk.GLConfigMode.RGB |
+		                  	  Gdk.GLConfigMode.DEPTH |
+		                  	  Gdk.GLConfigMode.SINGLE
 		                  	  );
 
-		                  //	  Gdk.GLConfigMode.DEPTH);
 
 			Gtk.WidgetGL.set_gl_capability (this,
 		             	 config, null, true,
@@ -164,63 +179,79 @@ namespace UCNTracker {
 		public override bool scroll_event(Gdk.EventScroll event) {
 			switch(event.direction) {
 				case Gdk.ScrollDirection.UP:
-					_location.mul(1.25);
+					do_action("zoom-in");
 				break;
 				case Gdk.ScrollDirection.DOWN:
-					_location.mul(0.80);
+					do_action("zoom-out");
 				break;
 			}
-			queue_draw();
 			return true;
 		}
 
-		public void action_callback_view(Gtk.Action action) {
-			message("action emitted: %s", action.name);
+		private void do_action(string name) {
 			double d = location.norm();
-			switch(action.name) {
-				case "view-top":
+			switch(name) {
+				case "location-top":
 					location = Vector(0, 0, d);
 					target = Vector(0, 0, 0);
 					up = Vector(0, 1, 0);
 				break;
-				case "view-bottom":
+				case "location-bottom":
 					location = Vector(0, 0, -d);
 					target = Vector(0, 0, 0);
 					up = Vector(0, 1, 0);
 				break;
-				case "view-front":
+				case "location-front":
 					location = Vector(d, 0, 0);
 					target = Vector(0, 0, 0);
 					up = Vector(0, 0, 1);
 				break;
-				case "view-back":
+				case "location-back":
 					location = Vector(-d, 0, 0);
 					target = Vector(0, 0, 0);
 					up = Vector(0, 0, 1);
 				break;
-				case "view-left":
+				case "location-left":
 					location = Vector(0, -d, 0);
 					target = Vector(0, 0, 0);
 					up = Vector(0, 0, 1);
 				break;
-				case "view-right":
+				case "location-right":
 					location = Vector(0, d, 0);
 					target = Vector(0, 0, 0);
 					up = Vector(0, 0, 1);
 				break;
+				case "zoom-in":
+					Vector n = _location;
+					n.mul(0.8);
+					location = n;
+				break;
+				case "zoom-out":
+					Vector n = _location;
+					n.mul(1.25);
+					location = n;
+				break;
 			}
 		}
 
-		public override bool configure_event(Gdk.EventConfigure event) {
-			message("configure");
+		private void action_callback_actions(Gtk.Action action) {
+			message("action emitted: %s", action.name);
+			do_action(action.name);
+		}
+
+		public override void realize() {
+			message("realize");
+			base.realize();
 			assert(WidgetGL.gl_begin(this));
-			glClearDepth(1.0);
-			glClear(GL_DEPTH_BUFFER_BIT);
+
 			float[] light = {0.0f, 0.0f, 20.0f, 0.0f};
 			glLightfv(GL_LIGHT0, GL_POSITION, light);
 		//	glEnable(GL_LIGHTING);
 		//	glEnable(GL_LIGHT0);
 			//glEnable(GL_DEPTH_TEST);
+
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClearDepth(1.0);
 
 			glViewport(0, 0, 
 				(GLsizei)allocation.width,
@@ -228,11 +259,33 @@ namespace UCNTracker {
 
 
 			glMatrixMode(GL_PROJECTION);
+
+			glLoadIdentity();
+
+			gluPerspective(45,
+			(GLdouble)allocation.width/ (GLdouble)allocation.height,
+		               	   0.01, 100);
+
+			glFlush();
+
+			WidgetGL.gl_end(this);
+		}
+		public override bool configure_event(Gdk.EventConfigure event) {
+			message("configure");
+			assert(WidgetGL.gl_begin(this));
+
+			glMatrixMode(GL_PROJECTION);
+
 			glLoadIdentity();
 			gluPerspective(45,
 			(GLdouble)allocation.width/ (GLdouble)allocation.height,
 		               	   0.01, 100);
-			glMatrixMode(GL_MODELVIEW);
+
+
+			glViewport(0, 0, 
+				(GLsizei)allocation.width,
+				(GLsizei)allocation.height);
+
 			WidgetGL.gl_end(this);
 			return true;
 		}
@@ -240,7 +293,13 @@ namespace UCNTracker {
 		public override bool expose_event(Gdk.EventExpose event) {
 			message("expose");
 			assert(WidgetGL.gl_begin(this));
+			Gdk.GLDrawable drawable = WidgetGL.get_gl_drawable(this);
+
+			drawable.wait_gdk();
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 
 			gluLookAt(location.x, location.y, location.z,
