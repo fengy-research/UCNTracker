@@ -30,6 +30,7 @@ namespace UCNTracker {
 			EulerAngles e = volume.rotation;
 			Vector axis = e.q.get_axis();
 			double angle = e.q.get_angle();
+			message("axis = %s angle = %lf", axis.to_string(), angle);
 			glTranslated(volume.center.x,
 			             volume.center.y,
 			             volume.center.z);

@@ -157,7 +157,7 @@ namespace UCNTracker {
 			dirty = true;
 		}
 		public double get_angle() {
-			return 2.0 * atan2(w, v.norm());
+			return 2.0 * atan2(v.norm(), w);
 		}
 		public Vector get_axis() {
 			Vector rt = v;
