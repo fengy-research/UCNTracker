@@ -15,6 +15,7 @@ namespace UCNTracker {
 		private Gsl.OdeivEvolve ode_evolve;
 
 		private double step_size;
+		private double dt;
 
 		private bool just_transported = false;
 		private double free_length;
@@ -28,6 +29,7 @@ namespace UCNTracker {
 			ode_control = new Gsl.OdeivControl.y(1.0e-8, 0.0);
 			ode_evolve = new Gsl.OdeivEvolve(6);
 			step_size = INIT_STEP_SIZE;
+			dt = INIT_STEP_SIZE;
 			this.track = track;
 		}
 
@@ -155,14 +157,15 @@ namespace UCNTracker {
 			 * */
 			track.run.track_motion_notify(track, prev);
 		}
-		/* return TRUE if terminated.*/
+
 		public void evolve() {
 			if(track.tail.part == null) {
 				track.run.terminate_track(track);
 				return;
 			}
-			double dt = track.tail.part.calculate_mfp(track.tail) /
+			double dt_by_mfp = track.tail.part.calculate_mfp(track.tail) /
 			        (HOPS_PER_MFP * track.tail.velocity.norm());
+			if(dt_by_mfp < dt) dt = dt_by_mfp;
 
 			//message("mfp = %lf dt = %lf",
 			//track.tail.part.calculate_mfp(track.tail.vertex), dt);
@@ -182,23 +185,43 @@ namespace UCNTracker {
 				return;
 			}
 
-			double dt_leave;
+			double dt_leave = 0.0;
 			/* assign a value to shut up the compiler,
 			 * dt_enter is used only if is_enter is true, which means
 			 * out dt_enter is excuted. */
 			double dt_enter = 0.0;
 
-			double skip_last_transported;
+			double leave_in = 0.0;
+			double leave_out = dt;
+			double enter_in = 0.0;
+			double enter_out = dt;
 			if(just_transported) {
-				 skip_last_transported = 1.0e-9;
+				 /*FIXME: to avoid the last position of the particle
+				  * This is a dirty hack by slightly move forward the boundary
+				  * of the solution so that the last transportation point is 
+				  * skipped.
+				  * May fail if two points are too close
+				  * or the sfunc is to steep.
+				  * */
+				 leave_in = dt/1000.0;
+				 //leave_in= 0.0;
 			} else {
-				 skip_last_transported = 0.0;
+				 leave_in= 0.0;
 			 }
 
-			bool is_leave = track.tail.volume.intersect(cfunc, -1, skip_last_transported, dt, out dt_leave);
-			bool is_enter = (next.part != null)
-			        && next.volume.intersect(cfunc, -1, 0, dt, out dt_enter);
+			bool is_leave = false;
+			bool is_enter = false;
+			while(!is_leave && !is_enter) {
+				/* If failed to determine the transport location, 
+				 *
+				 */
 
+				is_leave = track.tail.volume.intersect(cfunc, 0, leave_in, leave_out, out dt_leave);
+				if(next.part != null) {
+			    	is_enter = next.volume.intersect(cfunc, 0, enter_in, enter_out, out dt_enter);
+				}
+				leave_in += (leave_out - leave_in)/100;
+			}
 			Vertex leave = null;
 			Vertex enter = null;
 			//message("%s %s", is_leave.to_string(), is_enter.to_string());
@@ -224,7 +247,7 @@ namespace UCNTracker {
 			leave.volume = track.tail.volume;
 			message("leave sfunc = %lg", leave.volume.sfunc(leave.position));
 			/* Make sure the particle is inside the volume. */
-			assert(leave.volume.sfunc(leave.position) < 0.0);
+			// maybe don't need this assert(leave.volume.sfunc(leave.position) < 0.0);
 
 			enter.part = next.part;
 			enter.volume = next.volume;
