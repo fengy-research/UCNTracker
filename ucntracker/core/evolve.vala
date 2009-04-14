@@ -15,7 +15,6 @@ namespace UCNTracker {
 		private Gsl.OdeivEvolve ode_evolve;
 
 		private double step_size;
-		private double dt;
 
 		private bool just_transported = false;
 		private double free_length;
@@ -29,7 +28,6 @@ namespace UCNTracker {
 			ode_control = new Gsl.OdeivControl.y(1.0e-8, 0.0);
 			ode_evolve = new Gsl.OdeivEvolve(6);
 			step_size = INIT_STEP_SIZE;
-			dt = INIT_STEP_SIZE;
 			this.track = track;
 		}
 
@@ -163,6 +161,7 @@ namespace UCNTracker {
 				track.run.terminate_track(track);
 				return;
 			}
+			double dt = 9999.0;
 			double dt_by_mfp = track.tail.part.calculate_mfp(track.tail) /
 			        (HOPS_PER_MFP * track.tail.velocity.norm());
 			if(dt_by_mfp < dt) dt = dt_by_mfp;
@@ -211,6 +210,7 @@ namespace UCNTracker {
 
 			bool is_leave = false;
 			bool is_enter = false;
+			int count = 0;
 			while(!is_leave && !is_enter) {
 				/* If failed to determine the transport location, 
 				 *
@@ -220,7 +220,19 @@ namespace UCNTracker {
 				if(next.part != null) {
 			    	is_enter = next.volume.intersect(cfunc, 0, enter_in, enter_out, out dt_enter);
 				}
-				leave_in += (leave_out - leave_in)/100;
+				leave_in /= 2;
+				count ++;
+				if(count == 10) {
+					warning(
+					"failed to detect a surface transportation, at tail %s(%s) next = %s(%s), directly move to next object", 
+						track.tail.position.to_string(),
+						track.tail.volume.get_name(),
+						next.position.to_string(),
+						next.volume!=null?next.volume.get_name():"null"
+						);
+					move_to(next, true);
+					return;
+				}
 			}
 			Vertex leave = null;
 			Vertex enter = null;
@@ -229,16 +241,20 @@ namespace UCNTracker {
 			if(is_leave && is_enter) {
 				leave = new Vertex();
 				enter = new Vertex();
+				track.tail.volume.intersect(cfunc, -1, leave_in, leave_out, out dt_leave);
 				reintegrate_to(leave, dt_leave);
+			    next.volume.intersect(cfunc, -1, enter_in, enter_out, out dt_enter);
 				reintegrate_to(enter, dt_enter);
 			}
 			if(is_leave) {
 				leave = new Vertex();
+				track.tail.volume.intersect(cfunc, -1, leave_in, leave_out, out dt_leave);
 				reintegrate_to(leave, dt_leave);
 				enter = leave.clone();
 			}
 			if(is_enter) {
 				enter = new Vertex();
+			    next.volume.intersect(cfunc, -1, enter_in, enter_out, out dt_enter);
 				reintegrate_to(enter, dt_enter);
 				leave = enter.clone();
 			}

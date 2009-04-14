@@ -3,21 +3,23 @@
   class: UCNExperiment
   children:
   - *TPipe
+  - class: UCNGravityField
+    g: 0.1
 - &TPipe
   class: UCNPart
   layer: 1
   transport: optic_reflect
   children:
-#  - *T
+  - *T
   - *torus
 - &torus
   class: UCNIntersection
   children:
   - class: UCNTorus
     center: 0, 0, 0
-    inner_radius: 1.0
-    outer_radius: 2.0
     rotation: 0, 90, 0
+    radius: 3.0
+    tube_radius: 1.0
   - class: UCNBox
     center: 2, 0, 2
     size: 4, 4, 4

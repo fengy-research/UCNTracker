@@ -8,9 +8,14 @@ public int main(string[] args) {
 	Builder builder = new Builder();
 	builder.add_from_file("/dev/stdin");
 
-	Volume union = builder.get_object(args[1]) as Volume;
+	Object obj = builder.get_object(args[1]) as Object;
 	int points = args[2].to_int();
-	sample_volume(union, points);
+	if(obj is Volume) {
+		sample_volume(obj as Volume, points);
+	}
+	if(obj is Part) {
+		sample_part(obj as Part, points);
+	}
 	return 0;
 }
 
@@ -20,5 +25,11 @@ private void sample_volume(Volume volume, int points) {
 		Vector grad = volume.grad(point);
 		stdout.printf("%s %s %lf\n", point.to_string(), grad.to_string(),
 		volume.sfunc(point));
+	}
+}
+
+private void sample_part(Part part, int points) {
+	foreach(Volume volume in part.volumes) {
+		sample_volume(volume, points);
 	}
 }
