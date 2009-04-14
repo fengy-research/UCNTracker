@@ -6,6 +6,7 @@
 - &TPipe
   class: UCNPart
   layer: 1
+  transport: optic_reflect
   children:
   - *T
 #  - *torus

@@ -82,9 +82,9 @@ namespace UCNTracker {
 		 * Returns: false if no intersection is found.
 		 */
 
-		public virtual bool intersect(CurveFunc curve, 
+		public virtual bool intersect(CurveFunc curve, int direction,
 			   double s_min, double s_max, out double s) {
-			return Intersector.solve(this, curve, s_min, s_max, out s);
+			return Intersector.solve(this, curve, direction, s_min, s_max, out s);
 		
 		}
 
@@ -102,8 +102,9 @@ namespace UCNTracker {
 				return Sense.OUT;
 			}
 			double s = sfunc(point);
-			if(fabs(s) < thickness) return Sense.ON;
+			//if(fabs(s) < thickness) return Sense.ON;
 			if(s < 0.0) return Sense.IN;
+			if(s == 0.0) return Sense.ON;
 			return Sense.OUT;
 		}
 

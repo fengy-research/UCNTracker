@@ -16,6 +16,7 @@ namespace UCNTracker {
 
 		private double step_size;
 
+		private bool just_transported = false;
 		private double free_length;
 
 		public Evolution(Track track) {
@@ -96,16 +97,12 @@ namespace UCNTracker {
 			Vertex future = new Vertex();
 			reintegrate_to(future, dt);
 			/*
-			message("dt = %lf tail.position = %lf %lf %lf vertex.position = %lf %lf %lf",
+			message("dt = %lf vertex.position = %lf %lf %lf",
 					dt,	
-					tail.vertex.position.x,
-					tail.vertex.position.y,
-					tail.vertex.position.z,
-					future.vertex.position.x,
-					future.vertex.position.y,
-					future.vertex.position.z);
-					*/
-
+					future.position.x,
+					future.position.y,
+					future.position.z);
+			*/
 			return future.position;
 		}
 
@@ -179,7 +176,8 @@ namespace UCNTracker {
 			*/
 			next.locate_in(track.experiment);
 
-			if(track.tail.volume == next.volume) {
+			if(track.tail.part == next.part) {
+				just_transported = false;
 				move_to(next, false);
 				return;
 			}
@@ -190,9 +188,16 @@ namespace UCNTracker {
 			 * out dt_enter is excuted. */
 			double dt_enter = 0.0;
 
-			bool is_leave = track.tail.volume.intersect(cfunc, 0, dt, out dt_leave);
+			double skip_last_transported;
+			if(just_transported) {
+				 skip_last_transported = 1.0e-9;
+			} else {
+				 skip_last_transported = 0.0;
+			 }
+
+			bool is_leave = track.tail.volume.intersect(cfunc, -1, skip_last_transported, dt, out dt_leave);
 			bool is_enter = (next.part != null)
-			        && next.volume.intersect(cfunc, 0, dt, out dt_enter);
+			        && next.volume.intersect(cfunc, -1, 0, dt, out dt_enter);
 
 			Vertex leave = null;
 			Vertex enter = null;
@@ -217,12 +222,21 @@ namespace UCNTracker {
 
 			leave.part = track.tail.part;
 			leave.volume = track.tail.volume;
+			message("leave sfunc = %lg", leave.volume.sfunc(leave.position));
+			/* Make sure the particle is inside the volume. */
+			assert(leave.volume.sfunc(leave.position) < 0.0);
+
 			enter.part = next.part;
 			enter.volume = next.volume;
 
 			bool transported = true;
 			track.tail.part.transport(track, leave, enter, &transported);
-
+			just_transported = true;
+			message("transport event leave = %s vel = %s enter = %s next = %s", 
+			leave.position.to_string(),
+			leave.velocity.to_string(),
+			enter.position.to_string(),
+			next.position.to_string());
 			if(transported == false) {
 				move_to(leave, false);
 			} else {

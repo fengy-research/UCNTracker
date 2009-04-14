@@ -44,9 +44,11 @@ namespace UCNTracker {
 		public virtual signal void transport(Track track,
 		       Vertex s_leave, Vertex s_enter, bool* transported);
 
+		[CCode (instance_pos = -1)]
 		public void optic_reflect(Part p, Track track,
 		       Vertex leave, Vertex enter, bool* transported) {
 			Vector norm = track.tail.volume.grad(leave.position);
+			message("norm = %s", norm.to_string());
 			leave.velocity.reflect(norm);
 			*transported = false;
 		}

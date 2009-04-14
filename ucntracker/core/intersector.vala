@@ -5,40 +5,43 @@ namespace UCNTracker {
 			public unowned Volume volume;
 			public CurveFunc curve;
 			public double value;
+			public double sfunc_value;
 		}
 
 		private static double intersect_solver_function (
 		        double s, solver_params* params) {
 			Vector point = params->curve(s);
 			assert(params->volume != null);
-			double rt = params->volume.sfunc(point);
+			double rt = params->volume.sfunc(point) - params->sfunc_value;
 			params->value = rt;
 			//message("solver_function(%lf) returns %lf", s, rt);
 			return rt;
 		}
 
-		public const double PRECISION = 1.0e-9;
+		public const double PRECISION = 1.0e-10;
 
 		public static bool solve(Volume volume, CurveFunc curve,
+		        int direction,
 		        double s_min, double s_max, out double s) {
-			s_min -= PRECISION;
-			s_max += PRECISION;
+// Really don't need to extend the ranges if the surfaces have no thickness
+//			s_min -= PRECISION;
+//			s_max += PRECISION;
 			Vector point_in = curve(s_min);
 			Vector point_out = curve(s_max);
 			double sfunc_in = volume.sfunc(point_in);
 			double sfunc_out = volume.sfunc(point_out);
+			double sfunc_value = direction * PRECISION;
 
-			if(sfunc_in == 0.0) {
-				s = s_min;
-				return true;
-			}
-			if(sfunc_out == 0.0) {
-				s = s_max;
-				return true;
-			}
-			if(sfunc_in > 0.0 && sfunc_out > 0.0
-			|| sfunc_in < 0.0 && sfunc_out < 0.0) {
+			if((sfunc_in > 0.0 && sfunc_out > 0.0)
+			|| (sfunc_in < 0.0 && sfunc_out < 0.0)) {
+				message("no intersection %lg %lg", sfunc_in, sfunc_out);
 				return false;
+			}
+
+			/* Make sure sfunc_value has a solution */
+			while((sfunc_in > sfunc_value && sfunc_out > sfunc_value)
+			|| (sfunc_in < sfunc_value && sfunc_out < sfunc_value)) {
+				sfunc_value /= 2.0;
 			}
 
 			solver_params params = {null};
@@ -46,8 +49,9 @@ namespace UCNTracker {
 			 * workaround vala bz 572079*/
 			params.volume = volume;
 			params.curve = curve;
-
+			params.sfunc_value = sfunc_value;
 			bool converged = false;
+
 			int iter = 0;
 			int max_iter = 1000;
 			Gsl.Function f = {intersect_solver_function, &params};
@@ -66,12 +70,37 @@ namespace UCNTracker {
 				}
 			} while(status == Gsl.Status.CONTINUE && iter < max_iter);
 
+			s = solver.root;
 			if(iter == max_iter) {
 				warning("solver exceeds max num of interations. "
 				    + "assuming no solution.");
-				warning("residule = %lf", volume.sfunc(curve(s)));
+				warning("residule = %lg, params.value %lg", volume.sfunc(curve(solver.root)), params.value);
 			}
-			s = solver.root;
+			/*
+			switch(direction) {
+				case 1:
+				if(sfunc_out > 0.0 && sfunc_out <= sfunc_value) {
+					s = s_max;
+					return true;
+				}
+				if(sfunc_in > 0.0 && sfunc_in <= sfunc_value) {
+					s = s_min;
+					return true;
+				}
+				break;
+				case -1:
+				if(sfunc_out < 0.0 && sfunc_out >= sfunc_value) {
+					s = s_max;
+					return true;
+				}
+				if(sfunc_in < 0.0 && sfunc_in >= sfunc_value) {
+					s = s_min;
+					return true;
+				}
+				break;
+			}*/
+
+
 			return converged;
 		}
 	}

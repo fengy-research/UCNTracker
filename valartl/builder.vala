@@ -5,6 +5,7 @@ namespace Vala.Runtime {
 		PROPERTY_NOT_FOUND,
 		TYPE_NOT_FOUND,
 		INVALID_VALUE,
+		SYMBOL_NOT_FOUND,
 	}
 	public class Builder : GLib.Object {
 
@@ -82,13 +83,28 @@ namespace Vala.Runtime {
 						default:
 						ObjectClass @class = (ObjectClass) type.class_ref();
 						ParamSpec ps = @class.find_property(map_node.key);
-						if(ps == null) {
-							throw new BuilderError.PROPERTY_NOT_FOUND("property %s.%s not found".printf(type.name(), map_node.key));
+						if(ps != null) {
+							message("%s", map_node.value);
+							Value value = {};
+							value_from_string(ps, map_node.value, ref value);
+							child.set_property(ps.name, value);
+						} else {
+							uint si = Signal.lookup(map_node.key, type);
+							if(si == 0) {
+								throw new BuilderError.PROPERTY_NOT_FOUND(
+								"%s.%s is neither a property or a signal"
+								.printf(type.name(), map_node.key));
+							}
+							void* method = null;
+							if(!resolve_method(class_name, map_node.value, out method)) {
+								throw new
+								BuilderError.SYMBOL_NOT_FOUND(
+								"symbol %s.%s not found"
+								.printf(class_name,
+								        map_node.value));
+							}
+							Signal.connect(child, map_node.key, (GLib.Callback) method, child);
 						}
-						message("%s", map_node.value);
-						Value value = {};
-						value_from_string(ps, map_node.value, ref value);
-						child.set_property(ps.name, value);
 						break;
 					}
 				}
