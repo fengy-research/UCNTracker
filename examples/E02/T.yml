@@ -9,7 +9,7 @@
   transport: optic_reflect
   children:
   - *T
-#  - *torus
+  - *torus
 - &torus
   class: UCNIntersection
   children:

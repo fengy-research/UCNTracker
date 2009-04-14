@@ -12,17 +12,13 @@ namespace UCNTracker {
 		}
 		public double inner_radius {get; set;}
 		public override double sfunc(Vector point) {
-			double d = point.distance(center);
-			double d_inner = _inner_radius - d;
-			double d_outer = d - _outer_radius;
-
-			/* inside inner*/
-			if(d_inner > 0.0) return d_inner;
-			/* outside outer */
-			if(d_outer > 0.0) return d_outer;
-			/* inside the torus, use the value that is closer to zero*/
-			if(d_inner < d_outer) return d_outer;
-			return d_inner;
+			Vector p = point;
+			world_to_body(ref p);
+			double d = p.norm();
+			double rc = (_inner_radius + _outer_radius)/2.0;
+			double r = (_outer_radius - _inner_radius)/2.0;
+			double dn = sqrt(p.x * p.x + p.y * p.y);
+			return sqrt((dn - rc)*(dn - rc) + p.z * p.z) - r;
 		}
 	}
 }
