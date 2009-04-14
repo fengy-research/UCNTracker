@@ -3,26 +3,49 @@
   class: UCNExperiment
   children:
   - *TPipe
-  - class: UCNGravityField
-    g: 0.1
+#  - *Gravity
+- &Gravity
+  class: UCNGravityField
+  g: 0.1
 - &TPipe
   class: UCNPart
   layer: 1
   transport: optic_reflect
   children:
-  - *T
-  - *torus
-- &torus
+#  - *T
+  - *torus50
+  - *torus51
+  - *pipe1
+- &torus50
   class: UCNIntersection
   children:
   - class: UCNTorus
     center: 0, 0, 0
-    rotation: 0, 90, 0
-    radius: 3.0
-    tube_radius: 1.0
+    rotation: 0, 0, 0
+    radius: 8.0
+    tube_radius: 2.0
   - class: UCNBox
-    center: 2, 0, 2
-    size: 4, 4, 4
+    center: 5, 5, 0
+    size: 10, 10, 10
+- &torus51
+  class: UCNIntersection
+  center: -8, 8, -8
+  rotation: 0, 90, 90
+  children:
+  - class: UCNTorus
+    center: 0, 0, 0
+    rotation: 0, 0, 0
+    radius: 8.0
+    tube_radius: 2.0
+  - class: UCNBox
+    center: 5, 5, 0
+    size: 10, 10, 10
+- &pipe1
+  class: UCNCylinder
+  rotation: 90, 90, 0
+  center: -4, 8, 0
+  length: 8
+  radius: 2.0
 - &T
   class: UCNUnion
   children:

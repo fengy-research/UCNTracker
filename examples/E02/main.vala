@@ -14,8 +14,8 @@ public int main(string[] args) {
 		message("prepare");
 		camera.run = run;
 		Vertex head = new Vertex();
-		head.velocity = Vector(0.0, 0.1, 0.1);
-		head.position = Vector(2.1, 0.0, 1.1);
+		head.velocity = Vector(0.1, 0.0, 0.1);
+		head.position = Vector(0.2, 8.0, 0.0);
 		head.weight = 1.0;
 		run.add_track(PType.neutron, head);
 		run.frame_length = 1.0;

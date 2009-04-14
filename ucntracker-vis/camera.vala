@@ -260,7 +260,7 @@ namespace UCNTracker {
 					glColor3f(r, g, b);
 					int i = 0;
 					foreach (Vertex vertex in get_track_history(track)) {
-						if( i > 100) break;
+						//if( i > 100) break;
 						glVertex3f ((GLfloat)vertex.position.x,
 						        	(GLfloat)vertex.position.y,
 						        	(GLfloat)vertex.position.z);
