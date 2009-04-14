@@ -6,11 +6,16 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+	internal enum RenderMode {
+		WIRE,
+		DOT,
+		SOLID
+	}
 	internal class Renderer {
 		public int layer;
 
 		Quadric quadric = new Quadric();
-		private bool use_solid = false;
+		private RenderMode mode = RenderMode.DOT;
 		public Renderer() {
 		}
 		private void visit_union(Union u) {
@@ -25,7 +30,7 @@ namespace UCNTracker {
 				visit_volume(child);
 			}
 		}
-		private void visit_volume(Volume volume) {
+		private void visit_volume_solid(Volume volume, bool use_solid) {
 			glPushMatrix();
 			EulerAngles e = volume.rotation;
 			Vector axis = e.q.get_axis();
@@ -35,6 +40,12 @@ namespace UCNTracker {
 			             volume.center.y,
 			             volume.center.z);
 			glRotated(angle * 180.0 / Math.PI, axis.x, axis.y, axis.z);
+
+			if(use_solid) {
+				quadric.QuadricDrawStyle(GLU_FILL);
+			} else {
+				quadric.QuadricDrawStyle(GLU_LINE);
+			}
 			if(volume is Ball) {
 				Ball ball = volume as Ball;
 				Gdk.GLDraw.sphere (use_solid, ball.radius, 8, 8);
@@ -69,6 +80,25 @@ namespace UCNTracker {
 			}
 			glPopMatrix();
 		}
+		private void visit_volume(Volume volume) {
+			switch(mode) {
+				case RenderMode.DOT:
+					glBegin(GL_POINTS);
+					for(int i =0; i< 200; i++) {
+						Vector v = volume.sample(true);
+						glVertex3d(v.x, v.y, v.z);
+					}
+					glEnd();
+				break;
+				case RenderMode.WIRE:
+					visit_volume_solid(volume, false);
+				break;
+				case RenderMode.SOLID:
+					visit_volume_solid(volume, true);
+				break;
+				
+			}
+		}
 		private void visit_field(Field f) {
 			glColor4d(1.0, 1.0, 1.0, 0.05);
 			foreach(Volume v in f.volumes) {
@@ -90,17 +120,12 @@ namespace UCNTracker {
 			}
 		}
 
-		public uint render(Experiment e, bool use_solid) {
+		public uint render(Experiment e, RenderMode mode) {
 
 			uint id = glGenLists(1);
 
 			glNewList((GLuint)id, GL_COMPILE);
-			this.use_solid = use_solid;
-			if(use_solid) {
-				quadric.QuadricDrawStyle(GLU_FILL);
-			} else {
-				quadric.QuadricDrawStyle(GLU_LINE);
-			}
+			this.mode = mode;
 			visit_experiment(e);
 			glEndList();
 			return id;

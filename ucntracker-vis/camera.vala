@@ -308,7 +308,10 @@ namespace UCNTracker {
 			if(run != null) {
 				message("scence_id = %u", scence_id);
 				if(scence_id == 0) {
-					scence_id = renderer.render(_run.experiment, use_solid);
+					glLoadIdentity();
+					scence_id = renderer.render(_run.experiment, RenderMode.DOT);
+					gluLookAt(location.x, location.y, location.z,
+							target.x, target.y, target.z, up.x, up.y, up.z);
 				}
 				renderer.execute(scence_id);
 				foreach (Track track in run.tracks) {
