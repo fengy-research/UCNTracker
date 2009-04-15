@@ -5,8 +5,6 @@ using Math;
 namespace UCNTracker {
 	namespace Physics {
 		public void init(ref unowned string []args) {
-			PType.preload();
-			Random.preload();
 		}
 	}
 }

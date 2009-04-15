@@ -7,7 +7,7 @@ AC_SUBST(ACLOCAL_AMFLAGS, "-I autotools")
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 
-AM_INIT_AUTOMAKE([tar-ustar foreign])
+AM_INIT_AUTOMAKE([tar-ustar foreign subdir-objects])
 
 AM_MAINTAINER_MODE
 AC_PROG_LIBTOOL
@@ -36,11 +36,6 @@ AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
 				ucntracker/tests/Makefile
-				ucntracker/builder/Makefile
-				ucntracker/math/Makefile
-				ucntracker/physics/Makefile
-				ucntracker/core/Makefile
-				ucntracker/main/Makefile
 				ucntracker-vis/Makefile
 				ucntracker-vis/tests/Makefile
 				valartl/Makefile

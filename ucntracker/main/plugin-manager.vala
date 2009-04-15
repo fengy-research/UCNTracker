@@ -47,11 +47,6 @@ namespace UCNTracker {
 			modules.prepend(module);
 			module.use();
 		}
-		public void query_static(PluginModule.ModuleInitFunc init_func) {
-			PluginModule module = new PluginModule.@static(init_func);
-			modules.prepend(module);
-			module.use();
-		}
 	}
 
 }
