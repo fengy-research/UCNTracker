@@ -15,21 +15,36 @@ namespace UCNTracker {
 		private Renderer renderer = new Renderer();
 		private Gtk.Menu popup = null;
 		private Gtk.UIManager ui = new Gtk.UIManager();
+		private RenderMode _mode = RenderMode.WIRE;
 
+		private void rerender() {
+			if(scence_id != 0) {
+				renderer.delete(scence_id);
+				scence_id = 0;
+			}
+			if(this.is_realized() && _experiment != null) {
+				scence_id = renderer.render(_experiment, mode);
+				message("scence_id = %u", scence_id);
+			}
+		}
 		public Experiment experiment {
 			get {
 				return _experiment;
 			}
 			set {
 				_experiment = value;
-				if(scence_id != 0) {
-					renderer.delete(scence_id);
-					scence_id = 0;
-				}
-				if(this.is_realized()) {
-					scence_id = renderer.render(_experiment, RenderMode.DOT);
-					message("scence_id = %u", scence_id);
-				}
+				rerender();
+				this.queue_draw();
+			}
+		}
+
+		public RenderMode mode {
+			get {
+				return _mode;
+			}
+			set {
+				_mode = value;
+				rerender();
 			}
 		}
 		public Run run {
@@ -100,7 +115,11 @@ namespace UCNTracker {
 			{"location-back", null, "Back", null, null, action_callback_actions},
 			{"zoom", null, "Zoom", null, null, action_callback_actions},
 			{"zoom-in", null, "Zoom In", null, null, action_callback_actions},
-			{"zoom-out", null, "Zoom Out", null, null, action_callback_actions}
+			{"zoom-out", null, "Zoom Out", null, null, action_callback_actions},
+			{"mode", null, "Mode", null, null, action_callback_actions},
+			{"mode-dots", null, "Dots", null, null, action_callback_actions},
+			{"mode-wire", null, "Wire", null, null, action_callback_actions},
+			{"mode-solid", null, "Solid", null, null, action_callback_actions}
 		};
 
 		private static const string UIDEF = """
@@ -117,6 +136,11 @@ namespace UCNTracker {
 	<menu action="zoom">
 		<menuitem action="zoom-in"/>
 		<menuitem action="zoom-out"/>
+	</menu>
+	<menu action="mode">
+		<menuitem action="mode-dots"/>
+		<menuitem action="mode-wire"/>
+		<menuitem action="mode-solid"/>
 	</menu>
 </popup>
 </ui>""";
@@ -243,6 +267,15 @@ namespace UCNTracker {
 					n.mul(1.25);
 					location = n;
 				break;
+				case "mode-dots":
+					mode = RenderMode.DOTS;
+				break;
+				case "mode-wire":
+					mode = RenderMode.WIRE;
+				break;
+				case "mode-solid":
+					mode = RenderMode.SOLID;
+				break;
 			}
 		}
 
@@ -278,9 +311,7 @@ namespace UCNTracker {
 			(GLdouble)allocation.width/ (GLdouble)allocation.height,
 		               	   0.01, 100);
 
-			if(_experiment != null)
-				scence_id = renderer.render(_experiment, RenderMode.DOT);
-
+			rerender();
 			glFlush();
 
 			WidgetGL.gl_end(this);
@@ -321,9 +352,10 @@ namespace UCNTracker {
 			gluLookAt(location.x, location.y, location.z,
 					target.x, target.y, target.z, up.x, up.y, up.z);
 
-			if(run != null) {
-				message("scence_id = %u", scence_id);
+			if(scence_id != 0) {
 				renderer.execute(scence_id);
+			}
+			if(run != null) {
 				foreach (Track track in run.tracks) {
 					float r = (float)track.get_double("r");
 					float g = (float)track.get_double("g");

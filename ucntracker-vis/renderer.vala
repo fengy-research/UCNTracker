@@ -6,16 +6,16 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	internal enum RenderMode {
+	public enum RenderMode {
 		WIRE,
-		DOT,
+		DOTS,
 		SOLID
 	}
 	internal class Renderer {
 		public int layer;
 
 		Quadric quadric = new Quadric();
-		private RenderMode mode = RenderMode.DOT;
+		private RenderMode mode = RenderMode.DOTS;
 		public Renderer() {
 		}
 		private void visit_union(Union u) {
@@ -82,7 +82,7 @@ namespace UCNTracker {
 		}
 		private void visit_volume(Volume volume) {
 			switch(mode) {
-				case RenderMode.DOT:
+				case RenderMode.DOTS:
 					glBegin(GL_POINTS);
 					for(int i =0; i< 200; i++) {
 						Vector v = volume.sample(true);
