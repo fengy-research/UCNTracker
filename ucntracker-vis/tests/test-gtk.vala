@@ -63,6 +63,7 @@ public int main(string[] args) {
 	vbox.add(gl);
 
 	Run run = experiment.add_run();
+	gl.experiment = experiment;
 	gl.use_solid = false;
 	gl.run = run;
 	button.clicked += (obj) => {

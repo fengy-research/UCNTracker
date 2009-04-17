@@ -121,13 +121,17 @@ namespace UCNTracker {
 		}
 
 		public uint render(Experiment e, RenderMode mode) {
-
 			uint id = glGenLists(1);
+
+			glMatrixMode(GL_MODELVIEW);
+			glPushMatrix();
+			glLoadIdentity();
 
 			glNewList((GLuint)id, GL_COMPILE);
 			this.mode = mode;
 			visit_experiment(e);
 			glEndList();
+			glPopMatrix();
 			return id;
 		}
 		public void execute(uint scence_id) {

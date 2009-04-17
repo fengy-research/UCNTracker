@@ -10,11 +10,28 @@ using UCNTracker;
 namespace UCNTracker {
 	public class Camera: Gtk.DrawingArea {
 		private Run _run;
+		private Experiment _experiment;
 		private uint scence_id;
 		private Renderer renderer = new Renderer();
 		private Gtk.Menu popup = null;
 		private Gtk.UIManager ui = new Gtk.UIManager();
 
+		public Experiment experiment {
+			get {
+				return _experiment;
+			}
+			set {
+				_experiment = value;
+				if(scence_id != 0) {
+					renderer.delete(scence_id);
+					scence_id = 0;
+				}
+				if(this.is_realized()) {
+					scence_id = renderer.render(_experiment, RenderMode.DOT);
+					message("scence_id = %u", scence_id);
+				}
+			}
+		}
 		public Run run {
 			get {
 				return _run;
@@ -28,11 +45,6 @@ namespace UCNTracker {
 				if(_run != null) {
 					_run.run_motion_notify += run_motion_notify;
 					_run.track_added_notify += track_added_notify;
-					if(scence_id != 0) {
-						renderer.delete(scence_id);
-						scence_id = 0;
-					}
-					message("scence_id = %u", scence_id);
 				}
 			}
 		}
@@ -266,6 +278,9 @@ namespace UCNTracker {
 			(GLdouble)allocation.width/ (GLdouble)allocation.height,
 		               	   0.01, 100);
 
+			if(_experiment != null)
+				scence_id = renderer.render(_experiment, RenderMode.DOT);
+
 			glFlush();
 
 			WidgetGL.gl_end(this);
@@ -285,6 +300,7 @@ namespace UCNTracker {
 			glViewport(0, 0, 
 				(GLsizei)allocation.width,
 				(GLsizei)allocation.height);
+
 
 			WidgetGL.gl_end(this);
 			return true;
@@ -307,12 +323,6 @@ namespace UCNTracker {
 
 			if(run != null) {
 				message("scence_id = %u", scence_id);
-				if(scence_id == 0) {
-					glLoadIdentity();
-					scence_id = renderer.render(_run.experiment, RenderMode.DOT);
-					gluLookAt(location.x, location.y, location.z,
-							target.x, target.y, target.z, up.x, up.y, up.z);
-				}
 				renderer.execute(scence_id);
 				foreach (Track track in run.tracks) {
 					float r = (float)track.get_double("r");
