@@ -47,7 +47,7 @@ public int main(string[] args) {
 		start.weight = 1.0;
 		run.time_limit = 1000;
 		message("run started");
-		run.add_track(PType.neutron, start);
+		run.add_track(typeof(Neutron), start);
 		run.track_motion_notify += (obj, track, prev) => {
 			stdout.printf("%p %lf %s %s\n", track, track.tail.timestamp, 
 			                       track.tail.position.to_string(),
@@ -77,7 +77,7 @@ public int main(string[] args) {
 		Vector norm = track.tail.volume.grad(leave.position);
 		leave.velocity.reflect(norm);
 		
-		track.run.fork_track(track, track.ptype, enter);
+		track.run.fork_track(track, typeof(Neutron), enter);
 		*transported = false;
 		message("fork %p", track);
 	};

@@ -70,8 +70,8 @@ public int main(string[] args) {
 
 		message("run started");
 		run.time_limit = 1000;
-		run.add_track(PType.neutron, start1);
-		run.add_track(PType.neutron, start2);
+		run.add_track(typeof(Neutron), start1);
+		run.add_track(typeof(Neutron), start2);
 
 		run.track_motion_notify += (obj, track, prev) => {
 			stdout.printf("%p %lf %s %s\n", track, track.tail.timestamp, 

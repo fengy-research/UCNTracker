@@ -28,7 +28,7 @@ public int main(string[] args) {
 		run.time_limit = 1000;
 		run.frame_length = 1.0;
 		message("run started");
-		Track t = run.add_track(PType.neutron, start);
+		Track t = run.add_track(typeof(Neutron), start);
 		message("track added");
 	};
 

@@ -17,11 +17,13 @@ public int main(string[] args) {
 		head.velocity = Vector(0.1, 0.0, 0.1);
 		head.position = Vector(0.2, 8.0, 0.0);
 		head.weight = 1.0;
-		run.add_track(PType.neutron, head);
+		run.add_track(typeof(Neutron), head);
 		run.frame_length = 1.0;
 	};
 	camera = new Camera();
 	camera.use_solid = false;
+	camera.experiment = experiment;
+
 	camera.run = run;
 
 	experiment.attach_run(run);

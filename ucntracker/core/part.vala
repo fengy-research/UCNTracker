@@ -58,9 +58,9 @@ namespace UCNTracker {
 		public virtual double calculate_mfp(Vertex vertex) {
 			return mfp;
 		}
-		public bool locate(Vertex vertex, out unowned Volume child) {
+		public bool locate(Vector point, out unowned Volume child) {
 			foreach(Volume volume in volumes) {
-				Sense sense = volume.sense(vertex.position);
+				Sense sense = volume.sense(point);
 				if(sense == Sense.IN) {
 					child = volume;
 					return true;

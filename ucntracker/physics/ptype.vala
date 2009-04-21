@@ -3,26 +3,35 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	[CompactType]
-	public class PType {
+	/***
+	 * UNITS:
+	 * length == cm
+	 * mass = gram
+	 * time = second
+	 * charge = columb
+	 *
+	 * energy = gram cm^2 second^-2 = 1e-7 J
+	 * mdm = energy/Tesla = 1e-7 J/Tesla
+	 */
+	public abstract class PType {
 		public string name;
 		public double mass;
 		public double charge;
-		public static PType neutron;
+		public double mdm;
 
-		public static void preload() {
-			/*dirty hack*/
-			PType t = new PType();
-		}
-		class construct {
-			message("class construct");
-			neutron = new PType();
-			neutron.name = "neutron";
-			neutron.mass = 1.0;
-			neutron.charge = 0.0;
-		}
-		static construct {
-			message("static construct");
+		public abstract Vertex create_vertex();
+		protected static HashTable<Type, PType> map;
+		public static PType peek(Type type) {
+			if(map == null) map = new HashTable<Type, PType>(direct_hash, direct_equal);
+			PType ptype = map.lookup(type);
+			if(ptype == null) {
+				if(type == typeof(Neutron)) {
+					ptype = new Neutron();
+				} else error("Particle type doesn't exist");
+				map.insert(type, ptype);
+			}
+			return ptype;
+			
 		}
 	}
 }

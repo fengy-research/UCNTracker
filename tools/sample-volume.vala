@@ -10,8 +10,8 @@ public int main(string[] args) {
 
 	Object obj = builder.get_object(args[1]) as Object;
 	int points = args[2].to_int();
-	if(obj is Volume) {
-		sample_volume(obj as Volume, points);
+	if(obj is UCNTracker.Volume) {
+		sample_volume(obj as UCNTracker.Volume, points);
 	}
 	if(obj is Part) {
 		sample_part(obj as Part, points);
@@ -19,7 +19,7 @@ public int main(string[] args) {
 	return 0;
 }
 
-private void sample_volume(Volume volume, int points) {
+private void sample_volume(UCNTracker.Volume volume, int points) {
 	for(int i = 0; i < points; i++) {
 		Vector point = volume.sample(true);
 		Vector grad = volume.grad(point);
@@ -29,7 +29,7 @@ private void sample_volume(Volume volume, int points) {
 }
 
 private void sample_part(Part part, int points) {
-	foreach(Volume volume in part.volumes) {
+	foreach(UCNTracker.Volume volume in part.volumes) {
 		sample_volume(volume, points);
 	}
 }

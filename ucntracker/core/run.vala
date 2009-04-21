@@ -21,8 +21,8 @@ namespace UCNTracker {
 		public List<Track> tracks;
 		public List<weak Track> active_tracks;
 
-		public Track add_track(PType ptype, Vertex head) {
-			Track track = new Track(this, ptype, head);
+		public Track add_track(Type type, Vertex head) {
+			Track track = new Track(this, type, head);
 			tracks.prepend(track);
 			if(track.tail.part != null) {
 				track.terminated = false;
@@ -34,8 +34,8 @@ namespace UCNTracker {
 			return track;
 		}
 
-		public Track fork_track(Track parent, PType ptype, Vertex fork_state) {
-			Track track = new Track.fork(parent, ptype, fork_state);
+		public Track fork_track(Track parent, Type type, Vertex fork_state) {
+			Track track = new Track.fork(parent, type, fork_state);
 			tracks.prepend(track);
 			if(track.tail.part != null) {
 				track.terminated = false;

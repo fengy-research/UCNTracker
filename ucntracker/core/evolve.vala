@@ -176,7 +176,7 @@ namespace UCNTracker {
 			    next.vertex.position.y,
 			    next.vertex.position.z);
 			*/
-			next.locate_in(track.experiment);
+			track.experiment.locate(next.position, out next.part, out next.volume);
 
 			if(track.tail.part == next.part) {
 				just_transported = false;

@@ -43,10 +43,10 @@ public class Experiment: Object, Buildable {
 	public void quit() {
 		loop.quit();
 	}
-	public bool locate(Vertex vertex,
+	public bool locate(Vector point,
 	       out unowned Part located, out unowned Volume volume) {
 		foreach(Part part in parts) {
-			if(part.locate(vertex, out volume)) {
+			if(part.locate(point, out volume)) {
 				located = part;
 				return true;
 			}

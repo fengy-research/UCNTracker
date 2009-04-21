@@ -11,7 +11,7 @@ namespace UCNTracker {
 		public weak Part part;
 		public weak Volume volume;
 
-		public Vertex clone() {
+		public virtual Vertex clone() {
 			Vertex rt = new Vertex();
 			rt.position = position;
 			rt.velocity = velocity;
@@ -21,10 +21,7 @@ namespace UCNTracker {
 			rt.volume = volume;
 			return rt;
 		}
-		public void locate_in(Experiment experiment) {
-			experiment.locate(this, out part, out volume);
-		}
-		public void to_array([CCode (array_length=false)]double [] y) {
+		public virtual void to_array([CCode (array_length=false)]double [] y) {
 			y[0] = position.x;
 			y[1] = position.y;
 			y[2] = position.z;
@@ -32,7 +29,7 @@ namespace UCNTracker {
 			y[4] = velocity.y;
 			y[5] = velocity.z;
 		}
-		public void from_array([CCode (array_length = false)]double[] y) {
+		public virtual void from_array([CCode (array_length = false)]double[] y) {
 			position.x = y[0];
 			position.y = y[1];
 			position.z = y[2];

@@ -59,22 +59,21 @@ namespace UCNTracker {
 			return 0.0;
 		}
 
-		public Track(Run run, PType type, Vertex head) {
+		public Track(Run run, Type type, Vertex head) {
 			this.run = run;
 			this.experiment = run.experiment;
-			this.ptype = type;
-
+			this.ptype = PType.peek(type);
 			tail = head.clone();
 			tail.timestamp = run.timestamp;
-			tail.locate_in(experiment);
+			experiment.locate(tail.position, out tail.part, out tail.volume);
 			evolution = new Evolution(this);
 		}
 
-		public Track.fork(Track parent, PType ptype, Vertex head) {
+		public Track.fork(Track parent, Type type, Vertex head) {
 			this.run = parent.run;
 			this.experiment = parent.experiment;
 			this.parent = parent;
-			this.ptype = ptype;
+			this.ptype = PType.peek(type);
 
 			this.tail = head.clone();
 			evolution = new Evolution(this);

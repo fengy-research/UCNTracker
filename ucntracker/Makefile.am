@@ -26,25 +26,26 @@ VALASOURCES = \
 	math/surface.vala \
 	math/curve.vala \
 	core/types.vala \
-	core/volume.vala \
-	core/volume-simple.vala \
-	core/volume-boolean.vala \
-	core/volume-ball.vala \
-	core/volume-torus.vala \
-	core/volume-box.vala \
-	core/volume-cylinder.vala \
+	volume/volume.vala \
+	volume/volume-simple.vala \
+	volume/volume-boolean.vala \
+	volume/volume-ball.vala \
+	volume/volume-torus.vala \
+	volume/volume-box.vala \
+	volume/volume-cylinder.vala \
+	field/field.vala \
+	field/gravity.vala \
 	core/experiment.vala \
 	core/intersector.vala \
 	core/run.vala \
-	core/vertex.vala \
 	core/evolve.vala \
 	core/track.vala \
-	core/field.vala \
 	core/part.vala \
 	physics/random.vala \
+	physics/vertex.vala \
 	physics/ptype.vala \
-	physics/transport.vala \
-	physics/physics.vala
+	physics/neutron.vala \
+	physics/transport.vala
 
 @VALA_CCODE_RULES@
 vapi_DATA = ucntracker.vapi ucntracker.deps

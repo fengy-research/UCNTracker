@@ -3462,7 +3462,7 @@ namespace Gsl
 		public string name ();
 		public uint order ();
 		
-		public int apply (double t, double h, [CCode (array_length = false)] double[] y, [CCode (array_length = false)] double[] yerr, [CCode (array_length = false)] double[] dydt_in, [CCode (array_length = false)] double[] dydt_out, OdeivSystem* dydt);
+		public int apply (double t, double h, [CCode (array_length = false)] double[] y, [CCode (array_length = false)] double[] yerr, [CCode (array_length = false)] double[]? dydt_in, [CCode (array_length = false)] double[]? dydt_out, OdeivSystem* dydt);
 	}
 	
 	[SimpleType]
