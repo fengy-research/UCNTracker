@@ -12,8 +12,7 @@ namespace UCNTracker {
 			}
 			set {
 				_g = value;
-				acc = _direction;
-				acc.mul(_g);
+				acc = _direction.mul(g);
 			}
 		}
 		private Vector _direction = Vector(0.0, 0.0, -1.0);
@@ -23,14 +22,12 @@ namespace UCNTracker {
 			}
 			set {
 				_direction = value;
-				acc = _direction;
-				acc.mul(g);
+				acc = _direction.mul(g);
 			}
 		}
 		public Vector acc {get; private set;}
 		construct {
-			acc = _direction;
-			acc.mul(g);
+			acc = _direction.mul(g);
 		}
 		/**
 		 * pspace_pos: phase space position

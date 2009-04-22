@@ -63,10 +63,8 @@ namespace UCNTracker {
 			return x * v.x + y * v.y + z * v.z;
 		}
 
-		public void mul(double s) {
-			this.x *= s;
-			this.y *= s;
-			this.z *= s;
+		public Vector mul(double s) {
+			return Vector(x * s, y * s, z * s);
 		}
 		public Vector cross(Vector v) {
 			/*not used yet*/

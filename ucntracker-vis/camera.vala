@@ -258,14 +258,10 @@ namespace UCNTracker {
 					up = Vector(0, 0, 1);
 				break;
 				case "zoom-in":
-					Vector n = _location;
-					n.mul(0.8);
-					location = n;
+					location = _location.mul(0.8);
 				break;
 				case "zoom-out":
-					Vector n = _location;
-					n.mul(1.25);
-					location = n;
+					location = _location.mul(1.25);
 				break;
 				case "mode-dots":
 					mode = RenderMode.DOTS;
