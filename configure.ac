@@ -35,9 +35,8 @@ AC_SUBST(GSL_LIBS)
 AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
-				ucntracker/tests/Makefile
 				ucntracker-vis/Makefile
-				ucntracker-vis/tests/Makefile
+				tests/Makefile
 				valartl/Makefile
 				vapi/Makefile
 				examples/Makefile

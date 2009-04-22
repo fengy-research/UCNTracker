@@ -17,8 +17,9 @@ public int main(string[] args) {
 		head.velocity = Vector(0.1, 0.0, 0.1);
 		head.position = Vector(0.2, 8.0, 0.0);
 		head.weight = 1.0;
-		run.add_track(typeof(Neutron), head);
 		run.frame_length = 1.0;
+		Track track = Track.new(typeof(Neutron));
+		track.start(run, head);
 	};
 	camera = new Camera();
 	camera.use_solid = false;

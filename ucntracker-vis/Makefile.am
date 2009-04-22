@@ -1,4 +1,4 @@
-SUBDIRS = . tests
+SUBDIRS = .
 
 lib_LTLIBRARIES = libucntracker-vis.la
 libucntracker_vis_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) $(GTK_LIBS) $(GTKGL_LIBS)

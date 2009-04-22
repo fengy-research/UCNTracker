@@ -3,11 +3,17 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Track {
-		public weak Run run {get; private set;}
+	public abstract class Track : Object{
+		public string name;
+		public double mass;
+		public double charge;
+		public double mdm;
 
-		public PType ptype {get; private set;}
+		public abstract Vertex create_vertex();
+
 		public Track parent {get; private set;}
+
+		public weak Run run {get; private set;}
 		/*accessed in Evolvution */
 		public double length {get; internal set; default = 0.0;}
 		/*accessed in Run*/
@@ -59,26 +65,40 @@ namespace UCNTracker {
 			return 0.0;
 		}
 
-		public Track(Run run, Type type, Vertex head) {
+		public new static Track new(Type type) {
+			assert(type.is_a(typeof(Track)));
+			return Object.new(type) as Track;
+		}
+
+		public void start(Run run, Vertex head) {
 			this.run = run;
 			this.experiment = run.experiment;
-			this.ptype = PType.peek(type);
 			tail = head.clone();
 			tail.timestamp = run.timestamp;
-			experiment.locate(tail.position, out tail.part, out tail.volume);
+			if(tail.part == null || tail.volume == null)
+				experiment.locate(tail.position, out tail.part, out tail.volume);
+
+			run.tracks.prepend(this);
+			run.track_added_notify(this);
+			if(tail.part != null) {
+				run.active_tracks.prepend(this);
+				terminated = false;
+			} else {
+				terminated = true;
+			}
 			evolution = new Evolution(this);
 		}
 
-		public Track.fork(Track parent, Type type, Vertex head) {
-			this.run = parent.run;
-			this.experiment = parent.experiment;
-			this.parent = parent;
-			this.ptype = PType.peek(type);
-
-			this.tail = head.clone();
-			evolution = new Evolution(this);
+		public Track fork(Type type, Vertex head) {
+			Track the_fork = Track.new(type);
+			assert(this.run != null);
+			the_fork.start(this.run, head);
+			return the_fork;
 		}
-
+		public void terminate() {
+			terminated = true;
+			run.active_tracks.remove(this);
+		}
 		public weak Experiment experiment {get; private set;}
 
 		public Vertex tail;

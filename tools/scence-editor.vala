@@ -72,8 +72,9 @@ public class ScenceEditor {
 					start.position.parse(init_pos.text);
 					start.velocity.parse(init_vel.text);
 					start.weight = 1.0;
-					run.frame_length = 1.0;
-					run.add_track(typeof(Neutron), start);
+					Track track = Track.new(typeof(Neutron));
+					run.frame_length = 0.1;
+					track.start(run, start);
 				};
 				Run run = camera.experiment.add_run();
 				camera.run = run;

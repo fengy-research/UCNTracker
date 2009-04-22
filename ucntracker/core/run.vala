@@ -21,36 +21,6 @@ namespace UCNTracker {
 		public List<Track> tracks;
 		public List<weak Track> active_tracks;
 
-		public Track add_track(Type type, Vertex head) {
-			Track track = new Track(this, type, head);
-			tracks.prepend(track);
-			if(track.tail.part != null) {
-				track.terminated = false;
-				active_tracks.prepend(track);
-			} else {
-				track.terminated = true;
-			}
-			track_added_notify(track);
-			return track;
-		}
-
-		public Track fork_track(Track parent, Type type, Vertex fork_state) {
-			Track track = new Track.fork(parent, type, fork_state);
-			tracks.prepend(track);
-			if(track.tail.part != null) {
-				track.terminated = false;
-				active_tracks.prepend(track);
-			} else {
-				track.terminated = true;
-			}
-			track_added_notify(track);
-			return track;
-		}
-		public void terminate_track(Track track) {
-			track.terminated = true;
-			active_tracks.remove(track);
-		}
-
 		public Run(Experiment experiment) {
 			this.experiment = experiment;
 			this.source.set_callback(run1);

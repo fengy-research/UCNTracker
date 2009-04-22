@@ -158,7 +158,7 @@ namespace UCNTracker {
 
 		public void evolve() {
 			if(track.tail.part == null) {
-				track.run.terminate_track(track);
+				track.terminate();
 				return;
 			}
 			double dt = 9999.0;

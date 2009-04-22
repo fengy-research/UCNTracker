@@ -1,5 +1,5 @@
 #SUBDIRS = math physics core main . tests
-SUBDIRS = . tests
+SUBDIRS = .
 
 lib_LTLIBRARIES = libucntracker.la 
 libucntracker_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) \
@@ -39,12 +39,12 @@ VALASOURCES = \
 	core/intersector.vala \
 	core/run.vala \
 	core/evolve.vala \
-	core/track.vala \
 	core/part.vala \
 	physics/random.vala \
 	physics/vertex.vala \
 	physics/ptype.vala \
 	physics/neutron.vala \
+	physics/track.vala \
 	physics/transport.vala
 
 @VALA_CCODE_RULES@

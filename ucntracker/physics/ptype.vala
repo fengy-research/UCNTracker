@@ -26,7 +26,7 @@ namespace UCNTracker {
 			PType ptype = map.lookup(type);
 			if(ptype == null) {
 				if(type == typeof(Neutron)) {
-					ptype = new Neutron();
+	//				ptype = new Neutron();
 				} else error("Particle type doesn't exist");
 				map.insert(type, ptype);
 			}
