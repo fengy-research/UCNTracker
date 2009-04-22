@@ -27,11 +27,11 @@ public class ScenceEditor {
 
 	public void init() {
 		Pango.FontDescription font = Pango.FontDescription.from_string("monospace");
+		Gtk.ScrolledWindow scroll = new Gtk.ScrolledWindow(null, null);
 
 		camera.set_size_request(200, 200);
 		textview.set_size_request(200, 200);
 		textview.modify_font(font);
-
 		Gtk.Paned pan = new Gtk.HPaned();
 		Gtk.Box box = new Gtk.VBox(false, 0);
 		Gtk.Box box_r= new Gtk.VBox(false, 0);
@@ -49,7 +49,9 @@ public class ScenceEditor {
 		box.pack_start(pan, true, true, 0);
 		box_r.pack_start(init_pos, false, true, 0);
 		box_r.pack_start(init_vel, false, true, 0);
-		box_r.pack_start(textview, true, true, 0);
+		scroll.add(textview);
+		textview.set_scroll_adjustments(scroll.hadjustment, scroll.vadjustment);
+		box_r.pack_start(scroll, true, true, 0);
 		window.add(box);
 		window.show_all();
 	}
