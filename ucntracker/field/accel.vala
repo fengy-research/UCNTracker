@@ -4,14 +4,14 @@ using Vala.Runtime;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class GravityField: Field, Buildable {
-		private double _g = 9.800;
-		public double g {
+	public class AccelField: Field {
+		private double _accel = 9.800;
+		public double accel {
 			get {
-				return _g;
+				return _accel;
 			}
 			set {
-				_g = value;
+				_accel = value;
 				acc = _direction.mul(g);
 			}
 		}
