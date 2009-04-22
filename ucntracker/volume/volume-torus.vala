@@ -17,8 +17,7 @@ namespace UCNTracker {
 		}
 
 		public override double sfunc(Vector point) {
-			Vector p = point;
-			world_to_body(ref p);
+			Vector p = world_to_body(point);
 			double dn = sqrt(p.x * p.x + p.y * p.y);
 			return sqrt((dn - _radius)*(dn - _radius) + p.z * p.z) - _tube_radius;
 		}

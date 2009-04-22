@@ -40,8 +40,7 @@ namespace UCNTracker {
 			 * */
 			double sum = 0.0;
 			bool in_or_on = false;
-			Vector body_p = point;
-			world_to_body(ref body_p);
+			Vector body_p = world_to_body(point);
 			foreach(Volume child in children) {
 				double s = child.sfunc(body_p);
 				if( s > 0.0 ) {
@@ -87,8 +86,7 @@ namespace UCNTracker {
 			double max = -double.MAX;
 
 			bool in_or_on = true;
-			Vector body_p = point;
-			world_to_body(ref body_p);
+			Vector body_p =world_to_body(point);
 			foreach(Volume child in children) {
 				double s = child.sfunc(body_p);
 				if( s > 0.0 ) {

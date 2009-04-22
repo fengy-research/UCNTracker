@@ -59,7 +59,7 @@ namespace UCNTracker {
 				r = rng.uniform();
 				r = cbrt(r) * bounding_radius;
 				point = Vector(x * r, y * r, z * r);
-				body_to_world(ref point);
+				body_to_world(point);
 				s = sense(point);
 			} while(s == Sense.OUT || (open && s == Sense.ON));
 			return point;
@@ -149,14 +149,18 @@ namespace UCNTracker {
 			return grad;
 		}
 
-		public void world_to_body(ref Vector point) {
-			point.translate_i(center);
-			point.rotate_i(rotation);
+		public Vector world_to_body(Vector point) {
+			Vector rt = point;
+			rt.translate_i(center);
+			rt.rotate_i(rotation);
+			return rt;
 		}
 
-		public void body_to_world(ref Vector point) {
-			point.rotate(rotation);
-			point.translate(center);
+		public Vector body_to_world(Vector point) {
+			Vector rt = point;
+			rt.rotate(rotation);
+			rt.translate(center);
+			return rt;
 		}
 	}
 }

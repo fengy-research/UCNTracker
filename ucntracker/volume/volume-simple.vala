@@ -11,8 +11,7 @@ namespace UCNTracker {
 		protected Surface[] surfaces = null;
 
 		public override double sfunc(Vector point) {
-			Vector p = point;	
-			world_to_body(ref p);
+			Vector p = world_to_body(point);
 			double max = -double.MAX;
 			double inside_max = -double.MAX;
 			double s;
