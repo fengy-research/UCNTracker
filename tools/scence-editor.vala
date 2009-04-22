@@ -68,11 +68,11 @@ public class ScenceEditor {
 			break;
 			case "run-start":
 				camera.experiment.prepare += (obj, run) => {
-					Vertex start = new Vertex();
+					Track track = Track.new(typeof(Neutron));
+					Vertex start = track.create_vertex();
 					start.position.parse(init_pos.text);
 					start.velocity.parse(init_vel.text);
 					start.weight = 1.0;
-					Track track = Track.new(typeof(Neutron));
 					run.frame_length = 0.1;
 					track.start(run, start);
 				};

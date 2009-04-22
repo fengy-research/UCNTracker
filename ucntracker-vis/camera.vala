@@ -397,7 +397,7 @@ private static unowned List<Vertex> get_track_history(Track t) {
 }
 private static void push_track_history(Track t, Vertex v) {
 	unowned List<Vertex> hist = (List<Vertex>) t.get_pointer("history");
-	Vertex newv = v.clone();
+	Vertex newv = t.clone_vertex(v);
 	hist.prepend(#newv);
 	t.steal_pointer("history");
 	t.set_pointer("history", hist, g_list_free);

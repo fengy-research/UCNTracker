@@ -18,17 +18,21 @@ namespace UCNTracker {
 
 		private bool just_transported = false;
 		private double free_length;
+		private double [] y;
+		private double [] yerr;
 
 		public Evolution(Track track) {
 			ode_system.function = F;
-			ode_system.jacobian = J;
-			ode_system.dimension = 6;
+			ode_system.jacobian = null; /*No Jacobian */
+			ode_system.dimension = track.dimensions;
 			ode_system.params = this;
-			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk8pd, 6);
+			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk8pd, track.dimensions);
 			ode_control = new Gsl.OdeivControl.y(1.0e-8, 0.0);
-			ode_evolve = new Gsl.OdeivEvolve(6);
+			ode_evolve = new Gsl.OdeivEvolve(track.dimensions);
 			step_size = INIT_STEP_SIZE;
 			this.track = track;
+			y = new double[track.dimensions];
+			yerr = new double[track.dimensions];
 		}
 
 		private static int F(double t, 
@@ -37,8 +41,8 @@ namespace UCNTracker {
 			[CCode (array_length = false)]
 			double[] dydt, void * params) {
 		    Evolution ev = (Evolution)params;
-			Vertex v = new Vertex();
-			Vertex pspace_vel = new Vertex();
+			Vertex v = ev.track.create_vertex();
+			Vertex pspace_vel = ev.track.create_vertex();
 			v.from_array(y);
 			ev.track.experiment.calculate_pspace_velocity(v, pspace_vel);
 
@@ -46,6 +50,7 @@ namespace UCNTracker {
 
 		    return Gsl.Status.SUCCESS;
 		}
+		/*
 		private static int J(double t, 
 			[CCode (array_length = false)]
 			double[] y, 
@@ -65,11 +70,9 @@ namespace UCNTracker {
 		    dfdt[4] = 0.0;
 		    dfdt[5] = 0.0;
 		    return Gsl.Status.SUCCESS;
-		}
+		} */
 
 		public void reintegrate_to(Vertex future, double dt) {
-			double [] y = new double[6];
-			double [] yerr = new double[6];
 			track.tail.to_array(y);
 			double t0 = track.tail.timestamp;
 			ode_step.reset();
@@ -78,7 +81,6 @@ namespace UCNTracker {
 			future.timestamp = t0 + dt;
 		}
 		public void integrate(Vertex future, ref double dt) {
-			double [] y = new double [6];
 			track.tail.to_array(y);
 			double t0 = track.tail.timestamp;
 			double t1 = t0 + dt;
@@ -94,7 +96,7 @@ namespace UCNTracker {
 		}
 
 		public Vector cfunc(double dt) {
-			Vertex future = new Vertex();
+			Vertex future = track.create_vertex();
 			reintegrate_to(future, dt);
 			/*
 			message("dt = %lf vertex.position = %lf %lf %lf",
@@ -168,7 +170,7 @@ namespace UCNTracker {
 
 			//message("mfp = %lf dt = %lf",
 			//track.tail.part.calculate_mfp(track.tail.vertex), dt);
-			Vertex next = new Vertex();
+			Vertex next = track.create_vertex();
 			integrate(next, ref dt);
 			/*
 			message("next: %lf %lf %lf",
@@ -239,24 +241,24 @@ namespace UCNTracker {
 			//message("%s %s", is_leave.to_string(), is_enter.to_string());
 
 			if(is_leave && is_enter) {
-				leave = new Vertex();
-				enter = new Vertex();
+				leave = track.create_vertex();
+				enter = track.create_vertex();
 				track.tail.volume.intersect(cfunc, -1, leave_in, leave_out, out dt_leave);
 				reintegrate_to(leave, dt_leave);
 			    next.volume.intersect(cfunc, -1, enter_in, enter_out, out dt_enter);
 				reintegrate_to(enter, dt_enter);
 			}
 			if(is_leave) {
-				leave = new Vertex();
+				leave = track.create_vertex();
 				track.tail.volume.intersect(cfunc, -1, leave_in, leave_out, out dt_leave);
 				reintegrate_to(leave, dt_leave);
-				enter = leave.clone();
+				enter = track.clone_vertex(leave);
 			}
 			if(is_enter) {
-				enter = new Vertex();
+				enter = track.create_vertex();
 			    next.volume.intersect(cfunc, -1, enter_in, enter_out, out dt_enter);
 				reintegrate_to(enter, dt_enter);
-				leave = enter.clone();
+				leave = track.clone_vertex(leave);
 			}
 
 			leave.part = track.tail.part;

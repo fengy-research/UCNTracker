@@ -3,23 +3,24 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Vertex {
+	public abstract class Vertex {
 		public Vector position;
 		public Vector velocity;
+		public Vector spin;
+
 		public double weight;
 		public double timestamp;
 		public weak Part part;
 		public weak Volume volume;
 
-		public virtual Vertex clone() {
-			Vertex rt = new Vertex();
-			rt.position = position;
-			rt.velocity = velocity;
-			rt.weight = weight;
-			rt.timestamp = timestamp;
-			rt.part = part;
-			rt.volume = volume;
-			return rt;
+		public virtual void copy_to(Vertex target) {
+			target.position = position;
+			target.velocity = velocity;
+			target.spin = spin;
+			target.weight = weight;
+			target.timestamp = timestamp;
+			target.part= part;
+			target.volume = volume;
 		}
 		public virtual void to_array([CCode (array_length=false)]double [] y) {
 			y[0] = position.x;
@@ -28,6 +29,9 @@ namespace UCNTracker {
 			y[3] = velocity.x;
 			y[4] = velocity.y;
 			y[5] = velocity.z;
+			y[6] = spin.x;
+			y[7] = spin.y;
+			y[8] = spin.z;
 		}
 		public virtual void from_array([CCode (array_length = false)]double[] y) {
 			position.x = y[0];
@@ -36,6 +40,9 @@ namespace UCNTracker {
 			velocity.x = y[3];
 			velocity.y = y[4];
 			velocity.z = y[5];
+			spin.x = y[6];
+			spin.y = y[7];
+			spin.z = y[8];
 		}
 	}
 }

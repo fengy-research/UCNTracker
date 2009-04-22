@@ -9,7 +9,10 @@ namespace UCNTracker {
 		public double charge;
 		public double mdm;
 
+		/*Phase space dimensions*/
+		public virtual int dimensions {get {return 9;}}
 		public abstract Vertex create_vertex();
+		public abstract Vertex clone_vertex(Vertex source);
 
 		public Track parent {get; private set;}
 
@@ -73,7 +76,7 @@ namespace UCNTracker {
 		public void start(Run run, Vertex head) {
 			this.run = run;
 			this.experiment = run.experiment;
-			tail = head.clone();
+			tail = clone_vertex(head);
 			tail.timestamp = run.timestamp;
 			if(tail.part == null || tail.volume == null)
 				experiment.locate(tail.position, out tail.part, out tail.volume);
