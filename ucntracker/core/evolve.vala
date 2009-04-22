@@ -258,7 +258,7 @@ namespace UCNTracker {
 				enter = track.create_vertex();
 			    next.volume.intersect(cfunc, -1, enter_in, enter_out, out dt_enter);
 				reintegrate_to(enter, dt_enter);
-				leave = track.clone_vertex(leave);
+				leave = track.clone_vertex(enter);
 			}
 
 			leave.part = track.tail.part;

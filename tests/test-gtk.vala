@@ -21,14 +21,14 @@ public int main(string[] args) {
 	Part part1 = builder.get_object("part1") as Part;
 
 	experiment.prepare += (obj, run) => {
-		Vertex start = new Vertex();
+		Track t = Track.new(typeof(Neutron));
+		Vertex start = t.create_vertex();
 		start.position = Vector(1.0, 1.2, -10.0);
 		start.velocity = Vector(0.0, 0.0, 2.0);
 		start.weight = 1.0;
 		run.time_limit = 1000;
 		run.frame_length = 1.0;
 		message("run started");
-		Track t = Track.new(typeof(Neutron));
 		t.start(run, start);
 		message("track added");
 	};
