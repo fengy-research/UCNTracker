@@ -36,11 +36,9 @@ namespace UCNTracker {
 		 * Mirror a vector
 		 * V' = 2 (V * A) A - V
 		 **********/
-		public void mirror (Vector axis) {
+		public Vector mirror (Vector axis) {
 			double va = 2.0 * axis.dot(this);
-			x = va * axis.x - x;
-			y = va * axis.y - y;
-			z = va * axis.z - z;
+			return Vector(va * axis.x - x, va * axis.y - y, va * axis.z - z);
 		}
 
 		/***
@@ -48,11 +46,9 @@ namespace UCNTracker {
 		 * of a given surface.
 		 * V' = - (2 (V * A) A - V)
 		 **********/
-		public void reflect (Vector n) {
+		public Vector reflect (Vector n) {
 			double va = 2.0 * n.dot(this);
-			x -= va * n.x;
-			y -= va * n.y;
-			z -= va * n.z;
+			return Vector(x - va * n.x, y - va * n.y, z - va * n.z);
 		}
 
 		public double norm() {

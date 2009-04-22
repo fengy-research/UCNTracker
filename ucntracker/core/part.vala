@@ -49,7 +49,7 @@ namespace UCNTracker {
 		       Vertex leave, Vertex enter, bool* transported) {
 			Vector norm = track.tail.volume.grad(leave.position);
 			message("norm = %s", norm.to_string());
-			leave.velocity.reflect(norm);
+			leave.velocity = leave.velocity.reflect(norm);
 			*transported = false;
 		}
 

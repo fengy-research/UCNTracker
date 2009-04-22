@@ -44,7 +44,7 @@ public int main(string[] args) {
 /*	part1.transport += (obj, track, leave, enter, transported)
 	  => {
 		Vector norm = track.tail.volume.grad(leave.position);
-		leave.velocity.reflect(norm);
+		leave.velocity = leave.velocity.reflect(norm);
 		
 		Track t = track.run.fork_track(track, track.ptype, enter);
 
