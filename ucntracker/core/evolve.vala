@@ -41,12 +41,12 @@ namespace UCNTracker {
 			[CCode (array_length = false)]
 			double[] dydt, void * params) {
 		    Evolution ev = (Evolution)params;
-			Vertex v = ev.track.create_vertex();
-			Vertex pspace_vel = ev.track.create_vertex();
-			v.from_array(y);
-			ev.track.experiment.calculate_pspace_velocity(v, pspace_vel);
+			Vertex Q = ev.track.create_vertex();
+			Vertex dQ = ev.track.create_vertex();
+			Q.from_array(y);
+			ev.track.experiment.QdQ(ev.track, Q, dQ);
 
-		    pspace_vel.to_array(dydt);
+		    dQ.to_array(dydt);
 
 		    return Gsl.Status.SUCCESS;
 		}

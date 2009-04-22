@@ -33,11 +33,12 @@ namespace UCNTracker {
 		 * pspace_pos: phase space position
 		 * pspace_vel: phase space velocity
 		 */
-		public override void fieldfunc(Vertex pspace_pos, 
-		               Vertex pspace_vel) {
-			pspace_vel.velocity.x += acc.x;
-			pspace_vel.velocity.y += acc.y;
-			pspace_vel.velocity.z += acc.z;
+		public override void fieldfunc(Track track, 
+		               Vertex Q, 
+		               Vertex dQ) {
+			dQ.velocity.x += acc.x;
+			dQ.velocity.y += acc.y;
+			dQ.velocity.z += acc.z;
 		}
 	}
 }

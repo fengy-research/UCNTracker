@@ -16,6 +16,6 @@ namespace UCNTracker {
 					child.get_type().name());
 			}
 		}
-		public abstract void fieldfunc(Vertex vertex, Vertex force);
+		public abstract void fieldfunc(Track track, Vertex Q, Vertex dQ);
 	}
 }

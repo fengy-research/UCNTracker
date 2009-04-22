@@ -54,12 +54,13 @@ public class Experiment: Object, Buildable {
 		located = null;
 		return false;
 	}
-	public void calculate_pspace_velocity(Vertex vertex, 
-	                         /*out */Vertex pspace_vel) {
-		pspace_vel.position = vertex.velocity;
-		pspace_vel.velocity = Vector(0.0, 0.0, 0.0);
+	public void QdQ(Track track, Vertex Q, 
+	                         /*out */Vertex dQ) {
+		dQ.position = Q.velocity;
+		dQ.velocity = Vector(0.0, 0.0, 0.0);
+		dQ.spin = Vector(0.0, 0.0, 0.0);
 		foreach(Field field in fields) {
-			field.fieldfunc(vertex, pspace_vel);
+			field.fieldfunc(track, Q, dQ);
 		}
 	}
 }}

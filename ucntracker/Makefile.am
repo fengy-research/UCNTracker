@@ -35,6 +35,7 @@ VALASOURCES = \
 	volume/volume-cylinder.vala \
 	field/field.vala \
 	field/gravity.vala \
+	field/magnetic.vala \
 	core/experiment.vala \
 	core/intersector.vala \
 	core/run.vala \
