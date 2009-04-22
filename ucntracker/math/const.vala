@@ -16,7 +16,7 @@ namespace UCNTracker {
 	namespace UNITS {
 		/*Length */
 		public const double CM = 1.0; /*M*/
-		public const double M = 1.0e3 * CM;
+		public const double M = 1.0e2 * CM;
 
 		/*Time */
 		public const double S = 1.0;

@@ -8,9 +8,9 @@ namespace UCNTracker {
 			/*position, velocity = 6*/
 			dimensions = 6;
 			name = "neutron";
-			mass = 939.56556E6 * UNITS.EV;
+			mass = 939.56556 * UNITS.MEV_MASS;
 			charge = 0.0;
-			mdm = -1.913 * 1836.0 * UNITS.MU_BOHR;
+			mdm = -1.913 / 1836.0 * UNITS.MU_BOHR;
 			tolerance = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 			magnetic_helicity = 1;
 		}
