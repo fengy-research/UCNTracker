@@ -8,16 +8,6 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	/***
-	 * UNITS:
-	 * length == cm
-	 * mass = gram
-	 * time = second
-	 * charge = columb
-	 *
-	 * energy = gram cm^2 second^-2 = 1e-7 J
-	 * mdm = energy/Tesla = 1e-7 J/Tesla
-	 */
 	public abstract class PType {
 		public string name;
 		public double mass;

@@ -58,7 +58,6 @@ public class Experiment: Object, Buildable {
 	                         /*out */Vertex dQ) {
 		dQ.position = Q.velocity;
 		dQ.velocity = Vector(0.0, 0.0, 0.0);
-		dQ.spin = Vector(0.0, 0.0, 0.0);
 		foreach(Field field in fields) {
 			field.fieldfunc(track, Q, dQ);
 		}

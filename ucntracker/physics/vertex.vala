@@ -6,7 +6,6 @@ namespace UCNTracker {
 	public abstract class Vertex {
 		public Vector position;
 		public Vector velocity;
-		public Vector spin;
 
 		public double weight;
 		public double timestamp;
@@ -16,7 +15,6 @@ namespace UCNTracker {
 		public virtual void copy_to(Vertex target) {
 			target.position = position;
 			target.velocity = velocity;
-			target.spin = spin;
 			target.weight = weight;
 			target.timestamp = timestamp;
 			target.part= part;
@@ -29,9 +27,6 @@ namespace UCNTracker {
 			y[3] = velocity.x;
 			y[4] = velocity.y;
 			y[5] = velocity.z;
-			y[6] = spin.x;
-			y[7] = spin.y;
-			y[8] = spin.z;
 		}
 		public virtual void from_array([CCode (array_length = false)]double[] y) {
 			position.x = y[0];
@@ -40,9 +35,6 @@ namespace UCNTracker {
 			velocity.x = y[3];
 			velocity.y = y[4];
 			velocity.z = y[5];
-			spin.x = y[6];
-			spin.y = y[7];
-			spin.z = y[8];
 		}
 	}
 }

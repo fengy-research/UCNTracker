@@ -12,7 +12,8 @@ libucntracker_vis_la_SOURCES =  \
 
 VALASOURCES = \
 	camera.vala \
-	renderer.vala 
+	renderer.vala \
+	tracer.vala
 
 BUILT_SOURCES = vala-ccode
 

@@ -13,6 +13,7 @@ namespace UCNTracker {
 		private Experiment _experiment;
 		private uint scence_id;
 		private Renderer renderer = new Renderer();
+		private Tracer tracer = new Tracer();
 		private Gtk.Menu popup = null;
 		private Gtk.UIManager ui = new Gtk.UIManager();
 		private RenderMode _mode = RenderMode.WIRE;
@@ -352,22 +353,7 @@ namespace UCNTracker {
 				renderer.execute(scence_id);
 			}
 			if(run != null) {
-				foreach (Track track in run.tracks) {
-					float r = (float)track.get_double("r");
-					float g = (float)track.get_double("g");
-					float b = (float)track.get_double("b");
-					glBegin(GL_LINE_STRIP);
-					glColor3f(r, g, b);
-					int i = 0;
-					foreach (Vertex vertex in get_track_history(track)) {
-						//if( i > 100) break;
-						glVertex3f ((GLfloat)vertex.position.x,
-						        	(GLfloat)vertex.position.y,
-						        	(GLfloat)vertex.position.z);
-						i++;
-					}
-					glEnd();
-				}
+				tracer.render(run);
 			}
 			if(!WidgetGL.gl_swap(this)) {
 				glFlush();
@@ -378,20 +364,20 @@ namespace UCNTracker {
 
 	}
 }
-private static void set_track_color(Track t, double r, double g, double b) {
+internal static void set_track_color(Track t, double r, double g, double b) {
 	t.set_double("r", r);
 	t.set_double("g", g);
 	t.set_double("b", b);
 }
-private static void get_track_color(Track t, out double r, out double g, out double b) {
+internal static void get_track_color(Track t, out double r, out double g, out double b) {
 	r = t.get_double("r");
 	g = t.get_double("g");
 	b = t.get_double("b");
 }
-private static unowned List<Vertex> get_track_history(Track t) {
+internal static unowned List<Vertex> get_track_history(Track t) {
 	return (List<Vertex>)t.get_pointer("history");
 }
-private static void push_track_history(Track t, Vertex v) {
+internal static void push_track_history(Track t, Vertex v) {
 	unowned List<Vertex> hist = (List<Vertex>) t.get_pointer("history");
 	Vertex newv = t.clone_vertex(v);
 	hist.prepend(#newv);

@@ -90,6 +90,10 @@ private const string GML =
     g : 0.1
     children:
     - *env
+  - class : UCNMagneticField
+    B : 0.0, 0.0, 10000000.0
+    children:
+    - *env
 - &environment
   class : UCNPart
   layer : -1

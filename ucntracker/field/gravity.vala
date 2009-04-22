@@ -5,7 +5,7 @@ using Vala.Runtime;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class GravityField: Field, Buildable {
-		private double _g = 9.8;
+		private double _g = 9.800;
 		public double g {
 			get {
 				return _g;

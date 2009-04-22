@@ -27,7 +27,7 @@ namespace UCNTracker {
 			ode_system.dimension = track.dimensions;
 			ode_system.params = this;
 			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk8pd, track.dimensions);
-			ode_control = new Gsl.OdeivControl.y(1.0e-8, 0.0);
+			ode_control = new Gsl.OdeivControl.scaled(1e-8, 1e-4, 1.0, 0.0, track.tolerance);
 			ode_evolve = new Gsl.OdeivEvolve(track.dimensions);
 			step_size = INIT_STEP_SIZE;
 			this.track = track;
@@ -158,10 +158,10 @@ namespace UCNTracker {
 			track.run.track_motion_notify(track, prev);
 		}
 
-		public void evolve() {
+		public double evolve() {
 			if(track.tail.part == null) {
 				track.terminate();
-				return;
+				return 0.0;
 			}
 			double dt = 9999.0;
 			double dt_by_mfp = track.tail.part.calculate_mfp(track.tail) /
@@ -183,7 +183,7 @@ namespace UCNTracker {
 			if(track.tail.part == next.part) {
 				just_transported = false;
 				move_to(next, false);
-				return;
+				return dt;
 			}
 
 			double dt_leave = 0.0;
@@ -233,7 +233,7 @@ namespace UCNTracker {
 						next.volume!=null?next.volume.get_name():"null"
 						);
 					move_to(next, true);
-					return;
+					return dt;
 				}
 			}
 			Vertex leave = null;
@@ -280,12 +280,13 @@ namespace UCNTracker {
 			next.position.to_string());
 			if(transported == false) {
 				move_to(leave, false);
+				return dt_leave;
 			} else {
 				move_to(leave, true);
 				free_length = 0.0;
 				move_to(enter, true);
+				return dt_enter;
 			}
-			return;
 		}
 	}
 }

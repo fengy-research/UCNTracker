@@ -8,9 +8,11 @@ namespace UCNTracker {
 		public double mass;
 		public double charge;
 		public double mdm;
-
 		/*Phase space dimensions*/
-		public virtual int dimensions {get {return 9;}}
+		public int dimensions;
+		public double[] tolerance;
+		public int magnetic_helicity; /*+1 / -1, along/not along the B field*/
+
 		public abstract Vertex create_vertex();
 		public abstract Vertex clone_vertex(Vertex source);
 
@@ -106,9 +108,9 @@ namespace UCNTracker {
 
 		public Vertex tail;
 
-		public void evolve() {
+		public double evolve() {
 			assert(terminated == false);
-			evolution.evolve();
+			return evolution.evolve();
 		}
 	}
 }

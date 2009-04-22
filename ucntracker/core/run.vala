@@ -53,10 +53,14 @@ namespace UCNTracker {
 			}
 			double next_t = timestamp + frame_length;
 			foreach(Track track in active_tracks) {
+				double dt = 0;
+				double sync_t = next_t - track.tail.timestamp;
 				while(!track.terminated &&
-				    track.tail.timestamp < next_t) {
-					track.evolve();
+				    dt < sync_t) {
+					dt+= track.evolve();
+					message("dt %lg", dt);
 				}
+				track.tail.timestamp += sync_t;
 			}
 			timestamp += frame_length;
 			run_motion_notify();

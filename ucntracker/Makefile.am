@@ -22,6 +22,7 @@ libucntracker_la_SOURCES = \
 VALASOURCES = \
 	main/main.vala \
 	main/plugin-manager.vala \
+	math/const.vala \
 	math/eulerangles.vala \
 	math/vector.vala \
 	math/quaternion.vala \
