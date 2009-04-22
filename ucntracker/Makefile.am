@@ -41,8 +41,8 @@ VALASOURCES = \
 	volume/volume-torus.vala \
 	volume/volume-box.vala \
 	volume/volume-cylinder.vala \
-	field/gravity.vala \
-	field/magnetic.vala \
+	field/accel.vala \
+	field/barrier.vala \
 	physics/random.vala \
 	physics/vertex.vala \
 	physics/ptype.vala \

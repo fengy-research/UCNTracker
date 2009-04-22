@@ -4,7 +4,9 @@ using Vala.Runtime;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class MagneticField: Field, Buildable {
+	public class BarrierField: Field {
+		public Vector direction { get; set;}
+
 		double[] field_Bs = new double[0];
 		double[] field_xs = new double[0];
 		public string map {set {
@@ -26,7 +28,8 @@ namespace UCNTracker {
 
 		public override void fieldfunc(Track track, Vertex Q, 
 		               Vertex dQ) {
-			double x = Q.position.x;
+			double x = Q.position.dot(direction);
+
 			if(x < field_xs[0]) return;
 
 			for(int i = 0; i < field_xs.length - 1; i++) {
@@ -35,8 +38,10 @@ namespace UCNTracker {
 				double y0 = field_Bs[i];
 				double y1 = field_Bs[i+1];
 				if(x >= x0 && x < x1) {
-					double dx = track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
-					dQ.velocity.x += dx;
+					double dx = track.magnetic_helicity * track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
+					dQ.velocity.x += direction.x * dx;
+					dQ.velocity.y += direction.y * dx;
+					dQ.velocity.z += direction.z * dx;
 					message("magnetic effect : slope= %lg mdm=%lg [%d] %lg", (y1- y0)/(x1-x0), track.mdm, i, dx);
 					return;
 				}
