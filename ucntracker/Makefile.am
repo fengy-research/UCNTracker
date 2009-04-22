@@ -22,25 +22,26 @@ libucntracker_la_SOURCES = \
 VALASOURCES = \
 	main/main.vala \
 	main/plugin-manager.vala \
+	math/eulerangles.vala \
 	math/vector.vala \
+	math/quaternion.vala \
 	math/surface.vala \
-	math/curve.vala \
-	core/types.vala \
-	volume/volume.vala \
+	core/volume.vala \
+	core/group.vala \
+	core/field.vala \
+	core/experiment.vala \
+	core/intersector.vala \
+	core/run.vala \
+	core/evolve.vala \
+	core/part.vala \
 	volume/volume-simple.vala \
 	volume/volume-boolean.vala \
 	volume/volume-ball.vala \
 	volume/volume-torus.vala \
 	volume/volume-box.vala \
 	volume/volume-cylinder.vala \
-	field/field.vala \
 	field/gravity.vala \
 	field/magnetic.vala \
-	core/experiment.vala \
-	core/intersector.vala \
-	core/run.vala \
-	core/evolve.vala \
-	core/part.vala \
 	physics/random.vala \
 	physics/vertex.vala \
 	physics/ptype.vala \

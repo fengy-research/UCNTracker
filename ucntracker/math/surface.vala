@@ -3,6 +3,7 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+	public delegate Vector CurveFunc(double t);
 	public abstract class Surface {
 		public Vector center;
 

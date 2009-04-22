@@ -4,22 +4,11 @@ using Vala.Runtime;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Part: Object, Buildable {
-		public List<Volume> volumes;
+	public class Part: VolumeGroup{
 		public int layer {get; set; default = 0;}
 		public double potential {get; set; default = 1.0;}
 		public double mfp {get; set; default = 1.0;}
 
-		public void add_child(Builder builder, GLib.Object child, string? type) {
-			if(child is Volume) {
-				Volume volume = child as Volume;
-				volumes.prepend(child as Volume);
-			} else {
-				critical("expecting type %s for a child but found type %s",
-					typeof(Volume).name(),
-					child.get_type().name());
-			}
-		}
 
 		/**
 		 * emitted when a track tries to go through a surface.
@@ -57,17 +46,6 @@ namespace UCNTracker {
 
 		public virtual double calculate_mfp(Vertex vertex) {
 			return mfp;
-		}
-		public bool locate(Vector point, out unowned Volume child) {
-			foreach(Volume volume in volumes) {
-				Sense sense = volume.sense(point);
-				if(sense == Sense.IN) {
-					child = volume;
-					return true;
-				}
-			}
-			child = null;
-			return false;
 		}
 
 		public static int layer_compare_func(Part a, Part b) {
