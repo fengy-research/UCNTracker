@@ -53,7 +53,8 @@ VALASOURCES = \
 @VALA_CCODE_RULES@
 vapi_DATA = ucntracker.vapi ucntracker.deps
 vapidir=$(datadir)/vala/vapi
-
+doc:
+	valadoc -o Documentation --package-name=ucntracker $(VALASOURCES) $(VALAPKGS) --vapidir=$(top_srcdir)/valartl --vapidir=$(top_srcdir)/vapi
 #ucntracker.vapi: \
 #math/math.vapi \
 #physics/physics.vapi \

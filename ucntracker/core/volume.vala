@@ -45,7 +45,7 @@ namespace UCNTracker {
 		/**
 		 * generate a point in the volume or on the surface.
 		 *
-		 * @open: if true, treat the volume as an open one,
+		 * open: if true, treat the volume as an open one,
 		 *        so that the surface is not sampled.
 		 */
 		public virtual Vector sample(bool open) {
@@ -71,12 +71,12 @@ namespace UCNTracker {
 		 * the default implementaion looks for the intersection
 		 * with brent solver from gsl.
 		 *
-		 * @point_in: starting point of the line. 
+		 * point_in: starting point of the line. 
 		 * 			NOT neccesary inside the volume
-		 * @point_out: end point of the line.
+		 * point_out: end point of the line.
 		 * 			NOT neccesary outside the volume
 		 *
-		 * @t: (0-1), the distances between the intersection and point_in,
+		 * t: (0-1), the distances between the intersection and point_in,
 		 *    normalized to the distance between point_out and pointer_in
 		 *
 		 * Returns: false if no intersection is found.
