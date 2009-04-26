@@ -17,8 +17,7 @@ dnl Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  US
 dnl
 dnl Author:
 dnl 	Mathias Hasselmann <mathias.hasselmann@gmx.de>
-dnl Modified by:
-dnl 	Yu Feng
+dnl 	Yu Feng <rainwoodman@gmail.com>
 dnl --------------------------------------------------------------------------
 
 dnl VALA_PROG_VALAC([MINIMUM-VERSION])
@@ -26,23 +25,36 @@ dnl
 dnl Check whether the Vala compiler exists in `PATH'. If it is found the
 dnl variable VALAC is set. Optionally a minimum release number of the compiler
 dnl can be requested.
+
+dnl Rules are provided to ease building one target per Makefile
+dnl @VALA_CCODE_RULES@ compiles VALASOURCES into corresponding CCode
+dnl @VALA_OBJECT_RULES@ compiles VALASOURCES into corresponding objects
+dnl
+dnl $(top_srcdir)/vapi is used to override default vapi files in case needed.
+dnl VALASOURCES = source files to compile
+dnl VALAFLAGS = valac parameters
+dnl VALAPKGS = packages (vapi files) 
+
+dnl EXAMPLE:
+dnl # for vala 0.6.x branch,
+dnl # 0.7.x differs from this because .h files are not produded.
+dnl
+dnl VALASOURCES = foo.vala bar.vala
+dnl VALAPKGS = gtk+-2.0 my-pkg
+dnl VALAFLAGS = --library=foobar --vapidir=my-vapidir
+dnl foobar_SOURCES = $(VALASOURCES:.vala=.c) $(VALASOURCE:.vala=.h)
+dnl foobar_CPPFLAGS = $(GLIB_CFLAGS) $(GTK_CFLAGS) -include config.h
+dnl foobar_LDADD = $(GTK_LIBS)
+dnl BUILT_SOURCES = vala-ccode
+dnl @VALA_CCODE_RULE@
+dnl EXTRA_DIST = $(VALASOURCES)
+dnl 
 dnl --------------------------------------------------------------------------
 AC_DEFUN([VALA_PROG_VALAC],[
   AC_PATH_PROG([VALAC_BIN], [valac], [])
   AC_SUBST(VALAC_BIN)
   VALAC="$VALAC_BIN --vapidir=\$(top_srcdir)/vapi"
   AC_SUBST(VALAC)
-dnl  these are not useful since autoconf doesn't allow nested
-dnl  substitutions in _SOURCES
-dnl VALA_CHEADERS='$(VALASOURCES:.vala=.h)'
-dnl    'VALA_CSOURCES=$(VALASOURCES:.vala=.c)' \
-dnl   'VALA_CCODE=$(VALA_CHEADERS) $(VALACSOURCES)' \
-dnl    'VALA_OBJECTS=$(VALASOURCES:.vala=.o)'
-
-dnl    AC_SUBST(VALA_CSOURCES)
-dnl AC_SUBST(VALA_CCODE_HEADERS)
-dnl    AC_SUBST(VALA_CCODE)
-dnl    AC_SUBST(VALA_OBJECTS)
   VALA_CCODE_RULES='vala-ccode: $(VALASOURCES); $(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) && touch vala-ccode'
   VALA_OBJECT_RULES='vala-object: $(VALASOURCES); $(VALAC) $(VALAFLAGS) -c $^ $(VALAPKGS) && touch vala-object'
 
