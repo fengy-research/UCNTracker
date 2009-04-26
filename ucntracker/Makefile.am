@@ -13,8 +13,10 @@ libucntracker_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) -I$(top_srcdir)/valartl
 
 
 BUILT_SOURCES = vala-ccode
-VALAFLAGS= --library=ucntracker --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/valartl --vapidir=$(top_srcdir)/vapi
+VALAFLAGS= --library=ucntracker --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/valartl
+VALADOCFLAGS = -o Documentation --package-name=ucntracker --vapidir=$(top_srcdir)/valartl
 VALAPKGS = --pkg gmodule-2.0 --pkg valartl --pkg gsl
+
 libucntracker_la_SOURCES = \
 	$(VALASOURCES:.vala=.c)\
 	$(VALASOURCES:.vala=.h)
@@ -51,16 +53,12 @@ VALASOURCES = \
 	physics/transport.vala
 
 @VALA_CCODE_RULES@
+if ENABLE_VALADOC
+@VALA_DOC_RULES@
+BUILT_SOURCES+=vala-doc
+endif
 vapi_DATA = ucntracker.vapi ucntracker.deps
 vapidir=$(datadir)/vala/vapi
-doc:
-	valadoc -o Documentation --package-name=ucntracker $(VALASOURCES) $(VALAPKGS) --vapidir=$(top_srcdir)/valartl --vapidir=$(top_srcdir)/vapi
-#ucntracker.vapi: \
-#math/math.vapi \
-#physics/physics.vapi \
-#core/core.vapi \
-#main/main.vapi
-#	cat $^ > $@
 
 ucntracker.deps: 
 	echo gmodule-2.0 > $@
