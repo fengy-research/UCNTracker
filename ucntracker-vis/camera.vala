@@ -65,8 +65,6 @@ namespace UCNTracker {
 			}
 		}
 
-		private int run_counter = 0;
-
 		public bool use_solid {get; set;}
 
 		private void run_motion_notify(Run obj) {
@@ -168,7 +166,11 @@ namespace UCNTracker {
 			Gtk.ActionGroup ag = new Gtk.ActionGroup("ViewActions");
 			ag.add_actions(ACTIONDEF, this);
 			ui.insert_action_group(ag, 0);
+			try {
 			ui.add_ui_from_string(UIDEF , -1);
+			} catch (GLib.Error e) {
+				error("Creating UI failed. %s", e.message);
+			}
 			this.popup = ui.get_widget("/Popup") as Gtk.Menu;
 		}
 
@@ -195,7 +197,7 @@ namespace UCNTracker {
 
 		public override bool button_release_event(Gdk.EventButton event) {
 			get_pointer(out drag_end_x, out drag_end_y);
-			int dy = drag_end_y - drag_start_y;
+			//int dy = drag_end_y - drag_start_y;
 			int dx = drag_end_x - drag_start_x;
 			switch(event.button) {
 				case 1:

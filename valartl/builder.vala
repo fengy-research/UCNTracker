@@ -21,11 +21,11 @@ namespace Vala.Runtime {
 		construct {
 			context = new YAML.Context(new YAML.Parser(node_start, node_end));
 		}
-		public uint add_from_string (string buffer, size_t length) {
+		public uint add_from_string (string buffer, size_t length) throws GLib.Error {
 			context.parse(buffer);
 			return 0;
 		}
-		public uint add_from_file (string filename) {
+		public uint add_from_file (string filename) throws GLib.Error {
 			string buffer;
 			ulong length;
 			FileUtils.get_contents(filename, out buffer, out length);
@@ -35,7 +35,7 @@ namespace Vala.Runtime {
 		private bool node_start(YAML.Context pc, YAML.Node node) {
 			return false;
 		}
-		private void visit_node(Buildable? parent, YAML.Node node) {
+		private void visit_node(Buildable? parent, YAML.Node node) throws BuilderError {
 			if(node.type == YAML.NodeType.SEQ) {
 				/*SEQ is always seq of objects*/
 				foreach(weak YAML.Node seq_node in node.sequence) {
@@ -51,7 +51,6 @@ namespace Vala.Runtime {
 				deferred_children.append(#dc);
 			} else
 			if(node.type == YAML.NodeType.MAP) {
-				weak string id = node.anchor;
 				weak YAML.Node children_node = null;
 				weak string class_name = null;
 				/*Run one, for class and children_node*/
@@ -113,7 +112,8 @@ namespace Vala.Runtime {
 				parent.add_child(this, child, null);
 			}
 		}
-		private bool node_end(YAML.Context pc, YAML.Node node) {
+		private bool node_end(YAML.Context pc, YAML.Node node) throws
+		BuilderError {
 			if(node.key != "#doc") return false;
 			visit_node(null, node);
 			foreach(deferred_child_t dc in deferred_children) {
@@ -126,11 +126,10 @@ namespace Vala.Runtime {
 			return object_hash.lookup(name);
 		}
 		public static delegate Type TypeFunc();
-		private static Type type_from_name(string name) {
+		private static Type type_from_name(string name) throws BuilderError {
 			void* method = null;
 			if(!resolve_method(name, "get_type", out method)) {
 				throw new BuilderError.TYPE_NOT_FOUND("can't resolve %s", name);
-				return Type.INVALID;
 			}
 			TypeFunc func = (TypeFunc)method;
 			return func();

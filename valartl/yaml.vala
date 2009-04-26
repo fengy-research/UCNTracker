@@ -149,7 +149,7 @@ namespace Vala.Runtime.YAML {
 		public Context(Parser parser) {
 			this.parser = parser;
 		}
-		public void parse(string s) {
+		public void parse(string s) throws GLib.Error {
 			buffer = s;
 			p = buffer;
 			EOS = false;
@@ -208,8 +208,7 @@ namespace Vala.Runtime.YAML {
 				rewind(n);
 			}
 		}
-		private void accept_node_line() {
-			bool in_seq = false;
+		private void accept_node_line() throws Error {
 			int ind = skip_blanks();
 			switch(accept_indicator("-")) {
 				case '-':
@@ -257,7 +256,6 @@ namespace Vala.Runtime.YAML {
 				default:
 					throw new Error.EXPECT_INDICATOR(
 					"Expecting ':' at %s".printf(location()));
-				break;
 			}
 			skip_blanks();
 			switch(accept_indicator("&*!|>")) {
@@ -300,7 +298,7 @@ namespace Vala.Runtime.YAML {
 			parent.mapping_list.append(k);
 			parent.mapping.insert(key, #k);
 		}
-		private string? accept_block_lines(int ind, bool folded) {
+		private string? accept_block_lines(int ind, bool folded) throws Error {
 			int real_ind = -1;
 			StringBuilder sb = new StringBuilder("");
 			real_ind = skip_blanks();
@@ -326,7 +324,7 @@ namespace Vala.Runtime.YAML {
 			} while(true);
 			return sb.str;
 		}
-		private string? accept_tag() {
+		private string? accept_tag() throws Error {
 			skip_blanks();
 			if(accept_indicator("!") == '!') {
 				return accept_until('\n');
@@ -502,7 +500,7 @@ namespace Vala.Runtime.YAML {
 			return r;
 		}
 
-		private void accept_char(unichar ch) {
+		private void accept_char(unichar ch) throws Error {
 			if(ch == get_char()) {
 				next_char();
 			} else

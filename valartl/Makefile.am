@@ -1,5 +1,5 @@
 noinst_LTLIBRARIES = libvalartl.la
-VALASOURCES = yaml.vala builder.vala buildable.vala
+VALASOURCES = buildable.vala builder.vala yaml.vala
 
 libvalartl_la_SOURCES = $(VALASOURCES:.vala=.c) $(VALASOURCES:.vala=.h) \
 	value_from_string.c
@@ -9,8 +9,13 @@ libvalartl_la_LDFLAGS = -g
 
 BUILT_SOURCES = vala-ccode
 VALAFLAGS= --library=valartl --basedir=$(top_srcdir)
+VALADOCFLAGS = --package-name=valartl -o Documentation
 VALAPKGS = --pkg gmodule-2.0
 @VALA_CCODE_RULES@
+if ENABLE_VALADOC
+@VALA_DOC_RULES@
+BUILT_SOURCES += vala-doc
+endif
 
 EXTRA_DIST = $(VALASOURCES) vala-ccode valartl.vapi
 rtlinclude_HEADERS = $(VALASOURCES:.vala=.h)

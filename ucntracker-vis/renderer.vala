@@ -12,7 +12,6 @@ namespace UCNTracker {
 		SOLID
 	}
 	internal class Renderer {
-		public int layer;
 
 		Quadric quadric = new Quadric();
 		private RenderMode mode = RenderMode.DOTS;

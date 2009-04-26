@@ -1,6 +1,6 @@
 
 VALAPKGS = --pkg ucntracker --pkg ucntracker-vis
-VALAFLAGS = --vapidir=../ucntracker --vapidir=../ucntracker-vis
+VALAFLAGS = --vapidir=../ucntracker --vapidir=../ucntracker-vis --vapidir=../valartl
 LDADD = ../ucntracker/libucntracker.la ../ucntracker-vis/libucntracker-vis.la
 AM_CPPFLAGS = $(GLIB_CFLAGS) $(GTK_CFLAGS) $(GTKGL_CFLAGS) -I ../ucntracker -I ../valartl -I ../ucntracker-vis
 noinst_PROGRAMS = sample-volume scence-editor

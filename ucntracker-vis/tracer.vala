@@ -12,11 +12,10 @@ namespace UCNTracker {
 		public Tracer() {}
 		public void render(Run run) {
 			foreach (Track track in run.tracks) {
-				float r = (float)track.get_double("r");
-				float g = (float)track.get_double("g");
-				float b = (float)track.get_double("b");
+				double r, g, b;
+				get_track_color(track, out r, out g, out b);
 				glBegin(GL_LINE_STRIP);
-				glColor3f(r, g, b);
+				glColor3d(r, g, b);
 				int i = 0;
 				foreach (Vertex vertex in get_track_history(track)) {
 					//if( i > 100) break;
