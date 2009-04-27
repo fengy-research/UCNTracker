@@ -308,7 +308,7 @@ namespace UCNTracker {
 
 			gluPerspective(45,
 			(GLdouble)allocation.width/ (GLdouble)allocation.height,
-		               	   0.01, 100);
+		               	   0.01, 1000);
 
 			rerender();
 			glFlush();
@@ -324,7 +324,7 @@ namespace UCNTracker {
 			glLoadIdentity();
 			gluPerspective(45,
 			(GLdouble)allocation.width/ (GLdouble)allocation.height,
-		               	   0.01, 100);
+		               	   0.01, 1000);
 
 
 			glViewport(0, 0, 

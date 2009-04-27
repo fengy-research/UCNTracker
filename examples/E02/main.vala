@@ -13,13 +13,13 @@ public int main(string[] args) {
 	experiment.prepare += (ex, run) => {
 		message("prepare");
 		camera.run = run;
-		Vertex head = new Vertex();
+		Track track = Track.new(typeof(Neutron));
+		Vertex head = track.create_vertex();
 		head.velocity = Vector(0.1, 0.0, 0.1);
 		head.position = Vector(0.2, 8.0, 0.0);
 		head.weight = 1.0;
-		run.frame_length = 1.0;
-		Track track = Track.new(typeof(Neutron));
 		track.start(run, head);
+		run.frame_length = 1.0;
 	};
 	camera = new Camera();
 	camera.use_solid = false;

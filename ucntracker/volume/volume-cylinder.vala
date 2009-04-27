@@ -16,9 +16,9 @@ namespace UCNTracker {
 			set {
 				_length = value;
 				bounding_radius =
-				  sqrt(_length * _length / 4.0 + _radius * _radius);
-				surfaces[BOTTOM].center.z = - _length / 2.0;
-				surfaces[TOP].center.z = _length / 2.0;
+				  sqrt(_length * _length + _radius * _radius);
+				surfaces[BOTTOM].center.z = 0;
+				surfaces[TOP].center.z = _length;
 			}
 		}
 
@@ -27,7 +27,7 @@ namespace UCNTracker {
 			set {
 				_radius= value;
 				bounding_radius =
-				  sqrt(_length * _length / 4.0 + _radius * _radius);
+				  sqrt(_length * _length + _radius * _radius);
 				(surfaces[TUBE] as Tube).radius = _radius;
 			}
 		}

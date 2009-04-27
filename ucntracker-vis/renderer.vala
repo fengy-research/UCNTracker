@@ -63,9 +63,6 @@ namespace UCNTracker {
 			} else
 			if(volume is Cylinder) {
 				Cylinder c = volume as Cylinder;
-				glTranslated(0,
-			             0,
-			             -c.length/2.0);
 				quadric.Cylinder(c.radius, c.radius, c.length, 8, 8);
 			} else
 			if(volume is Union) {

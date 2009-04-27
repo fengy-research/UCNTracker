@@ -2,63 +2,76 @@
 - &experiment
   class: UCNExperiment
   children:
-  - *TPipe
-#  - *Gravity
-- &Gravity
-  class: UCNGravityField
-  g: 0.1
-- &TPipe
+  - *Guide
+  - *Disc
+  - *Lab
+- &Lab
+  class: UCNPart
+  layer: 0
+  children:
+  - class: UCNBall
+    center: 0, 0, 0
+    radius: 500
+- &Disc
+  class: UCNPart
+  layer: 2
+  children:
+  - class: UCNCylinder
+    center: -74.83, 52.605,-100.99
+    radius: 4.88696
+    length: 0.025
+- &Guide
   class: UCNPart
   layer: 1
   transport: optic_reflect
   children:
-#  - *T
-  - *torus50
-  - *torus51
   - *pipe1
-- &torus50
-  class: UCNIntersection
-  children:
-  - class: UCNTorus
-    center: 0, 0, 0
-    rotation: 0, 0, 0
-    radius: 8.0
-    tube_radius: 2.0
-  - class: UCNBox
-    center: 5, 5, 0
-    size: 10, 10, 10
-- &torus51
-  class: UCNIntersection
-  center: -8, 8, -8
-  rotation: 0, 90, 90
-  children:
-  - class: UCNTorus
-    center: 0, 0, 0
-    rotation: 0, 0, 0
-    radius: 8.0
-    tube_radius: 2.0
-  - class: UCNBox
-    center: 5, 5, 0
-    size: 10, 10, 10
+  - *pipe2
+  - *pipe3
+  - *elbow50
+  - *elbow51
 - &pipe1
   class: UCNCylinder
-  rotation: 90, 90, 0
-  center: -4, 8, 0
-  length: 8
-  radius: 2.0
-- &T
-  class: UCNUnion
+  center: 0,0,0
+  rotation: 0, -90, 0
+  radius: 4.88696
+  length: 30.48
+- &pipe2
+  class: UCNCylinder
+  center: -22.225,52.605,0
+  rotation: 90, -90, 0
+  radius: 4.88696
+  length: 30.48
+- &pipe3
+  class: UCNCylinder
+  center: -74.83,52.605,-100.99
+  rotation: 0, 0, 0
+  radius: 4.88696
+  length: 78.74
+- &elbow50
+  class: UCNIntersection
   children:
-  - &V
-    class: UCNCylinder
-    center: 0, 0, 0
-    rotation: 0, 0, 0
-    length: 8.0
-    radius: 1.0
-  - &H
-    class: UCNCylinder
-    center: 0, 2, 0
-    rotation: 0, 90, 0
-    length: 4.0
-    radius: 1.0
+  - *torus50
+  - class: UCNBox
+    center: 0, 52.605, 0
+    size: 44.45, 44.45, 10
+- &torus50
+  class: UCNTorus
+  center: -22.225, 30.48, 0
+  rotation: 0, 0, 0
+  radius: 22.225
+  tube_radius: 4.88696
+- &elbow51
+  class: UCNIntersection
+  children:
+  - *torus51
+  - class: UCNBox
+    center: -74.83, 52.605, 0
+    size: 44.45, 10, 44.45
+- &torus51
+  class: UCNTorus
+  center: -52.605, 52.605, -22.25
+  rotation: 0, 90, 0
+  radius: 22.225
+  tube_radius: 4.88696
 ...

@@ -146,6 +146,16 @@ namespace UCNTracker {
 			grad.x = (sfunc(px1) - sfunc(px0)) / delta2;
 			grad.y = (sfunc(py1) - sfunc(py0)) / delta2;
 			grad.z = (sfunc(pz1) - sfunc(pz0)) / delta2;
+			double norm = grad.norm();
+			if(norm != 0.0) {
+				grad.x /= norm;
+				grad.y /= norm;
+				grad.z /= norm;
+			} else {
+				grad.x = 0.0;
+				grad.y = 0.0;
+				grad.z = 1.0;
+			}
 			return grad;
 		}
 
