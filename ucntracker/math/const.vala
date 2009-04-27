@@ -39,5 +39,6 @@ namespace UCNTracker {
 		/* Planks */
 		public const double H_BAR = 1.05457158E-34 * J * S;
 		public const double H = H_BAR * (2.0 * PI) * J * S;
+		public const double C = 3.0E8 * M / S;
 	}
 }

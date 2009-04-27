@@ -14,13 +14,23 @@ public int main(string[] args) {
 		message("prepare");
 		camera.run = run;
 		Track track = Track.new(typeof(Neutron));
-		Vertex head = track.create_vertex();
-		head.velocity = Vector(0.1, 0.0, 0.1);
-		head.position = Vector(0.2, 8.0, 0.0);
+		Vertex head = track.create_vertex_with_kinetics(
+			500e-9 * UNITS.EV, Vector(0.0, 1.0, 0.0));
+		head.position = Vector(0.0, 1.0, 0.0);
 		head.weight = 1.0;
 		track.start(run, head);
 		run.frame_length = 1.0;
 	};
+
+	var guide = builder.get_object("Guide") as Part;
+	guide.transport += (part, track, enter, leave, transported) => {
+		if(leave.part.get_name() == "Disc") {
+			track.terminate();
+		} else {
+			part.optic_reflect(part, track, enter, leave, transported);
+		}
+	};
+
 	camera = new Camera();
 	camera.use_solid = false;
 	camera.experiment = experiment;
@@ -31,6 +41,7 @@ public int main(string[] args) {
 	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
 	window.add(camera);
 	window.show_all();
+	stdin.getc();
 	Gtk.main();
 	return 0;
 }

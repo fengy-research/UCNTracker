@@ -16,6 +16,13 @@ namespace UCNTracker {
 		public abstract Vertex create_vertex();
 		public abstract Vertex clone_vertex(Vertex source);
 
+		public virtual Vertex create_vertex_with_kinetics(double kinetic, Vector direction) {
+			Vertex v = create_vertex();
+			double vel = sqrt(2 * kinetic / mass);
+			v.velocity = direction.mul(vel);
+			message("head vel is %s", v.velocity.to_string());
+			return v;
+		}
 		public Track parent {get; private set;}
 
 		public weak Run run {get; private set;}

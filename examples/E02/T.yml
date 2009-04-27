@@ -23,7 +23,6 @@
 - &Guide
   class: UCNPart
   layer: 1
-  transport: optic_reflect
   children:
   - *pipe1
   - *pipe2
