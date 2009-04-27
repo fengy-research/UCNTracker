@@ -42,7 +42,7 @@ namespace UCNTracker {
 		private bool run1() {
 			if(running == true && 
 				(active_tracks == null || timestamp > time_limit)) {
-				message("%lf %lf", timestamp, time_limit);
+				message("Run finished at %lf", timestamp);
 				running = false;
 				experiment.finish(this);
 				return false;
@@ -52,13 +52,21 @@ namespace UCNTracker {
 				running = true;
 			}
 			double next_t = timestamp + frame_length;
+			/* This part of code is misterious.
+			 * It is accumulates the (very small) time increment to a 
+			 * zero-initialized value dt,
+			 * then add compare dt to the expected frame sync time step sync_t
+			 *
+			 * sync_t is not always what we had in frame sync time because
+			 * each individual track can be a little bit beyond or behind
+			 * this frame length as constrained by the integrator.
+			 * */
 			foreach(Track track in active_tracks) {
 				double dt = 0;
 				double sync_t = next_t - track.tail.timestamp;
 				while(!track.terminated &&
 				    dt < sync_t) {
 					dt+= track.evolve();
-					message("dt %lg", dt);
 				}
 				track.tail.timestamp += sync_t;
 			}

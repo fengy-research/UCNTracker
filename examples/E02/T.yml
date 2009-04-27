@@ -5,6 +5,9 @@
   - *Guide
   - *Disc
   - *Lab
+  - class: UCNAccelField
+    accel: 9800.0
+    direction: 0, 0, -1
 - &Lab
   class: UCNPart
   layer: 0

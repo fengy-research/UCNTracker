@@ -185,6 +185,7 @@ namespace UCNTracker {
 					get_pointer(out drag_start_x, out drag_start_y);
 				break;
 				case 2:
+					get_pointer(out drag_start_x, out drag_start_y);
 				break;
 				case 3:
 					popup.popup(null, null, null,
@@ -197,16 +198,24 @@ namespace UCNTracker {
 
 		public override bool button_release_event(Gdk.EventButton event) {
 			get_pointer(out drag_end_x, out drag_end_y);
-			//int dy = drag_end_y - drag_start_y;
+			int dy = drag_end_y - drag_start_y;
 			int dx = drag_end_x - drag_start_x;
+			Vector x_vector = _location.direction().cross(_up).direction();
+			Vector y_vector = _up;
 			switch(event.button) {
 				case 1:
 					Quaternion q = Quaternion.from_rotation(
-							up, (double)dx/100.0);
+							y_vector, -(double)dx/100.0);
+					Quaternion p = Quaternion.from_rotation(
+							x_vector, (double) dy/100.0);
+					message("%lf %s", (double) dy, _location.direction().to_string());
 					_location = q.rotate_vector(_location);
-					message("%s", _location.to_string());
+					_location = p.rotate_vector(_location);
+					message("location rotated to %s", _location.to_string());
 				break;
 				case 2:
+					_target.translate(x_vector.mul(dx).add(y_vector.mul(dy)));
+					message("center moved rotated to %s", _target.to_string());
 				break;
 				case 3:
 				break;
@@ -337,7 +346,6 @@ namespace UCNTracker {
 		}
 
 		public override bool expose_event(Gdk.EventExpose event) {
-			message("expose");
 			assert(WidgetGL.gl_begin(this));
 			Gdk.GLDrawable drawable = WidgetGL.get_gl_drawable(this);
 
@@ -348,7 +356,8 @@ namespace UCNTracker {
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 
-			gluLookAt(location.x, location.y, location.z,
+			Vector gl_location = _location.add(_target);
+			gluLookAt(gl_location.x, gl_location.y, gl_location.z,
 					target.x, target.y, target.z, up.x, up.y, up.z);
 
 			if(scence_id != 0) {

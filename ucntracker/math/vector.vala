@@ -94,6 +94,17 @@ namespace UCNTracker {
 			z -= a.z;
 		}
 
+		public Vector add(Vector a) {
+			return Vector(a.x + x, a.y + y, a.z + z);
+		}
+		
+		public Vector direction() {
+			double norm = norm();
+			if(norm != 0.0)
+				return Vector(x/norm, y/norm, z/norm);
+			else return Vector(0.0, 0.0, 1.0);
+		}
+
 		public void rotate(EulerAngles r) {
 			Vector rs = r.q.rotate_vector(this);
 			this = rs;

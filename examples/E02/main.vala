@@ -19,11 +19,12 @@ public int main(string[] args) {
 		head.position = Vector(0.0, 1.0, 0.0);
 		head.weight = 1.0;
 		track.start(run, head);
-		run.frame_length = 1.0;
+		run.frame_length = 0.01;
 	};
 
 	var guide = builder.get_object("Guide") as Part;
 	guide.transport += (part, track, enter, leave, transported) => {
+		assert(enter.part != leave.part);
 		if(leave.part.get_name() == "Disc") {
 			track.terminate();
 		} else {
@@ -36,12 +37,15 @@ public int main(string[] args) {
 	camera.experiment = experiment;
 
 	camera.run = run;
-
+	camera.set_size_request(200, 200);
 	experiment.attach_run(run);
 	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
-	window.add(camera);
+	Gtk.Box box = new Gtk.VBox(false, 0);
+	Gtk.Button button = new Gtk.Button.with_label("go");
+	box.pack_start(camera, true, true, 0);
+	box.pack_start(button, false, false, 0);
+	window.add(box);
 	window.show_all();
-	stdin.getc();
 	Gtk.main();
 	return 0;
 }
