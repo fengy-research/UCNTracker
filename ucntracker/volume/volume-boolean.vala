@@ -40,9 +40,12 @@ namespace UCNTracker {
 			 * */
 			double sum = 0.0;
 			bool in_or_on = false;
+			double small = 1e-7;
+			int small_count = 0;
 			Vector body_p = world_to_body(point);
 			foreach(Volume child in children) {
 				double s = child.sfunc(body_p);
+				if(fabs(s) < small) small_count++;
 				if( s > 0.0 ) {
 					if(min > s ) min = s;
 				} else {
@@ -52,6 +55,15 @@ namespace UCNTracker {
 			}
 			if(in_or_on) {
 				/*inside some volumes*/
+				/*if we are inside two or more subvolumes,
+				 * and close to two surfaces,
+				 * adjust the sfunc so that we are not close
+				 * to zero.
+				 * */
+				if(small_count > 1) {
+					message("common boundary detected");
+					sum = sum - exp(sum * 10.0 /small);
+				}
 				return sum;
 			} else {
 				/*outside of all volumes*/

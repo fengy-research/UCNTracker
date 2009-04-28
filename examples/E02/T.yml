@@ -20,18 +20,20 @@
   layer: 2
   children:
   - class: UCNCylinder
-    center: -74.83, 52.605,-100.99
+    center: -74.83, 52.605,-100.965
     radius: 4.88696
-    length: 0.025
+    length: 1.00
 - &Guide
   class: UCNPart
   layer: 1
   children:
-  - *pipe1
-  - *pipe2
-  - *pipe3
-  - *elbow50
-  - *elbow51
+  - class: UCNUnion
+    children:
+    - *pipe1
+    - *pipe2
+    - *pipe3
+    - *elbow50
+    - *elbow51
 - &pipe1
   class: UCNCylinder
   center: 0,0,0
@@ -46,10 +48,10 @@
   length: 30.48
 - &pipe3
   class: UCNCylinder
-  center: -74.83,52.605,-100.99
+  center: -74.83,52.605,-100.965
   rotation: 0, 0, 0
   radius: 4.88696
-  length: 78.74001
+  length: 78.74
 - &elbow50
   class: UCNIntersection
   children:

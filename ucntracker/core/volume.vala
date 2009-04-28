@@ -18,7 +18,7 @@ namespace UCNTracker {
 	}
 	public abstract class Volume: Object, Buildable {
 		private Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
-		private const double delta = 1.0e-8; /* Used by grad*/
+		private const double delta = 1.0e-5; /* Used by grad*/
 		public const double thickness = 1e-6; /* Used by sense and intersect*/
 		private Vector _center = Vector(0.0, 0.0, 0.0);
 		private EulerAngles _rotation = EulerAngles(0.0, 0.0, 0.0);

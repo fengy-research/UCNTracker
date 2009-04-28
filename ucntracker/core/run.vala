@@ -80,6 +80,7 @@ namespace UCNTracker {
 		public signal void track_added_notify(Track track);
 
 		private bool run1() {
+			if(MainContext.current_source().is_destroyed()) return false;
 			if(running == true && 
 				(active_tracks == null || timestamp > time_limit)) {
 				message("Run finished at %lf", timestamp);

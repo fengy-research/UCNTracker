@@ -24,13 +24,31 @@ public int main(string[] args) {
 		run.pause();
 	};
 
+	experiment.finish += (ex, run) => {
+		message("run finished");
+		foreach(var track in run.tracks) {
+			message("%lg", track.tail.weight);
+		}
+	};
 	var guide = builder.get_object("Guide") as Part;
-	guide.transport += (part, track, enter, leave, transported) => {
+	guide.transport += (part, track, leave, enter, transported) => {
 		assert(enter.part != leave.part);
-		if(leave.part.get_name() == "Disc") {
+			message("weight = %lf", leave.weight);
+		if(enter.part.get_name() == "Disc") {
 			track.terminate();
 		} else {
-			part.optic_reflect(part, track, enter, leave, transported);
+			part.optic_reflect(part, track, leave, enter, transported);
+			Vector norm = leave.volume.grad(leave.position);
+			double f = 8.5e-5;
+			double V = 150.0e-9 * UNITS.EV;
+			double E = 0.5 * track.mass * leave.velocity.norm2();
+			double cos_s = leave.velocity.direction().dot(norm);
+			message("mass = %lg E = %lg V = %lg cos_s = %lf", track.mass, E, V, cos_s);
+			double Ecos2_s = E * cos_s * cos_s;
+			if(Ecos2_s > V) {
+				double r = 1.0 - 2.0 * f * Math.sqrt(Ecos2_s/(Ecos2_s - V));
+				leave.weight *= r;
+			}
 		}
 		track.run.pause();
 	};

@@ -179,6 +179,7 @@ namespace UCNTracker {
 			    next.vertex.position.z);
 			*/
 			track.experiment.locate(next.position, out next.part, out next.volume);
+			next.weight = track.tail.weight;
 
 			if(track.tail.part == next.part) {
 				just_transported = false;
@@ -263,20 +264,24 @@ namespace UCNTracker {
 
 			leave.part = track.tail.part;
 			leave.volume = track.tail.volume;
+			leave.weight = track.tail.weight;
 			message("leave sfunc = %lg", leave.volume.sfunc(leave.position));
 			/* Make sure the particle is inside the volume. */
 			// maybe don't need this assert(leave.volume.sfunc(leave.position) < 0.0);
 
 			enter.part = next.part;
 			enter.volume = next.volume;
+			enter.weight = track.tail.weight;
 
 			bool transported = true;
+			var old_leave_velocity = leave.velocity;
 			track.tail.part.transport(track, leave, enter, &transported);
 			just_transported = true;
-			message("transport event leave = %s(%s/%s) vel = %s enter = %s(%s/%s) next = %s", 
+			message("transport event leave = %s(%s/%s) oldvel = %s newvel = %s enter = %s(%s/%s) next = %s", 
 			leave.position.to_string(),
 			leave.part.get_name(),
 			leave.volume.get_name(),
+			old_leave_velocity.to_string(),
 			leave.velocity.to_string(),
 			enter.position.to_string(),
 			enter.part!=null?enter.part.get_name():"NULL",
