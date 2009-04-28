@@ -273,10 +273,14 @@ namespace UCNTracker {
 			bool transported = true;
 			track.tail.part.transport(track, leave, enter, &transported);
 			just_transported = true;
-			message("transport event leave = %s vel = %s enter = %s next = %s", 
+			message("transport event leave = %s(%s/%s) vel = %s enter = %s(%s/%s) next = %s", 
 			leave.position.to_string(),
+			leave.part.get_name(),
+			leave.volume.get_name(),
 			leave.velocity.to_string(),
 			enter.position.to_string(),
+			enter.part!=null?enter.part.get_name():"NULL",
+			enter.volume!=null?enter.volume.get_name():"NULL",
 			next.position.to_string());
 			if(transported == false) {
 				move_to(leave, false);

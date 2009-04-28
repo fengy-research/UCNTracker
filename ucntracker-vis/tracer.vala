@@ -13,32 +13,28 @@ namespace UCNTracker {
 		public void render(Run run) {
 			foreach (Track track in run.tracks) {
 				double r, g, b;
+				int i;
 				get_track_color(track, out r, out g, out b);
 				glBegin(GL_LINE_STRIP);
 				glColor3d(r, g, b);
-				int i = 0;
+				i = 0;
 				foreach (Vertex vertex in get_track_history(track)) {
-					//if( i > 100) break;
 					glVertex3f ((GLfloat)vertex.position.x,
 						        (GLfloat)vertex.position.y,
 						        (GLfloat)vertex.position.z);
 					i++;
 				}
 				glEnd();
-				/*
+				glPointSize(4.0f);
+				glBegin(GL_POINTS);
+				i = 0;
 				foreach (Vertex vertex in get_track_history(track)) {
-					//if( i > 100) break;
-					//if(i % 2 != 0) continue;
-					glPushMatrix();
-					Vector v = Vector(0, 0, -1).cross(vertex.spin);
-					double norm = v.norm();
-					glRotated(asin(norm) /Math.PI * 180.0, v.x, v.y, v.z);
-					glTranslated(vertex.position.x, vertex.position.y, vertex.position.z);
-					Gdk.GLDraw.cone(true, 0.5, 0.5, 4, 4);
-					glPopMatrix();
-					i--;
+					glVertex3f ((GLfloat)vertex.position.x,
+						        (GLfloat)vertex.position.y,
+						        (GLfloat)vertex.position.z);
+					i++;
 				}
-				*/
+				glEnd();
 			}
 		}
 	}

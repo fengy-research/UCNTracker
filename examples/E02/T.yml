@@ -49,7 +49,7 @@
   center: -74.83,52.605,-100.99
   rotation: 0, 0, 0
   radius: 4.88696
-  length: 78.74
+  length: 78.74001
 - &elbow50
   class: UCNIntersection
   children:

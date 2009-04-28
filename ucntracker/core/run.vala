@@ -16,16 +16,56 @@ namespace UCNTracker {
 		 * SYNC_TIME_STEP*/
 		public double frame_length = 0.2;
 
-		public Source source {get; set; default = new IdleSource();}
-
 		public List<Track> tracks;
 		public List<weak Track> active_tracks;
 
+		private uint source_id = 0;
+		private MainContext context = null;
 		public Run(Experiment experiment) {
 			this.experiment = experiment;
-			this.source.set_callback(run1);
 		}
 
+		/**
+		 * Attach the run to a main context, so that it will be
+		 * scheduled by GLib main loop.
+		 *
+		 * context: the main context, null for the default context
+		 *
+		 */
+		public void attach(MainContext? context = null) {
+			if(source_id != 0) {
+				Source.remove(source_id);
+			}
+			this.context = context;
+			IdleSource source = new IdleSource();
+			source.set_callback(run1);
+			source_id = source.attach(context);
+		}
+		/**
+		 * Pause a simulation run by detaching the run from the
+		 * main context.
+		 */
+		public void pause() {
+			if(source_id != 0) {
+				Source.remove(source_id);
+				source_id = 0;
+			}
+		}
+		/**
+		 * Continue the a simulation run by re-attaching the run
+		 * to the context.
+		 *
+		 * If not paused, this function do nothing.
+		 */
+		public void @continue() {
+			if(source_id == 0) {
+				IdleSource source = new IdleSource();
+				source.set_callback(run1);
+				source_id = source.attach(context);
+			} else {
+				/* do nothing*/
+			}
+		}
 		/**
 		 * emitted when a track has moved forward.
 		 * */

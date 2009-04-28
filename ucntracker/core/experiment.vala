@@ -32,7 +32,7 @@ public class Experiment: Object, Buildable {
 	public void attach_run(Run run) {
 		/*The run detaches itself by returning false in Run.run1,
 		 * when it finishes.*/
-		run.source.attach(this.context);
+		run.attach(this.context);
 	}
 	public void run() {
 		loop = new MainLoop(this.context, false);

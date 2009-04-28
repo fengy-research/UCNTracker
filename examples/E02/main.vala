@@ -20,6 +20,8 @@ public int main(string[] args) {
 		head.weight = 1.0;
 		track.start(run, head);
 		run.frame_length = 0.01;
+		run.attach();
+		run.pause();
 	};
 
 	var guide = builder.get_object("Guide") as Part;
@@ -30,6 +32,7 @@ public int main(string[] args) {
 		} else {
 			part.optic_reflect(part, track, enter, leave, transported);
 		}
+		track.run.pause();
 	};
 
 	camera = new Camera();
@@ -38,12 +41,12 @@ public int main(string[] args) {
 
 	camera.run = run;
 	camera.set_size_request(200, 200);
-	experiment.attach_run(run);
 	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
 	Gtk.Box box = new Gtk.VBox(false, 0);
 	Gtk.Button button = new Gtk.Button.with_label("go");
 	box.pack_start(camera, true, true, 0);
 	box.pack_start(button, false, false, 0);
+	button.clicked += run.@continue;
 	window.add(box);
 	window.show_all();
 	Gtk.main();
