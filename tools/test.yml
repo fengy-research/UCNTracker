@@ -1,0 +1,10 @@
+---
+- &a
+  class: UCNExperiment
+  children:
+  - class: UCNPart
+    children:
+    - class: UCNBall
+      radius: 20
+
+...

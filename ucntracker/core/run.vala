@@ -43,6 +43,14 @@ namespace UCNTracker {
 			source_id = source.attach(context);
 		}
 		/**
+		 * Stop a simulation run by marking all tracks as terminated.
+		 */
+		public void stop() {
+			foreach(Track track in tracks) {
+				active_tracks.remove(track);
+			}
+		}
+		/**
 		 * Pause a simulation run by detaching the run from the
 		 * main context.
 		 */

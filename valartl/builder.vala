@@ -125,6 +125,17 @@ namespace Vala.Runtime {
 		public Buildable? get_object(string name) {
 			return object_hash.lookup(name);
 		}
+		private class get_object_cb {
+			public List<unowned Buildable> list;
+			public void hfunc(void* key, void* value) {
+				list.prepend((Buildable) value);
+			}
+		}
+		public List<unowned Buildable> get_objects() {
+			get_object_cb cb = new get_object_cb();;
+			object_hash.for_each(cb.hfunc);
+			return #cb.list;
+		}
 		public static delegate Type TypeFunc();
 		private static Type type_from_name(string name) throws BuilderError {
 			void* method = null;

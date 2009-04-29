@@ -13,7 +13,8 @@ libucntracker_vis_la_SOURCES =  \
 VALASOURCES = \
 	camera.vala \
 	renderer.vala \
-	tracer.vala
+	tracer.vala \
+	vertex-editor.vala
 
 BUILT_SOURCES = vala-ccode
 
