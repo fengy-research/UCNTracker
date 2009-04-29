@@ -1,35 +1,35 @@
 ---
 - &experiment
-  class: UCNExperiment
+  class: Experiment
   max_time_step: 0.0001
   children:
   - *Guide
   - *Disc
   - *Lab
-  - class: UCNAccelField
+  - class: AccelField
     accel: 980.0
     direction: 0, 0, -1
 - &Lab
-  class: UCNPart
+  class: Part
   layer: 0
   children:
-  - class: UCNBall
+  - class: Ball
     center: 0, 0, 0
     radius: 500
 - &Disc
-  class: UCNPart
+  class: Part
   layer: 2
   children:
-  - class: UCNCylinder
+  - class: Cylinder
     center: -74.83, 52.605,-100.965
     radius: 4.88696
     length: 1.00
   - &pipe1
 - &Guide
-  class: UCNPart
+  class: Part
   layer: 1
   children:
-  - class: UCNUnion
+  - class: Union
     children:
 #    - *pipe1
     - *pipe2
@@ -37,45 +37,45 @@
     - *elbow50
     - *elbow51
 - &pipe1
-  class: UCNCylinder
+  class: Cylinder
   center: 0,0,0
   rotation: 0, -90, 0
   radius: 4.88696
   length: 30.48
 - &pipe2
-  class: UCNCylinder
+  class: Cylinder
   center: -22.225,52.605,0
   rotation: 90, -90, 0
   radius: 4.88696
   length: 30.48
 - &pipe3
-  class: UCNCylinder
+  class: Cylinder
   center: -74.83,52.605,-100.965
   rotation: 0, 0, 0
   radius: 4.88696
   length: 78.74
 - &elbow50
-  class: UCNIntersection
+  class: Intersection
   children:
   - *torus50
-  - class: UCNBox
+  - class: Box
     center: 0, 52.605, 0
     size: 44.45, 44.45, 10
 - &torus50
-  class: UCNTorus
+  class: Torus
   center: -22.225, 30.48, 0
   rotation: 0, 0, 0
   radius: 22.225
   tube_radius: 4.88696
 - &elbow51
-  class: UCNIntersection
+  class: Intersection
   children:
   - *torus51
-  - class: UCNBox
+  - class: Box
     center: -74.83, 52.605, 0
     size: 44.45, 10, 44.45
 - &torus51
-  class: UCNTorus
+  class: Torus
   center: -52.605, 52.605, -22.25
   rotation: 0, 90, 0
   radius: 22.225

@@ -10,6 +10,13 @@ namespace Vala.Runtime {
 	public class Builder : GLib.Object {
 
 		public string prefix {get; set;}
+		public Builder(string? prefix = null) {
+			if(prefix == null) {
+				this.prefix = "";
+			} else {
+			this.prefix = prefix;
+			}
+		}
 		private class Object : GLib.Object, Vala.Runtime.Buildable {
 
 		}
@@ -137,10 +144,11 @@ namespace Vala.Runtime {
 			return #cb.list;
 		}
 		public static delegate Type TypeFunc();
-		private static Type type_from_name(string name) throws BuilderError {
+		private Type type_from_name(string name) throws BuilderError {
 			void* method = null;
-			if(!resolve_method(name, "get_type", out method)) {
-				throw new BuilderError.TYPE_NOT_FOUND("can't resolve %s", name);
+			if(!resolve_method(name, "get_type", out method) &&
+				!resolve_method(prefix + name, "get_type", out method)) {
+				throw new BuilderError.TYPE_NOT_FOUND("can't resolve %s or %s%s", name, prefix, name);
 			}
 			TypeFunc func = (TypeFunc)method;
 			return func();

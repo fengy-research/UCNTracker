@@ -151,7 +151,7 @@ public class ScenceEditor {
 		buffer.set_text(content, -1);
 	}
 	private void rebuild(string yml) {
-		Builder builder = new Builder();
+		Builder builder = new Builder("UCN");
 		builder.add_from_string(yml, -1);
 		List<unowned Object> list = builder.get_objects();
 		experiment = null;

@@ -11,7 +11,7 @@ double error;
 public int main(string[] args) {
 	UCNTracker.init(ref args);
 	Gtk.init(ref args);
-	builder = new Builder();
+	builder = new Builder("UCN");
 	builder.add_from_file("T.yml");
 
 	rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);

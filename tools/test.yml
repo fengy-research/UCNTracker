@@ -1,10 +1,10 @@
 ---
 - &a
-  class: UCNExperiment
+  class: Experiment
   children:
-  - class: UCNPart
+  - class: Part
     children:
-    - class: UCNBall
+    - class: Ball
       radius: 20
 
 ...
