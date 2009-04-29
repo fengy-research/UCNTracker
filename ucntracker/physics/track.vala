@@ -82,9 +82,19 @@ namespace UCNTracker {
 			return Object.new(type) as Track;
 		}
 
+		/**
+		 * Start a track.
+		 *
+		 * head: the head of the track. Track.head will hold a reference to
+		 *       this vertex. Track.tail will be a clone of it.
+		 *       if the initial part and volume is not specified, the
+		 *       method tries to locate the given vertex in the experiment by
+		 *       Experiment.locate.
+		 */
 		public void start(Run run, Vertex head) {
 			this.run = run;
 			this.experiment = run.experiment;
+			this.head = head;
 			tail = clone_vertex(head);
 			tail.timestamp = run.timestamp;
 			if(tail.part == null || tail.volume == null)
@@ -109,11 +119,16 @@ namespace UCNTracker {
 		}
 		public void terminate() {
 			terminated = true;
-			run.active_tracks.remove(this);
+		}
+		public void error() {
+			terminated = true;
+			run.tracks.remove(this);
+			run.error_tracks.prepend(this);
 		}
 		public weak Experiment experiment {get; private set;}
 
 		public Vertex tail;
+		public Vertex head;
 
 		public double evolve() {
 			assert(terminated == false);

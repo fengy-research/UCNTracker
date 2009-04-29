@@ -34,7 +34,7 @@ namespace UCNTracker {
 
 			if((sfunc_in > 0.0 && sfunc_out > 0.0)
 			|| (sfunc_in < 0.0 && sfunc_out < 0.0)) {
-				message("no intersection %lg %lg", sfunc_in, sfunc_out);
+				//message("no intersection %lg %lg", sfunc_in, sfunc_out);
 				return false;
 			}
 

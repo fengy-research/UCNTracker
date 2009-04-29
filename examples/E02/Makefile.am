@@ -14,6 +14,6 @@ example_02_LDADD = $(UCN_LIBS) $(GTK_LIBS)
 
 VALAFLAGS = --vapidir=$(top_srcdir)/ucntracker \
 --vapidir=$(top_srcdir)/ucntracker-vis
-VALAPKGS = --pkg ucntracker --pkg gtk+-2.0 --pkg ucntracker-vis
+VALAPKGS = --pkg ucntracker --pkg gtk+-2.0 --pkg ucntracker-vis --pkg gsl
 @VALA_CCODE_RULES@
 EXTRA_DIST = $(VALASOURCES) vala-ccode

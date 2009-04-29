@@ -27,6 +27,7 @@ VALASOURCES = \
 	math/const.vala \
 	math/eulerangles.vala \
 	math/vector.vala \
+	math/random.vala \
 	math/quaternion.vala \
 	math/surface.vala \
 	core/volume.vala \
@@ -63,5 +64,6 @@ vapidir=$(datadir)/vala/vapi
 ucntracker.deps: 
 	echo gmodule-2.0 > $@
 	echo valartl >> $@
+	echo gsl >> $@
 
 EXTRA_CLEAN = ucntracker.deps ucntracker.vapi

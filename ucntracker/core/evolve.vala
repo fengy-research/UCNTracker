@@ -1,6 +1,7 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	internal class Evolution {
+		private static Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 
 		private weak Track track;
 		/*INIT_STEP_SIZE is used by the OdeivEvolve */
@@ -29,7 +30,7 @@ namespace UCNTracker {
 			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk8pd, track.dimensions);
 			ode_control = new Gsl.OdeivControl.scaled(1e-8, 1e-4, 1.0, 0.0, track.tolerance);
 			ode_evolve = new Gsl.OdeivEvolve(track.dimensions);
-			step_size = INIT_STEP_SIZE;
+			step_size = track.run.experiment.max_time_step;
 			this.track = track;
 			y = new double[track.dimensions];
 			yerr = new double[track.dimensions];
@@ -122,7 +123,7 @@ namespace UCNTracker {
 			 * ** */
 			double dP = Math.exp( -free_length)
 				  - Math.exp((-free_length - dl));
-			double r = Random.uniform();
+			double r = rng.uniform();
 
 			if(!do_not_scatter && r < dP) {
 				/*
@@ -163,7 +164,7 @@ namespace UCNTracker {
 				track.terminate();
 				return 0.0;
 			}
-			double dt = 9999.0;
+			double dt = track.experiment.max_time_step;
 			double dt_by_mfp = track.tail.part.calculate_mfp(track.tail) /
 			        (HOPS_PER_MFP * track.tail.velocity.norm());
 			if(dt_by_mfp < dt) dt = dt_by_mfp;
@@ -227,13 +228,13 @@ namespace UCNTracker {
 				count ++;
 				if(count == 10) {
 					warning(
-					"failed to detect a surface transportation, at tail %s(%s) next = %s(%s), directly move to next object", 
+					"failed to detect a surface transportation, at tail %s(%s) next = %s(%s), track moved to errors", 
 						track.tail.position.to_string(),
 						track.tail.volume.get_name(),
 						next.position.to_string(),
 						next.volume!=null?next.volume.get_name():"null"
 						);
-					move_to(next, true);
+					track.error();
 					return dt;
 				}
 			}
@@ -265,7 +266,7 @@ namespace UCNTracker {
 			leave.part = track.tail.part;
 			leave.volume = track.tail.volume;
 			leave.weight = track.tail.weight;
-			message("leave sfunc = %lg", leave.volume.sfunc(leave.position));
+			//message("leave sfunc = %lg", leave.volume.sfunc(leave.position));
 			/* Make sure the particle is inside the volume. */
 			// maybe don't need this assert(leave.volume.sfunc(leave.position) < 0.0);
 
@@ -276,17 +277,18 @@ namespace UCNTracker {
 			bool transported = true;
 			var old_leave_velocity = leave.velocity;
 			track.tail.part.transport(track, leave, enter, &transported);
+			track.run.run_motion_notify();
 			just_transported = true;
-			message("transport event leave = %s(%s/%s) oldvel = %s newvel = %s enter = %s(%s/%s) next = %s", 
-			leave.position.to_string(),
-			leave.part.get_name(),
-			leave.volume.get_name(),
-			old_leave_velocity.to_string(),
-			leave.velocity.to_string(),
-			enter.position.to_string(),
-			enter.part!=null?enter.part.get_name():"NULL",
-			enter.volume!=null?enter.volume.get_name():"NULL",
-			next.position.to_string());
+			//message("transport event leave = %s(%s/%s) oldvel = %s newvel = %s enter = %s(%s/%s) next = %s", 
+			//leave.position.to_string(),
+			//leave.part.get_name(),
+			//leave.volume.get_name(),
+			//old_leave_velocity.to_string(),
+			//leave.velocity.to_string(),
+			//enter.position.to_string(),
+			//enter.part!=null?enter.part.get_name():"NULL",
+			//enter.volume!=null?enter.volume.get_name():"NULL",
+			//next.position.to_string());
 			if(transported == false) {
 				move_to(leave, false);
 				return dt_leave;

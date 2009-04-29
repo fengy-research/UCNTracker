@@ -15,6 +15,9 @@ namespace UCNTracker {
 				double r, g, b;
 				int i;
 				get_track_color(track, out r, out g, out b);
+				r = 0.0;
+				g = 0.0;
+				b = 1.0;
 				glBegin(GL_LINE_STRIP);
 				glColor3d(r, g, b);
 				i = 0;
@@ -28,6 +31,7 @@ namespace UCNTracker {
 				glPointSize(4.0f);
 				glBegin(GL_POINTS);
 				i = 0;
+				glColor3d(r, g, b);
 				foreach (Vertex vertex in get_track_history(track)) {
 					glVertex3f ((GLfloat)vertex.position.x,
 						        (GLfloat)vertex.position.y,

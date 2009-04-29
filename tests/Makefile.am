@@ -14,6 +14,7 @@ VALAPKGS = --pkg ucntracker-vis
 AM_CPPFLAGS += $(GTK_CFLAGS) $(GTKGL_CFLAGS) -I../ucntracker -I../ucntracker-vis
 
 noinst_PROGRAMS = \
-	test-gtk
+	test-gtk \
+	test-rng
 
 EXTRA_DIST += *.vala

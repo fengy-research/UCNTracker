@@ -73,11 +73,17 @@ namespace UCNTracker {
 			}
 			queue_draw();
 		}
+		private double r = 0.0;
+		private double g = 0.0;
+		private double b = 0.0;
 		private void track_added_notify(Run obj, Track track) {
-			set_track_color(track,
-				UCNTracker.Random.uniform(),
-				UCNTracker.Random.uniform(),
-				UCNTracker.Random.uniform());
+			set_track_color(track, r, g, b);
+			r = r + 0.1;
+			g = g + 0.1;
+			b = b + 0.1;
+			if(r > 1.0) r /= 2.0;
+			if(g > 1.0) g /= 2.0;
+			if(b > 1.0) b /= 2.0;
 		}
 		//workaround bg 576122:
 		private Vector _location = Vector(80, 0, 0);
@@ -156,7 +162,7 @@ namespace UCNTracker {
 			Gdk.GLConfig config = new Gdk.GLConfig.by_mode (
 		                  	  Gdk.GLConfigMode.RGB |
 		                  	  Gdk.GLConfigMode.DEPTH |
-		                  	  Gdk.GLConfigMode.SINGLE
+		                  	  Gdk.GLConfigMode.DOUBLE
 		                  	  );
 
 

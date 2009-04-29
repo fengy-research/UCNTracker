@@ -11,6 +11,8 @@ public class Experiment: Object, Buildable {
 	public MainContext context = null;
 	public MainLoop loop = null;
 
+	public double max_time_step {get; set; default=0.01;}
+
 	public void add_child(Builder builder, GLib.Object child, string? type) {
 		if(child is Part) {
 			parts.insert_sorted(child as Part,
@@ -27,6 +29,7 @@ public class Experiment: Object, Buildable {
 	public Run add_run() {
 		Run run = new Run(this);
 		runs.prepend(run);
+		prepare(run);
 		return run;
 	}
 	public void attach_run(Run run) {

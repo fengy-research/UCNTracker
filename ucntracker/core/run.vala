@@ -11,12 +11,13 @@ namespace UCNTracker {
 		public double time_limit = double.MAX;
 
 		public bool running = false;
-		public double timestamp;
+		public double timestamp = 0.0;
 		/* in each run, move all tracks forward at least by 
 		 * SYNC_TIME_STEP*/
 		public double frame_length = 0.2;
 
 		public List<Track> tracks;
+		public List<Track> error_tracks;
 		public List<weak Track> active_tracks;
 
 		private uint source_id = 0;
@@ -71,7 +72,7 @@ namespace UCNTracker {
 		 * */
 		public signal void track_motion_notify(Track track, Vertex? prev);
 		/**
-		 * emitted when the run has moved forward by a time step
+		 * emitted when the run has moved forward by a frame.
 		 * */
 		public signal void run_motion_notify();
 		/**
@@ -89,8 +90,8 @@ namespace UCNTracker {
 				return false;
 			}
 			if(running == false) {
-				experiment.prepare(this);
 				running = true;
+				run_motion_notify();
 			}
 			double next_t = timestamp + frame_length;
 			/* This part of code is misterious.
@@ -109,9 +110,18 @@ namespace UCNTracker {
 				    dt < sync_t) {
 					dt+= track.evolve();
 				}
-				track.tail.timestamp += sync_t;
+				track.tail.timestamp += dt;
+			}
+			foreach(Track track in tracks) {
+				if(track.terminated) {
+					active_tracks.remove(track);
+				}
+			}
+			foreach(Track track in error_tracks) {
+				active_tracks.remove(track);
 			}
 			timestamp += frame_length;
+			message("one frame ends: %lf tracks %u", timestamp, active_tracks.length());
 			run_motion_notify();
 			return true;
 		}

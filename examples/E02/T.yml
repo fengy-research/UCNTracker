@@ -1,12 +1,13 @@
 ---
 - &experiment
   class: UCNExperiment
+  max_time_step: 0.0001
   children:
   - *Guide
   - *Disc
   - *Lab
   - class: UCNAccelField
-    accel: 9800.0
+    accel: 980.0
     direction: 0, 0, -1
 - &Lab
   class: UCNPart
@@ -23,13 +24,14 @@
     center: -74.83, 52.605,-100.965
     radius: 4.88696
     length: 1.00
+  - &pipe1
 - &Guide
   class: UCNPart
   layer: 1
   children:
   - class: UCNUnion
     children:
-    - *pipe1
+#    - *pipe1
     - *pipe2
     - *pipe3
     - *elbow50
