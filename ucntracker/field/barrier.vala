@@ -28,7 +28,13 @@ namespace UCNTracker {
 
 		public override void fieldfunc(Track track, Vertex Q, 
 		               Vertex dQ) {
-			double x = Q.position.dot(direction);
+			/* FIXME: the rotation is not used.
+			 * Perhaps Part and Field should derive from a class
+			 * which has no center, neither be it a volume
+			 * */
+			Vector pos = Q.position;
+			pos.translate_i(center);
+			double x = pos.dot(direction);
 
 			if(x < field_xs[0]) return;
 
@@ -42,7 +48,7 @@ namespace UCNTracker {
 					dQ.velocity.x += direction.x * dx;
 					dQ.velocity.y += direction.y * dx;
 					dQ.velocity.z += direction.z * dx;
-					message("magnetic effect : slope= %lg mdm=%lg [%d] %lg", (y1- y0)/(x1-x0), track.mdm, i, dx);
+//					message("magnetic effect : slope= %lg mdm=%lg [%d] %lg", (y1- y0)/(x1-x0), track.mdm, i, dx);
 					return;
 				}
 			}
