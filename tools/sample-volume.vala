@@ -5,16 +5,16 @@ using Vala.Runtime;
 public int main(string[] args) {
 
 	UCNTracker.init(ref args);
-	Builder builder = new Builder();
+	Builder builder = new Builder("UCN");
 	builder.add_from_file("/dev/stdin");
 
 	Object obj = builder.get_object(args[1]) as Object;
 	int points = args[2].to_int();
+	if(obj is UCNTracker.Part) {
+		sample_part(obj as UCNTracker.Part, points);
+	}
 	if(obj is UCNTracker.Volume) {
 		sample_volume(obj as UCNTracker.Volume, points);
-	}
-	if(obj is Part) {
-		sample_part(obj as Part, points);
 	}
 	return 0;
 }

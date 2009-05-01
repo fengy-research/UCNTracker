@@ -228,11 +228,13 @@ namespace UCNTracker {
 				count ++;
 				if(count == 10) {
 					warning(
-					"failed to detect a surface transportation, at tail %s(%s) next = %s(%s), track moved to errors", 
+					"failed to detect a surface transportation, at tail %s(%s)=%lg next = %s(%s)=%lg, track moved to errors", 
 						track.tail.position.to_string(),
-						track.tail.volume.get_name(),
+						track.tail.part.get_name(),
+						track.tail.volume.sfunc(track.tail.position),
 						next.position.to_string(),
-						next.volume!=null?next.volume.get_name():"null"
+						next.part!=null?next.part.get_name():"null",
+						track.tail.volume.sfunc(next.position)
 						);
 					track.error();
 					return dt;
@@ -240,7 +242,7 @@ namespace UCNTracker {
 			}
 			Vertex leave = null;
 			Vertex enter = null;
-			//message("%s %s", is_leave.to_string(), is_enter.to_string());
+			debug("%s %s", is_leave.to_string(), is_enter.to_string());
 
 			if(is_leave && is_enter) {
 				leave = track.create_vertex();
@@ -266,7 +268,7 @@ namespace UCNTracker {
 			leave.part = track.tail.part;
 			leave.volume = track.tail.volume;
 			leave.weight = track.tail.weight;
-			//message("leave sfunc = %lg", leave.volume.sfunc(leave.position));
+			debug("leave sfunc = %lg", leave.volume.sfunc(leave.position));
 			/* Make sure the particle is inside the volume. */
 			// maybe don't need this assert(leave.volume.sfunc(leave.position) < 0.0);
 
@@ -279,16 +281,18 @@ namespace UCNTracker {
 			track.tail.part.transport(track, leave, enter, &transported);
 			track.run.run_motion_notify();
 			just_transported = true;
-			//message("transport event leave = %s(%s/%s) oldvel = %s newvel = %s enter = %s(%s/%s) next = %s", 
-			//leave.position.to_string(),
-			//leave.part.get_name(),
-			//leave.volume.get_name(),
-			//old_leave_velocity.to_string(),
-			//leave.velocity.to_string(),
-			//enter.position.to_string(),
-			//enter.part!=null?enter.part.get_name():"NULL",
-			//enter.volume!=null?enter.volume.get_name():"NULL",
-			//next.position.to_string());
+			/*
+			debug ("transport event leave = %s(%s/%s) oldvel = %s newvel = %s enter = %s(%s/%s) next = %s", 
+			leave.position.to_string(),
+			leave.part.get_name(),
+			leave.volume.get_name(),
+			old_leave_velocity.to_string(),
+			leave.velocity.to_string(),
+			enter.position.to_string(),
+			enter.part!=null?enter.part.get_name():"NULL",
+			enter.volume!=null?enter.volume.get_name():"NULL",
+			next.position.to_string());
+			*/
 			if(transported == false) {
 				move_to(leave, false);
 				return dt_leave;

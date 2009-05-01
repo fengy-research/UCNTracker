@@ -61,7 +61,7 @@ namespace UCNTracker {
 				 * to zero.
 				 * */
 				if(small_count > 1) {
-					message("common boundary detected");
+					debug("common boundary detected");
 					sum = sum - exp(sum * 10.0 /small);
 				}
 				return sum;

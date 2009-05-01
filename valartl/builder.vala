@@ -102,7 +102,9 @@ namespace Vala.Runtime {
 								.printf(type.name(), map_node.key));
 							}
 							void* method = null;
-							if(!resolve_method(class_name, map_node.value, out method)) {
+							if(!resolve_method(class_name, map_node.value, out method) &&
+								!resolve_method(prefix + class_name,
+								map_node.value, out method)) {
 								throw new
 								BuilderError.SYMBOL_NOT_FOUND(
 								"symbol %s.%s not found"

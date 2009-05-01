@@ -49,6 +49,7 @@ namespace UCNTracker {
 			foreach(Track track in tracks) {
 				active_tracks.remove(track);
 			}
+			running = false;
 		}
 		/**
 		 * Pause a simulation run by detaching the run from the
@@ -59,6 +60,7 @@ namespace UCNTracker {
 				Source.remove(source_id);
 				source_id = 0;
 			}
+			running = false;
 		}
 		/**
 		 * Continue the a simulation run by re-attaching the run
@@ -92,7 +94,7 @@ namespace UCNTracker {
 			if(MainContext.current_source().is_destroyed()) return false;
 			if(running == true && 
 				(active_tracks == null || timestamp > time_limit)) {
-				message("Run finished at %lf", timestamp);
+				debug("Run finished at %lf", timestamp);
 				running = false;
 				experiment.finish(this);
 				return false;
@@ -120,6 +122,10 @@ namespace UCNTracker {
 				}
 				track.tail.timestamp += dt;
 			}
+			/* FIXME: Loop over the active_tracks ONLY.
+			 * The total number of tracks is going to be huge.
+			 *
+			 * */
 			foreach(Track track in tracks) {
 				if(track.terminated) {
 					active_tracks.remove(track);
@@ -129,7 +135,7 @@ namespace UCNTracker {
 				active_tracks.remove(track);
 			}
 			timestamp += frame_length;
-			message("one frame ends: %lf tracks %u", timestamp, active_tracks.length());
+			debug ("one frame ends: %lf tracks %u", timestamp, active_tracks.length());
 			run_motion_notify();
 			return true;
 		}

@@ -4,13 +4,7 @@ SUBDIRS = .
 lib_LTLIBRARIES = libucntracker.la 
 libucntracker_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) \
 			$(top_builddir)/valartl/libvalartl.la 
-libucntracker_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) -I$(top_srcdir)/valartl
-
-#			math/libmath.la \
-#			physics/libphysics.la \
-#			core/libcore.la \
-#			main/libmain.la
-
+libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_CFLAGS) -I$(top_srcdir)/valartl
 
 BUILT_SOURCES = vala-ccode
 VALAFLAGS= --library=ucntracker --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/valartl

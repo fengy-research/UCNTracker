@@ -5,10 +5,58 @@
   children:
   - *Guide
   - *Disc
+  - *Cell
   - *Lab
+  - *Mag
   - class: AccelField
     accel: 980.0
     direction: 0, 0, -1
+- &Mag
+  class: BarrierField
+  center: 0, 0, 0
+  direction: 0, 1, 0
+  map: |
+    -50.000,0.000
+    -45.000,0.000
+    -40.000,0.000
+    -35.000,0.000
+    -30.000,-0.010
+    -25.000,-0.360
+    -20.000,-0.700
+    -15.000,-1.000
+    -10.000,-1.120
+    -5.000,-1.130
+    0.000,-1.140
+    5.000,-1.130
+    10.000,-1.130
+    15.000,-1.000
+    20.000,-0.700
+    25.000,-0.360
+    30.000,-0.010
+    35.000,0.000
+    40.000,0.000
+    45.000,0.000
+    50.000,0.000
+- &Guide
+  class: Part
+  layer: 1
+  children:
+  - class: Union
+    children:
+    - *pipe1
+    - *pipe2
+    - *pipe3
+    - *elbow50
+    - *elbow51
+- &Cell
+  class: Part
+  layer: 2
+  children:
+  - class: Cylinder
+    center: 0, 4, 0
+    length: 8
+    radius: 3.3
+    rotation: 0, 90, 0
 - &Lab
   class: Part
   layer: 0
@@ -24,24 +72,12 @@
     center: -74.83, 52.605,-100.965
     radius: 4.88696
     length: 1.00
-  - &pipe1
-- &Guide
-  class: Part
-  layer: 1
-  children:
-  - class: Union
-    children:
-#    - *pipe1
-    - *pipe2
-    - *pipe3
-    - *elbow50
-    - *elbow51
 - &pipe1
   class: Cylinder
-  center: 0,0,0
-  rotation: 0, -90, 0
+  center: 0,30.48,0
+  rotation: 0, 90, 0
   radius: 4.88696
-  length: 30.48
+  length: 60.96
 - &pipe2
   class: Cylinder
   center: -22.225,52.605,0

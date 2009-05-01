@@ -157,17 +157,18 @@ namespace Vala.Runtime.YAML {
 				skip_chars('\n');
 				accept_eod_line();
 				accept_bod_line();
-				accept_comment_line();
+				while( accept_comment_line()) continue;
 				if(!EOS) accept_node_line();
 			}
 		}
-		private void accept_comment_line() {
+		private bool accept_comment_line() {
 			switch(accept_indicator("#")){
 				case '#':
 				accept_until('\n');
 				accept_char('\n');
-				break;
+				return true;
 			}
+			return false;
 		}
 		private void accept_bod_line() {
 			int n = skip_chars('-');

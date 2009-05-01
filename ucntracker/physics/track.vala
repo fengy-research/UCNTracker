@@ -20,7 +20,6 @@ namespace UCNTracker {
 			Vertex v = create_vertex();
 			double vel = sqrt(2 * kinetic / mass);
 			v.velocity = direction.mul(vel);
-			message("head vel is %s", v.velocity.to_string());
 			return v;
 		}
 		public Track parent {get; private set;}

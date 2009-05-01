@@ -39,7 +39,7 @@ namespace UCNTracker {
 			Vector norm = track.tail.volume.grad(leave.position);
 			//message("norm = %s", norm.to_string());
 			Vector reflected = leave.velocity.reflect(norm);
-			//message("reflection: %lf == %lf", leave.velocity.norm(), reflected.norm());
+			//message("v_ref = %s", reflected.to_string());
 			leave.velocity = reflected;
 			*transported = false;
 		}
