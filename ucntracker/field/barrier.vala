@@ -6,7 +6,7 @@ using Vala.Runtime;
 namespace UCNTracker {
 	public class BarrierField: Field {
 		public Vector direction { get; set;}
-
+		public double factor {get; set; default = 1.0;}
 		double[] field_Bs = new double[0];
 		double[] field_xs = new double[0];
 		public string map {set {
@@ -44,7 +44,7 @@ namespace UCNTracker {
 				double y0 = field_Bs[i];
 				double y1 = field_Bs[i+1];
 				if(x >= x0 && x < x1) {
-					double dx = track.magnetic_helicity * track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
+					double dx = track.magnetic_helicity * factor * track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
 					dQ.velocity.x += direction.x * dx;
 					dQ.velocity.y += direction.y * dx;
 					dQ.velocity.z += direction.z * dx;

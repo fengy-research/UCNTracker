@@ -1,0 +1,16 @@
+This program calculates the UCN production in a Cylinder cell.
+The cold neutron attenuation is considered.
+
+Cold neutron attenuation mean free path = lambda_CN. the event is that the CN
+is scattered to a random direction.
+
+UCN attenuation mean free path = lambda_UCN. the event is that the UCN is
+lost.
+
+UCN production cross section is a 'SMALL' number in the sense that:
+
+1. We do not consider the CN loss due to UCN production.
+2. Based on 1, take a much larger probability for the UCN production per unit
+path length of the CN track.
+
+

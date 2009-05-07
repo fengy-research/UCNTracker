@@ -43,6 +43,7 @@ AC_CONFIG_FILES([
 				examples/Makefile
 				examples/E01/Makefile
 				examples/E02/Makefile
+				examples/E03/Makefile
 				tools/Makefile
 				])
 

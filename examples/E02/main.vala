@@ -19,6 +19,7 @@ public class Simulation {
 	Part cell;
 	Camera camera = new Camera();
 	Gtk.Entry entry_energy = new Gtk.Entry();
+	Gtk.Entry entry_field = new Gtk.Entry();
 	Gtk.Entry entry_tracks = new Gtk.Entry();
 	Gtk.Entry entry_runs = new Gtk.Entry();
 	Gtk.CheckButton check_visual = new Gtk.CheckButton.with_label("Visualization");
@@ -34,16 +35,25 @@ public class Simulation {
 		experiment.prepare += (ex, run) => {
 			if(visual) camera.run = run;
 			var dist = new UCNTracker.Randist.PDFDist();
+			var v_dist = new UCNTracker.Randist.PDFDist();
 			dist.left = 0;
 			dist.right = 1.57;
 			dist.pdf = (x) => {return Math.pow(Math.cos(x), 2.8);};
 			dist.init();
-
+			v_dist.left = 0;
+			v_dist.right = 7.150;
+			v_dist.pdf = (x) => {
+				if(x < 5.28) return pow(x, 2.9);
+				return pow(5.28, 2.9)/1.87 * (7.15 - x);
+			};
+			v_dist.init();
 			for(int i = 0; i< number_tracks; i++) {
 				Track track = Track.new(typeof(Neutron));
 				double theta = dist.next(rng);
 				double phi = 2.0 * rng.uniform() * 3.14;
 				Vector dir = Vector( sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
+				energy = v_dist.next(rng) * UNITS.M;
+				energy = 0.5 * track.mass * energy * energy;
 				Vertex head = track.create_vertex_with_kinetics(energy, dir);
 				double x = rng.uniform() * 3.3;
 				double z = rng.uniform() * 3.3;
@@ -85,9 +95,13 @@ public class Simulation {
 				track.terminate();
 				received += track.tail.weight;
 			} else if(enter.part == cell) {
-				*transported = true;
-				track.terminate();
-				loss_cell += track.tail.weight;
+				*transported = false;
+				part.optic_reflect(part, track, leave, enter, transported);
+				double weight = leave.weight;
+				leave.weight = weight * 0.5;
+				enter.weight = weight * 0.5;
+				track.fork(typeof(Neutron), enter).terminate();
+				loss_cell += enter.weight;
 			} else {
 				Vector norm = leave.volume.grad(leave.position);
 				double f = 8.5e-5;
@@ -138,21 +152,25 @@ public class Simulation {
 		Gtk.Box hbox = new Gtk.HBox(false, 0);
 		box.pack_start(hbox, false, false, 0);
 
-		hbox.pack_start(entry_energy, false, false, 0);
+//		hbox.pack_start(entry_energy, false, false, 0);
+		hbox.pack_start(entry_field, false, false, 0);
 		hbox.pack_start(entry_tracks, false, false, 0);
 		hbox.pack_start(entry_runs, false, false, 0);
 		hbox.pack_start(check_visual, false, false, 0);
 		hbox.pack_start(button, false, false, 0);
 
-		entry_energy.text = "400";
+//		entry_energy.text = "400";
+		entry_field.text= "1.0";
 		entry_tracks.text= "500";
 		entry_runs.text = "8";
 		check_visual.set_active(true);
 		button.clicked += (btn) => {
-			energy = entry_energy.text.to_double() * 1.0e-9 * UNITS.EV;
+//			energy = entry_energy.text.to_double() * 1.0e-9 * UNITS.EV;
 			number_tracks = entry_tracks.text.to_int();
 			visual = check_visual.get_active();
 			number_runs = entry_runs.text.to_int();
+			var field = builder.get_object("Mag") as BarrierField;
+			field.factor = entry_field.text.to_double();
 			received = 0.0;
 			loss_cell = 0.0;
 			loss_up_sc = 0.0;

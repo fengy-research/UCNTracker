@@ -14,6 +14,7 @@
 - &Mag
   class: BarrierField
   center: 0, 0, 0
+  factor: 1.0
   direction: 0, 1, 0
   map: |
     -50.000,0.000
