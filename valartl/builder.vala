@@ -102,8 +102,8 @@ namespace Vala.Runtime {
 								.printf(type.name(), map_node.key));
 							}
 							void* method = null;
-							if(!resolve_method(class_name, map_node.value, out method) &&
-								!resolve_method(prefix + class_name,
+							if(!resolve_method(null, class_name, map_node.value, out method) &&
+								!resolve_method(prefix, class_name,
 								map_node.value, out method)) {
 								throw new
 								BuilderError.SYMBOL_NOT_FOUND(
@@ -148,8 +148,8 @@ namespace Vala.Runtime {
 		public static delegate Type TypeFunc();
 		private Type type_from_name(string name) throws BuilderError {
 			void* method = null;
-			if(!resolve_method(name, "get_type", out method) &&
-				!resolve_method(prefix + name, "get_type", out method)) {
+			if(!resolve_method(null, name, "get_type", out method) &&
+				!resolve_method(prefix, name, "get_type", out method)) {
 				throw new BuilderError.TYPE_NOT_FOUND("can't resolve %s or %s%s", name, prefix, name);
 			}
 			TypeFunc func = (TypeFunc)method;
@@ -157,7 +157,7 @@ namespace Vala.Runtime {
 		}
 		/* Try to resolve a method under a namespace/class
 		 * */
-		public extern static bool resolve_method (string name,
+		public extern static bool resolve_method (string? prefix, string name,
 		         string method, out void* func);
 		private class deferred_child_t {
 			public Vala.Runtime.Buildable parent;
