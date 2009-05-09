@@ -122,7 +122,8 @@ namespace UCNTracker {
 
 			if(!reset_free_length) {
 				foreach(CrossSection section in track.tail.part.cross_sections) {
-					track.flt.advance(section, dl);
+					if(section.ptype == track.get_type()) 
+						track.flt.advance(section, dl);
 				}
 			} else {
 				track.flt.reset_all();
