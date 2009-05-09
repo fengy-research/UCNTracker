@@ -19,6 +19,7 @@ public int main(string[] args) {
 	assert(experiment != null);
 	Part environment = builder.get_object("environment") as Part;
 	Part part1 = builder.get_object("part1") as Part;
+	CrossSection cs1 = builder.get_object("cs1") as CrossSection;
 
 	experiment.prepare += (obj, run) => {
 		Track t = Track.new(typeof(Neutron));
@@ -37,9 +38,9 @@ public int main(string[] args) {
 		message("run finished");
 	};
 
-	/*
-	part1.hit += (obj, track, state) => {
-	};*/
+	cs1.hit += (obj, track, state) => {
+		message("hit on track %p, at %s", track, state.position.to_string());
+	};
 
 /*	part1.transport += (obj, track, leave, enter, transported)
 	  => {
@@ -88,8 +89,6 @@ private const string GML =
   - *part1
   - class : UCNAccelField
     accel : 0.1
-    children:
-    - *env
 - &environment
   class : UCNPart
   layer : -1
@@ -102,9 +101,14 @@ private const string GML =
   - class : UCNBall
     radius : 2
     center : 1, 2, 3
+  - *cs1
 - &env
   class : UCNBall
   center : 0, 0, 0
   radius : 100
+- &cs1
+  class : CrossSection
+  ptype: Neutron
+  mfp : 1.0
 ...
 """;

@@ -102,9 +102,7 @@ namespace Vala.Runtime {
 								.printf(type.name(), map_node.key));
 							}
 							void* method = null;
-							if(!resolve_method(null, class_name, map_node.value, out method) &&
-								!resolve_method(prefix, class_name,
-								map_node.value, out method)) {
+							if(!resolve_method(class_name, map_node.value, out method)) {
 								throw new
 								BuilderError.SYMBOL_NOT_FOUND(
 								"symbol %s.%s not found"
@@ -146,10 +144,9 @@ namespace Vala.Runtime {
 			return #cb.list;
 		}
 		public static delegate Type TypeFunc();
-		private Type type_from_name(string name) throws BuilderError {
+		internal Type type_from_name(string name) throws BuilderError {
 			void* method = null;
-			if(!resolve_method(null, name, "get_type", out method) &&
-				!resolve_method(prefix, name, "get_type", out method)) {
+			if(!resolve_method(name, "get_type", out method)) {
 				throw new BuilderError.TYPE_NOT_FOUND("can't resolve %s or %s%s", name, prefix, name);
 			}
 			TypeFunc func = (TypeFunc)method;
@@ -157,8 +154,14 @@ namespace Vala.Runtime {
 		}
 		/* Try to resolve a method under a namespace/class
 		 * */
-		public extern static bool resolve_method (string? prefix, string name,
-		         string method, out void* func);
+		public extern static bool resolve_method_internal (string? prefix, string name, string method, out void* func);
+		public bool resolve_method(string name ,string method, out void* func) {
+			if(!resolve_method_internal(prefix, name, method, out func) &&
+			   !resolve_method_internal(null, name, method, out func)) {
+			   	return false;
+			   }
+			return true;
+		}
 		private class deferred_child_t {
 			public Vala.Runtime.Buildable parent;
 			public unowned YAML.Node node;

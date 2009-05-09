@@ -120,7 +120,7 @@ namespace UCNTracker {
 			/*First do physical length accounting*/
 			track.length += dl;
 
-			if(reset_free_length) {
+			if(!reset_free_length) {
 				foreach(CrossSection section in track.tail.part.cross_sections) {
 					track.flt.advance(section, dl);
 				}

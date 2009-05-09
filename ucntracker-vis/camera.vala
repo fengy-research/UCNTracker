@@ -159,11 +159,14 @@ namespace UCNTracker {
 				Gdk.EventMask.SCROLL_MASK
 			);
 			this.set_double_buffered(false);
-			Gdk.GLConfig config = new Gdk.GLConfig.by_mode (
+			Gdk.GLConfigMode mode = 
 		                  	  Gdk.GLConfigMode.RGB |
-		                  	  Gdk.GLConfigMode.DEPTH |
-		                  	  Gdk.GLConfigMode.DOUBLE
-		                  	  );
+		                  	  Gdk.GLConfigMode.DEPTH;
+			if(Environment.get_variable("UCN_VIS_SINGLE_BUFFER") != null) {
+				mode |= Gdk.GLConfigMode.SINGLE;
+			} else
+				mode |= Gdk.GLConfigMode.DOUBLE;
+			Gdk.GLConfig config = new Gdk.GLConfig.by_mode (mode);
 
 
 			Gtk.WidgetGL.set_gl_capability (this,

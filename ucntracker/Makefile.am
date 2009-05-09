@@ -33,6 +33,8 @@ VALASOURCES = \
 	core/freelength-table.vala \
 	core/run.vala \
 	core/evolve.vala \
+	core/vertex.vala \
+	core/track.vala \
 	core/part.vala \
 	volume/volume-simple.vala \
 	volume/volume-boolean.vala \
@@ -42,10 +44,7 @@ VALASOURCES = \
 	volume/volume-cylinder.vala \
 	field/accel.vala \
 	field/barrier.vala \
-	physics/random.vala \
-	physics/vertex.vala \
 	physics/neutron.vala \
-	physics/track.vala \
 	physics/transport.vala
 
 @VALA_CCODE_RULES@
