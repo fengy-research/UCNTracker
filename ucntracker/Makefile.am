@@ -7,13 +7,13 @@ libucntracker_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) \
 libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_CFLAGS) -I$(top_srcdir)/valartl
 
 BUILT_SOURCES = vala-ccode
-VALAFLAGS= --library=ucntracker --basedir=$(top_srcdir)/ucntracker --vapidir=$(top_srcdir)/valartl
+VALAFLAGS= --library=ucntracker --vapidir=$(top_srcdir)/valartl -H ucntracker.h
 VALADOCFLAGS = -o Documentation --package-name=ucntracker --vapidir=$(top_srcdir)/valartl
 VALAPKGS = --pkg gmodule-2.0 --pkg valartl --pkg gsl
 
 libucntracker_la_SOURCES = \
 	$(VALASOURCES:.vala=.c)\
-	$(VALASOURCES:.vala=.h)
+	ucntracker.h
 
 VALASOURCES = \
 	main/main.vala \
@@ -52,8 +52,11 @@ if ENABLE_VALADOC
 @VALA_DOC_RULES@
 BUILT_SOURCES+=vala-doc
 endif
+
 vapi_DATA = ucntracker.vapi ucntracker.deps
 vapidir=$(datadir)/vala/vapi
+ucntrackerinclude_HEADERS = ucntracker.h
+ucntrackerincludedir = $(includedir)/ucntracker
 
 ucntracker.deps: 
 	echo gmodule-2.0 > $@

@@ -55,7 +55,7 @@ namespace Vala.Runtime {
 				deferred_child_t dc = new deferred_child_t();
 				dc.parent = parent;
 				dc.node = node;
-				deferred_children.append(#dc);
+				deferred_children.append((owned)dc);
 			} else
 			if(node.type == YAML.NodeType.MAP) {
 				weak YAML.Node children_node = null;
@@ -141,7 +141,7 @@ namespace Vala.Runtime {
 		public List<unowned Buildable> get_objects() {
 			get_object_cb cb = new get_object_cb();;
 			object_hash.for_each(cb.hfunc);
-			return #cb.list;
+			return (owned)cb.list;
 		}
 		public static delegate Type TypeFunc();
 		internal Type type_from_name(string name) throws BuilderError {

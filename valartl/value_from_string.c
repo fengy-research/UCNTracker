@@ -2,7 +2,7 @@
 #include <glib.h>
 #include <gmodule.h>
 #include <errno.h>
-#include "builder.h"
+#include "valartl.h"
 
 gboolean vala_runtime_builder_resolve_method_internal (
 		const gchar * prefix,

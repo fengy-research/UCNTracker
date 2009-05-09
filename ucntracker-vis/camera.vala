@@ -400,7 +400,7 @@ internal static unowned List<Vertex> get_track_history(Track t) {
 internal static void push_track_history(Track t, Vertex v) {
 	unowned List<Vertex> hist = (List<Vertex>) t.get_pointer("history");
 	Vertex newv = t.clone_vertex(v);
-	hist.prepend(#newv);
+	hist.prepend((owned)newv);
 	t.steal_pointer("history");
 	t.set_pointer("history", hist, g_list_free);
 }

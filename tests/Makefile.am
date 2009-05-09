@@ -11,7 +11,7 @@ VALAFLAGS = --vapidir=../vapi \
 
 VALAPKGS = --pkg ucntracker-vis
 
-AM_CPPFLAGS += $(GTK_CFLAGS) $(GTKGL_CFLAGS) -I../ucntracker -I../ucntracker-vis
+AM_CPPFLAGS += $(GTK_CFLAGS) $(GTKGL_CFLAGS) -I../ucntracker -I../ucntracker-vis -I../valartl
 
 noinst_PROGRAMS = \
 	test-gtk \

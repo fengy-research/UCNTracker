@@ -194,7 +194,7 @@ namespace Vala.Runtime.YAML {
 				doc.key = "#doc";
 				doc.tag = tag;
 				stack.push_tail(doc);
-				documents.append(#doc);
+				documents.append((owned) doc);
 			}
 		}
 		private void accept_eod_line() {
@@ -235,7 +235,7 @@ namespace Vala.Runtime.YAML {
 						break;
 					}
 					weak Node parent = k.parent;
-					parent.sequence.append(# k);
+					parent.sequence.append((owned) k);
 					ind += extra_ind;
 					if(interrupted) return;
 				break;
@@ -297,7 +297,7 @@ namespace Vala.Runtime.YAML {
 			weak string key = k.key;
 			weak Node parent = k.parent;
 			parent.mapping_list.append(k);
-			parent.mapping.insert(key, #k);
+			parent.mapping.insert(key, (owned) k);
 		}
 		private string? accept_block_lines(int ind, bool folded) throws Error {
 			int real_ind = -1;
