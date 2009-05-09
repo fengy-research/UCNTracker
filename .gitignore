@@ -24,6 +24,7 @@ _inst/
 *.la
 *.[ch]
 !ucntracker/builder/*.[ch]
+!valartl/value*.c
 *.vapi
 *.gir
 !ucntracker/builder/*.vapi

@@ -1,7 +1,6 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	internal class Evolution {
-		private static Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 
 		private weak Track track;
 		/*INIT_STEP_SIZE is used by the OdeivEvolve */
@@ -109,36 +108,32 @@ namespace UCNTracker {
 			return future.position;
 		}
 
-		private void move_to(Vertex next, bool do_not_scatter) {
+		/**
+		 * about reset_free_length:
+		 *   When there is a surface transport, we don't want to emit
+		 *   hit signal, rather we'd like to reset all free_length counters in flt.
+		 *   
+		 *   NOTE: Should talk to chen-yu to see if this is the expected behavior.
+		 */
+		private void move_to(Vertex next, bool reset_free_length) {
 			double dl = track.estimate_distance(next);
 			/*First do physical length accounting*/
 			track.length += dl;
-			/*Then do mean free length accounting*/
-			dl /= track.tail.part.calculate_mfp(next);
 
-			/**** 
-			 * see if an interaction occurred
-			 * during this motion period
-			 * Formula from Wikipedia entry Mean Free Path
-			 * ** */
-			double dP = Math.exp( -free_length)
-				  - Math.exp((-free_length - dl));
-			double r = rng.uniform();
-
-			if(!do_not_scatter && r < dP) {
-				/*
-				 * if scattering occurred, emit the hit signal
-				 * and reset the free_length accounting.
-				 * */
-				track.tail.part.hit(track, next);
-				free_length = 0.0;
+			if(reset_free_length) {
+				foreach(CrossSection section in track.tail.part.cross_sections) {
+					track.flt.advance(section, dl);
+				}
 			} else {
-				/* nothing happened, accumulate the free_length
-				 * accounting*/
-				free_length += dl;
+				track.flt.reset_all();
 			}
 			/* After Scattering, simply push the adjusted
 			 * state to the tail*/
+
+			/* FIXME: The following passage is buggy.
+			 * prev is always a reference of the tail because we didn't clone it
+			 * However clone is a waste of CPU time on memory allocations.
+			 * Do it or not?*/
 
 			var prev = track.tail;
 			track.tail = next;
@@ -165,7 +160,7 @@ namespace UCNTracker {
 				return 0.0;
 			}
 			double dt = track.experiment.max_time_step;
-			double dt_by_mfp = track.tail.part.calculate_mfp(track.tail) /
+			double dt_by_mfp = track.tail.part.get_minimal_mfp() /
 			        (HOPS_PER_MFP * track.tail.velocity.norm());
 			if(dt_by_mfp < dt) dt = dt_by_mfp;
 

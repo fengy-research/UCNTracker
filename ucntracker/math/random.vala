@@ -3,8 +3,11 @@ using Math;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+	public class UniqueRNG {
+		public static Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
+	}
 	namespace Randist {
-		
+
 		public class PDFDist {
 			public static delegate double Distribution(double x);
 			public double normalization;

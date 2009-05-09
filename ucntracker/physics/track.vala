@@ -30,9 +30,11 @@ namespace UCNTracker {
 		/*accessed in Run*/
 		public bool terminated {get; set; default = false;}
 
-		private Evolution evolution;
+		internal Evolution evolution;
+		internal FreeLengthTable flt;
 
 		private Datalist<void*> data;
+
 
 		public double estimate_distance(Vertex next) {
 			/*FIXME: use a parabola*/
@@ -108,6 +110,7 @@ namespace UCNTracker {
 				terminated = true;
 			}
 			evolution = new Evolution(this);
+			flt = new FreeLengthTable(this);
 		}
 
 		public Track fork(Type type, Vertex head) {

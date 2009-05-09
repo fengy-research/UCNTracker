@@ -4,11 +4,27 @@ using Vala.Runtime;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Part: VolumeGroup{
+	public class Part: Object, Buildable {
+		public List<Volume> volumes;
+		public List<CrossSection> cross_sections;
+
 		public int layer {get; set; default = 0;}
 		public double potential {get; set; default = 1.0;}
-		public double mfp {get; set; default = 1.0;}
+		public double mfp_factor {get; set; default = 1.0;}
 
+		public void add_child(Builder builder, GLib.Object child, string? type) {
+			if(child is Volume) {
+				message("adding child %s.", (child as Buildable).get_name());
+				volumes.prepend(child as Volume);
+			} else if (child is CrossSection) {
+				cross_sections.prepend(child as CrossSection);
+			} else {
+				critical("expecting type %s/%s for a child but found type %s",
+					typeof(Volume).name(),
+					typeof(CrossSection).name(),
+					child.get_type().name());
+			}
+		}
 
 		/**
 		 * emitted when a track tries to go through a surface.
@@ -44,15 +60,30 @@ namespace UCNTracker {
 			*transported = false;
 		}
 
-		public virtual signal void hit(Track track, Vertex next);
-
-		public virtual double calculate_mfp(Vertex vertex) {
-			return mfp;
-		}
 
 		public static int layer_compare_func(Part a, Part b) {
 			return -(a.layer - b.layer);
 		}
+		public bool locate(Vector point, out unowned Volume child) {
+			foreach(Volume volume in volumes) {
+				Sense sense = volume.sense(point);
+				if(sense == Sense.IN) {
+					child = volume;
+					return true;
+				}
+			}
+			child = null;
+			return false;
+		}
 		
+		public double get_minimal_mfp() {
+			double min = double.INFINITY;
+			foreach(CrossSection section in cross_sections) {
+				if(min > section.mfp) {
+					min = section.mfp;
+				}
+			}
+			return min;
+		}
 	}
 }

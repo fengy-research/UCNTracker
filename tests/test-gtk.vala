@@ -12,7 +12,7 @@ public int main(string[] args) {
 	Gtk.init(ref args);
 	Gtk.gl_init ( ref args);
 
-	builder = new Builder();
+	builder = new Builder("UCN");
 	builder.add_from_string(GML, -1);
 
 	Experiment experiment = builder.get_object("experiment") as Experiment;
@@ -86,12 +86,8 @@ private const string GML =
   children :
   - *environment
   - *part1
-  - class : UCNGravityField
-    g : 0.1
-    children:
-    - *env
-  - class : UCNMagneticField
-    B : 0.0, 0.0, 10000000.0
+  - class : UCNAccelField
+    accel : 0.1
     children:
     - *env
 - &environment
