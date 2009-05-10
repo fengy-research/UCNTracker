@@ -44,26 +44,16 @@ namespace UCNTracker {
 		 * in either case, the handler can fork the track at the surface
 		 * to produce the track for the other case.
 		 *
-		 * the pointer is to workaround vala bug 574403.
+		 * NOTE: this syntax of ref bool depends on a local patch for
+		 * Bug 574403
 		 */
 		public virtual signal void transport(Track track,
-		       Vertex s_leave, Vertex s_enter, bool* transported);
-
-		[CCode (instance_pos = -1)]
-		public void optic_reflect(Part p, Track track,
-		       Vertex leave, Vertex enter, bool* transported) {
-			Vector norm = track.tail.volume.grad(leave.position);
-			//message("norm = %s", norm.to_string());
-			Vector reflected = leave.velocity.reflect(norm);
-			//message("v_ref = %s", reflected.to_string());
-			leave.velocity = reflected;
-			*transported = false;
-		}
-
+		       Vertex s_leave, Vertex s_enter, ref bool transported);
 
 		public static int layer_compare_func(Part a, Part b) {
 			return -(a.layer - b.layer);
 		}
+
 		public bool locate(Vector point, out unowned Volume child) {
 			foreach(Volume volume in volumes) {
 				Sense sense = volume.sense(point);

@@ -42,17 +42,17 @@ public int main(string[] args) {
 		message("hit on track %p, at %s", track, state.position.to_string());
 	};
 
-/*	part1.transport += (obj, track, leave, enter, transported)
+	part1.transport += (obj, track, leave, enter, transported)
 	  => {
 		Vector norm = track.tail.volume.grad(leave.position);
 		leave.velocity = leave.velocity.reflect(norm);
 		
-		Track t = track.run.fork_track(track, track.ptype, enter);
+		Track t = track.fork(typeof(Neutron), enter);
 
-		*transported = false;
+		transported = false;
 		message("fork %p", track);
-	};*/
-	part1.transport += part1.optic_reflect;
+	};
+//	part1.transport += .optic_reflect;
 
 	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
 	Gtk.Button button = new Gtk.Button.with_label("Start");

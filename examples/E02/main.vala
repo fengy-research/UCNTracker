@@ -87,16 +87,16 @@ public class Simulation {
 		guide.transport += (part, track, leave, enter, transported) => {
 			assert(enter.part != leave.part);
 			var next_name = enter.part.get_name();
-			*transported = false;
+			transported = false;
 			if(leave.weight < 1e-6 || enter.part == null) {
 				track.error();
 			} else if (enter.part == disc) {
-				*transported = true;
+				transported = true;
 				track.terminate();
 				received += track.tail.weight;
 			} else if(enter.part == cell) {
-				*transported = false;
-				part.optic_reflect(part, track, leave, enter, transported);
+				transported = false;
+				Transport.optic_reflect(part, track, leave, enter, ref transported);
 				double weight = leave.weight;
 				leave.weight = weight * 0.5;
 				enter.weight = weight * 0.5;
@@ -118,7 +118,7 @@ public class Simulation {
 					double weight = leave.weight;
 
 					if(Ecos2_s < V) {
-						part.optic_reflect(part, track, leave, enter, transported);
+						Transport.optic_reflect(part, track, leave, enter, ref transported);
 						double t = 2.0 * f * Math.sqrt(Ecos2_s/(V - Ecos2_s));
 						double r = 1.0 - t;
 						//message(" t = %lg r = %lg", t, r);

@@ -6,6 +6,7 @@ using Vala.Runtime;
 namespace UCNTracker {
 	public class BarrierField: Field {
 		public Vector direction { get; set;}
+		public Vector center {get; set;}
 		public double factor {get; set; default = 1.0;}
 		double[] field_Bs = new double[0];
 		double[] field_xs = new double[0];
