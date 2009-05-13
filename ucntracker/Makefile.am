@@ -45,6 +45,8 @@ VALASOURCES = \
 	field/accel.vala \
 	field/barrier.vala \
 	physics/neutron.vala \
+	physics/cold-neutron.vala \
+	physics/ultracold-neutron.vala \
 	physics/transport.vala
 
 @VALA_CCODE_RULES@

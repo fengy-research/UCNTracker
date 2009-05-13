@@ -41,6 +41,7 @@
 - &Guide
   class: Part
   layer: 1
+  potential: -193.0
   children:
   - class: Union
     children:

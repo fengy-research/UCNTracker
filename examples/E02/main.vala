@@ -86,6 +86,7 @@ public class Simulation {
 	private void init_physics() {
 		guide.transport += (part, track, leave, enter, transported) => {
 			assert(enter.part != leave.part);
+			double d = 0.01;
 			var next_name = enter.part.get_name();
 			transported = false;
 			if(leave.weight < 1e-6 || enter.part == null) {
@@ -96,49 +97,26 @@ public class Simulation {
 				received += track.tail.weight;
 			} else if(enter.part == cell) {
 				transported = false;
-				Transport.optic_reflect(part, track, leave, enter, ref transported);
+				Transport.reflect(part, track, leave, enter, ref transported);
 				double weight = leave.weight;
 				leave.weight = weight * 0.5;
 				enter.weight = weight * 0.5;
 				track.fork(typeof(Neutron), enter).terminate();
 				loss_cell += enter.weight;
 			} else {
-				Vector norm = leave.volume.grad(leave.position);
-				double f = 8.5e-5;
-				double d = 0.01;
-				double V = 1.0 * 193.0e-9 * UNITS.EV;
-
 				double bounces = track.get_double("bounces");
 				track.set_double("bounces", bounces + 1);
 				if(rng.uniform() > d) {
-					double E = 0.5 * track.mass * leave.velocity.norm2();
-					double cos_s = leave.velocity.direction().dot(norm);
-					double Ecos2_s = E * cos_s * cos_s;
-					//message("mass = %lg E = %lg E+ = %lg V = %lg cos_s = %lf", track.mass,  E / (UNITS.EV * 1.0), Ecos2_s / (UNITS.EV *1.0), V / (1.0 *UNITS.EV), cos_s);
-					double weight = leave.weight;
-
-					if(Ecos2_s < V) {
-						Transport.optic_reflect(part, track, leave, enter, ref transported);
-						double t = 2.0 * f * Math.sqrt(Ecos2_s/(V - Ecos2_s));
-						double r = 1.0 - t;
-						//message(" t = %lg r = %lg", t, r);
-						leave.weight = weight * r;
-						enter.weight = weight * t;
+					Transport.fermi(part, track, leave, enter, ref transported);
+					if(transported == false) {
 						track.fork(typeof(Neutron), enter).terminate();
 						loss_up_sc += enter.weight;
 					} else {
 						track.terminate();
-						loss_up_sc += weight;
+						loss_up_sc += leave.weight;
 					}
 				} else {
-					Vector v = Vector(0,0,0);
-					do {
-				//		the new velocity has to be pointing inside
-						Gsl.Randist.dir_3d(rng, out v.x,
-									out v.y,
-									out v.z);
-					} while(v.dot(norm) >= -0.01) ;
-					leave.velocity = v.mul(leave.velocity.norm());
+					Transport.reflect(part, track, leave, enter, ref transported);
 				}
 			}
 		};
