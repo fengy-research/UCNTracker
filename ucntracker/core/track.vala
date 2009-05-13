@@ -136,5 +136,16 @@ namespace UCNTracker {
 			assert(terminated == false);
 			return evolution.evolve();
 		}
+		public double get_minimal_mfp() {
+			double min = double.INFINITY;
+			if(tail.part == null) return min;
+			foreach(CrossSection section in tail.part.cross_sections) {
+				double mfp = section.density * section.sigma(this, tail);
+				if(min > mfp) {
+					min = mfp;
+				}
+			}
+			return min;
+		}
 	}
 }

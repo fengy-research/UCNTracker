@@ -33,7 +33,7 @@ namespace UCNTracker {
 				hash.insert(section, entry);
 			}
 			double free_length = 0.0;
-			double dl =  physical_advanced_length / section.mfp;
+			double dl =  physical_advanced_length / (section.density * section.sigma(track, track.tail));
 			double dP = Math.exp( -free_length) - Math.exp((-free_length - dl));
 			double r = UniqueRNG.rng.uniform();
 			bool reacted = false;

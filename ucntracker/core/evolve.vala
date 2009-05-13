@@ -161,7 +161,7 @@ namespace UCNTracker {
 				return 0.0;
 			}
 			double dt = track.experiment.max_time_step;
-			double dt_by_mfp = track.tail.part.get_minimal_mfp() /
+			double dt_by_mfp = track.get_minimal_mfp() /
 			        (HOPS_PER_MFP * track.tail.velocity.norm());
 			if(dt_by_mfp < dt) dt = dt_by_mfp;
 

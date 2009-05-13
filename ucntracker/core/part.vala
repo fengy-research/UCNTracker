@@ -66,14 +66,5 @@ namespace UCNTracker {
 			return false;
 		}
 		
-		public double get_minimal_mfp() {
-			double min = double.INFINITY;
-			foreach(CrossSection section in cross_sections) {
-				if(min > section.mfp) {
-					min = section.mfp;
-				}
-			}
-			return min;
-		}
 	}
 }
