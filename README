@@ -15,7 +15,7 @@ Source
   A web interface is at
     http://129.79.155.240/~fengyu/viewgit
 
-  git is the version control tool used by major free softwares projects.
+  git is the version control tool used by many free softwares projects.
   A tutorial is available at
     http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html
 
@@ -28,10 +28,9 @@ Dependency
       In general, any version newer than 2.10 should work.
       Available in RHEL 5.
 
-    vala >= 0.5.7:
+    vala >= 0.7.2
       http://download.gnome.org/sources/vala/0.5/
       Prebuilt packages on RHEL5.
-      Available in Fedora 10.
 
     gsl >= 1.10:
       ftp://ftp.gnu.org/gnu/gsl/
@@ -71,8 +70,8 @@ Code Layout
   |   |-- physics  : defining particle types
   |   |-- core     : the tracking system
   |   |-- library  : the library interface
-  |   |-- visualize : the GTK visualization widget
-  |   `-- tests    : very minimal test cases
+  |-- ucntracker-vis : the GTK visualization widget
+  |-- tests    : very minimal test cases
   `---examples     : bundled apps
       |-- E01      : average length a particle goes before
                      getting out of a sphere = 3/4.
@@ -85,10 +84,10 @@ Installation
   The library should be installed to
      /usr/lib/libucntracker.so.
   The visualization library should be installed to
-     /usr/lib/libucnvisualization.so
+     /usr/lib/libucntracker-vis.so
 
 Licenses
 ========
   LGPL v2.0.
-  Please acknowledge the authors, IUCF, and NSF in the publications.
+  Please acknowledge the authors, the UCN Group at IUCF, and NSF in the publications.
 
