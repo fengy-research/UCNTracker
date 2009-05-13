@@ -8,12 +8,9 @@ Introduction
 
 Source
 ======
-  Currently there is no public writable repository. Also, because
-  the codebase is at a very initial stage, the commit topics are
-  senseless.
 
-  A read-only repository is at
-    git clone git://129.79.155.240/~fengyu/UCNTracker
+  A public repository is at
+    git clone git://129.79.155.240/~fengyu/UCNTracker.git
 
   A web interface is at
     http://129.79.155.240/~fengyu/viewgit
