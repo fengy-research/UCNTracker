@@ -96,27 +96,19 @@ public class Simulation {
 				track.terminate();
 				received += track.tail.weight;
 			} else if(enter.part == cell) {
-				transported = false;
-				Transport.reflect(part, track, leave, enter, ref transported);
-				double weight = leave.weight;
-				leave.weight = weight * 0.5;
-				enter.weight = weight * 0.5;
-				track.fork(typeof(Neutron), enter).terminate();
-				loss_cell += enter.weight;
+				Transport transport = new Transport(0.0, 0.0, 1.0);
+				transported = transport.execute(track, leave, enter);
 			} else {
 				double bounces = track.get_double("bounces");
 				track.set_double("bounces", bounces + 1);
-				if(rng.uniform() > d) {
-					Transport.fermi(part, track, leave, enter, ref transported);
-					if(transported == false) {
-						track.fork(typeof(Neutron), enter);//.terminate();
-						loss_up_sc += enter.weight;
-					} else {
-//						track.terminate();
-						loss_up_sc += leave.weight;
-					}
+				Transport transport = new Transport(0.01, 0.99, 0.0);
+				transported = transport.execute();
+				if(transported == false) {
+					track.fork(typeof(Neutron), enter);//.terminate();
+					loss_up_sc += enter.weight;
 				} else {
-					Transport.reflect(part, track, leave, enter, ref transported);
+//						track.terminate();
+					loss_up_sc += leave.weight;
 				}
 			}
 		};
