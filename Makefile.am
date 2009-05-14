@@ -1,1 +1,1 @@
-SUBDIRS = libyaml valartl vapi ucntracker ucntracker-vis tools tests examples
+SUBDIRS = valartl vapi ucntracker ucntracker-vis tools tests examples
