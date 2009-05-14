@@ -109,10 +109,10 @@ public class Simulation {
 				if(rng.uniform() > d) {
 					Transport.fermi(part, track, leave, enter, ref transported);
 					if(transported == false) {
-						track.fork(typeof(Neutron), enter).terminate();
+						track.fork(typeof(Neutron), enter);//.terminate();
 						loss_up_sc += enter.weight;
 					} else {
-						track.terminate();
+//						track.terminate();
 						loss_up_sc += leave.weight;
 					}
 				} else {

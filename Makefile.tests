@@ -11,4 +11,3 @@ check-local:
 	for i in $(noinst_PROGRAMS); do \
 		./$$i; \
     done;
-EXTRA_DIST = *.h

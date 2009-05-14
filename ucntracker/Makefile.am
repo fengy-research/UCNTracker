@@ -52,8 +52,11 @@ VALASOURCES = \
 @VALA_CCODE_RULES@
 if ENABLE_VALADOC
 @VALA_DOC_RULES@
-BUILT_SOURCES+=vala-doc
+else
+vala-doc:
+	touch vala-doc;
 endif
+BUILT_SOURCES+=vala-doc
 
 vapi_DATA = ucntracker.vapi ucntracker.deps
 vapidir=$(datadir)/vala/vapi
@@ -65,4 +68,5 @@ ucntracker.deps:
 	echo valartl >> $@
 	echo gsl >> $@
 
+EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker.vapi ucntracker.deps vala-doc
 EXTRA_CLEAN = ucntracker.deps ucntracker.vapi

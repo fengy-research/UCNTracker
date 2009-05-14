@@ -7,7 +7,7 @@ $(top_builddir)/ucntracker-vis/libucntracker-vis.la
 
 
 noinst_PROGRAMS = example-03
-example_03_SOURCES = main.c main.h
+example_03_SOURCES = main.c
 BUILT_SOURCES = vala-ccode
 example_03_CPPFLAGS = $(UCN_CFLAGS) $(GTK_CFLAGS)
 example_03_LDADD = $(UCN_LIBS) $(GTK_LIBS)

@@ -26,5 +26,5 @@ test_SOURCES = test.vala
 test_LDADD = libvalartl.la
 test_LDFLAGS = -export-dynamic
 .vala.o:
-	$(VALAC) -c ./valartl.vapi $< -X -I$(top_srcdir) -X -I. -X -g
+	$(VALAC) -c $(srcdir)/valartl.vapi $< -X -I$(srcdir) -X -I. -X -g
 	mv $(@:.o=.vala.o) $@

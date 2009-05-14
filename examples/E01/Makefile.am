@@ -1,5 +1,5 @@
 VALASOURCES = main.vala
-UCN_CFLAGS = -I$(top_srcdir)/ucntracker $(GLIB_CFLAGS) $(GSL_CFLAGS)
+UCN_CFLAGS = -I$(top_srcdir)/valartl -I$(top_srcdir)/ucntracker $(GLIB_CFLAGS) $(GSL_CFLAGS)
 UCN_LIBS = $(GLIB_LIBS) $(GSL_LIBS) \
 $(top_builddir)/ucntracker/libucntracker.la
 

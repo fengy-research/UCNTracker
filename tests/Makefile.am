@@ -17,4 +17,4 @@ noinst_PROGRAMS = \
 	test-gtk \
 	test-rng
 
-EXTRA_DIST += *.vala
+EXTRA_DIST = *.vala

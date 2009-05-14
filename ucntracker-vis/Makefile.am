@@ -31,10 +31,13 @@ vapidir=$(datadir)/vala/vapi
 @VALA_CCODE_RULES@
 if ENABLE_VALADOC
 @VALA_DOC_RULES@
-BUILT_SOURCES += vala-doc
+else
+vala-doc:
+	touch vala-doc;
 endif
+BUILT_SOURCES += vala-doc
 
-EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker-vis.vapi
+EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker-vis.vapi ucntracker-vis.deps vala-doc
 visualizeinclude_HEADERS =  ucntracker-vis.h
 visualizeincludedir = $(includedir)/ucntracker
 
