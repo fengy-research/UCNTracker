@@ -163,6 +163,7 @@ namespace UCNTracker {
 		                  	  Gdk.GLConfigMode.RGB |
 		                  	  Gdk.GLConfigMode.DEPTH;
 			if(Environment.get_variable("UCN_VIS_SINGLE_BUFFER") != null) {
+				message("fallback to single bufferred OpenGL");
 				mode |= Gdk.GLConfigMode.SINGLE;
 			} else
 				mode |= Gdk.GLConfigMode.DOUBLE;

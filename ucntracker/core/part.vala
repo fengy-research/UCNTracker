@@ -9,8 +9,8 @@ namespace UCNTracker {
 		public List<CrossSection> cross_sections;
 
 		public int layer {get; set; default = 0;}
-		public double potential {get; set; default = 1.0;}
-		public double mfp_factor {get; set; default = 1.0;}
+		public double material_f {get; set; default = 0.0;}
+		public double material_V {get; set; default = 0.0;}
 
 		public void add_child(Builder builder, GLib.Object child, string? type) {
 			if(child is Volume) {

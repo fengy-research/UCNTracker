@@ -1,23 +1,50 @@
 using UCNTracker;
 
-/**
- * Surface Transport subroutines
- * */
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+/**
+ * Surface Transport subroutines.
+ *
+ * The routines here update the given Vertex, but never create new forks.
+ * Take a special note on fermi: When the return value is false;
+ * Always fork the current track on enter.
+ * */
 public class Transport {
-	public static void reflect(Part p, Track track,
-		   Vertex leave, Vertex enter, ref bool transported) {
-		transported = false;
+	public double diffuse_channel_size;
+	public double fermi_channel_size;
+	public double reflect_channel_size;
+	public Transport(double diffuse, double fermi, double reflect) {
+		diffuse_channel_size = diffuse;
+		fermi_channel_size = fermi;
+		reflect_channel_size= reflect;
+	}
+	public bool execute(Track track, Vertex leave, Vertex enter) {
+		double r = UniqueRNG.rng.uniform() * (
+			diffuse_channel_size 
+			+ fermi_channel_size
+			+ reflect_channel_size);
+		if(r < diffuse_channel_size) {
+			diffuse(track, leave);
+			return false;
+		}
+		r -= diffuse_channel_size;
+		if(r < fermi_channel_size) {
+			return fermi(track, leave, enter);
+		}
+		r -= fermi_channel_size;
+		if(r <= reflect_channel_size) {
+			reflect(track, leave);
+			return false;
+		}
+		error("never reaches here");
+		return false;
+	}
+	public static void reflect(Track track, Vertex leave) {
 		Vector norm = track.tail.volume.grad(leave.position);
-		//message("norm = %s", norm.to_string());
 		Vector reflected = leave.velocity.reflect(norm);
-		//message("v_ref = %s", reflected.to_string());
 		leave.velocity = reflected;
 	}
-	public static void diffuse(Part p, Track track,
-		   Vertex leave, Vertex enter, ref bool transported) {
-		transported = false;
+	public static void diffuse(Track track, Vertex leave) {
 		Vector norm = track.tail.volume.grad(leave.position);
 		Vector v = Vector(0,0,0);
 		do {
@@ -35,30 +62,40 @@ public class Transport {
 	 * When transported == false, you NEED to fork the track
 	 * at vertex enter.
 	 * */
-	public static void fermi(Part p, Track track,
-		   Vertex leave, Vertex enter, ref bool transported) {
+	public static bool fermi(Track track,
+		   Vertex leave, Vertex enter) {
 		Vector norm = leave.volume.grad(leave.position);
-		double f = 8.5e-5; /* From the UCN Blue book. There is a problem with this number being here.*/
-		double V = 1.0 * (enter.part.potential - leave.part.potential) * UNITS.EV;
+		double DV = (enter.part.material_V - leave.part.material_V) * UNITS.EV;
+		double DW = (enter.part.material_f * enter.part.material_V 
+		           - leave.part.material_f * leave.part.material_V) * UNITS.EV;
+
+		if(DV == 0.0) {
+			/* Same potential, directly transport to the next part.*/
+			enter.velocity = leave.velocity;
+			enter.weight = leave.weight;
+			return true;
+		}
+		double f = DW / DV;
+		
+		if(f > 0.01) {
+			critical("f = %lf is too large, the approximation here might fail. Refer to Ultra-Cold Neutrons, RDS, P25 eq 2.67.", f);
+		}
 
 		double E = 0.5 * track.mass * leave.velocity.norm2();
 		double cos_s = leave.velocity.direction().dot(norm);
 		double Ecos2_s = E * cos_s * cos_s;
-//		message("mass = %lg E = %lg E+ = %lg V = %lg cos_s = %lf", track.mass,  E / (UNITS.EV * 1.0), Ecos2_s / (UNITS.EV *1.0), V / (1.0 *UNITS.EV), cos_s);
 
 		double weight = leave.weight;
-		if(Ecos2_s < V) {
-			Transport.reflect(p, track, leave, enter, ref transported);
-				double t = 2.0 * f * Math.sqrt(Ecos2_s/(V - Ecos2_s));
-				double r = 1.0 - t;
-				//message(" t = %lg r = %lg", t, r);
-				leave.weight = weight * r;
-				enter.weight = weight * t;
-				transported = false;
-			} else {
-				enter.weight = weight;
-				transported = true;
-			}
+		if(Ecos2_s < DV) {
+			/* mu(E, theta) is the wall loss probability per bounce.(2.68) */
+			double mu = 2.0 * f * Math.sqrt(Ecos2_s/(DV - Ecos2_s));
+			double R2 = 1.0 - mu;
+			leave.weight = weight * R2;
+			Transport.reflect(track, leave);
+			enter.weight = weight * mu;
+			return false;
+		} else {
+			return true;
 		}
 	}
 }

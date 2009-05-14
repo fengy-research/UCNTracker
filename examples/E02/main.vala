@@ -102,7 +102,7 @@ public class Simulation {
 				double bounces = track.get_double("bounces");
 				track.set_double("bounces", bounces + 1);
 				Transport transport = new Transport(0.01, 0.99, 0.0);
-				transported = transport.execute();
+				transported = transport.execute(track, leave, enter);
 				if(transported == false) {
 					track.fork(typeof(Neutron), enter);//.terminate();
 					loss_up_sc += enter.weight;
