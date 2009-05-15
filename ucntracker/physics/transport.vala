@@ -1,7 +1,7 @@
 using UCNTracker;
 
-[CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
-namespace UCNTracker {
+[CCode (cprefix = "UCNP", lower_case_cprefix = "ucnp_")]
+namespace UCNPhysics {
 /**
  * Surface Transport subroutines.
  *

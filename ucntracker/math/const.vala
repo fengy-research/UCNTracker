@@ -17,6 +17,9 @@ namespace UCNTracker {
 		/*Length */
 		public const double CM = 1.0; /*M*/
 		public const double M = (1.0e2 * CM);
+		public const double CM2 = 1.0; /*CM3*/
+		public const double BARN = (1.0e-24 * CM2); /* barns */
+		public const double CM3 = 1.0; /*CM3*/
 
 		/*Time */
 		public const double S = 1.0;

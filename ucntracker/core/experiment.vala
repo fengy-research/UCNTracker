@@ -41,7 +41,9 @@ public class Experiment: Object, Buildable {
 		loop = new MainLoop(this.context, false);
 		Run run = add_run();
 		attach_run(run);
+		finish += quit;
 		loop.run();
+		finish -= quit;
 	}
 	public void quit() {
 		loop.quit();

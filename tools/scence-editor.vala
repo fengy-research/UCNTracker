@@ -1,6 +1,8 @@
 using GLib;
 using Vala.Runtime;
 using UCNTracker;
+/*Really should not depend on UCNPhysics!*/
+using UCNPhysics;
 
 private errordomain Error {
 	NO_EXPERIMENT,

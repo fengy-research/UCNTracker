@@ -140,7 +140,7 @@ namespace UCNTracker {
 			double min = double.INFINITY;
 			if(tail.part == null) return min;
 			foreach(CrossSection section in tail.part.cross_sections) {
-				double mfp = section.density * section.sigma(this, tail);
+				double mfp = 1.0 / (section.density * section.sigma(this, tail));
 				if(min > mfp) {
 					min = mfp;
 				}
