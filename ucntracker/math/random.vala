@@ -6,6 +6,40 @@ namespace UCNTracker {
 	public class UniqueRNG {
 		public static Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 	}
+	public class MultiChannelRNG {
+		public delegate void ChannelFunction ();
+		private class Channel {
+			public double size;
+			public double bin_min;
+			public double bin_max;
+			public ChannelFunction function;
+		}
+		List<Channel> channels = null;
+		public void add_channel(double size, ChannelFunction function) {
+			Channel channel = new Channel();
+			channel.size = size;
+			channel.function = function;
+
+			channel.bin_min = total_size();
+			channel.bin_max = channel.bin_min + size;
+			channels.prepend(channel);
+		}
+		private double total_size() {
+			if(channels == null) {
+				return 0.0;
+			}
+			return channels.data.bin_max;
+		}
+		public void execute(Gsl.RNG rng) {
+			double random = rng.uniform() * total_size();
+			foreach(unowned Channel ch in channels) {
+				if(ch.bin_min <= random && ch.bin_max > random) {
+					ch.function();
+					break;
+				}
+			}
+		}
+	}
 	namespace Randist {
 
 		public class PDFDist {

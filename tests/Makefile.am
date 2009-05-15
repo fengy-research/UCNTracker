@@ -15,6 +15,7 @@ AM_CPPFLAGS += $(GTK_CFLAGS) $(GTKGL_CFLAGS) -I../ucntracker -I../ucntracker-vis
 
 noinst_PROGRAMS = \
 	test-gtk \
-	test-rng
+	test-rng \
+	test-mcrng
 
 EXTRA_DIST = *.vala
