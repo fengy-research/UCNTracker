@@ -7,7 +7,7 @@ namespace UCNTracker {
 		public static Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 	}
 	public class MultiChannelRNG {
-		public delegate void ChannelFunction ();
+		public delegate bool ChannelFunction ();
 		private class Channel {
 			public double size;
 			public double bin_min;
@@ -30,14 +30,16 @@ namespace UCNTracker {
 			}
 			return channels.data.bin_max;
 		}
-		public void execute(Gsl.RNG rng) {
+		public bool execute(Gsl.RNG rng) {
 			double random = rng.uniform() * total_size();
 			foreach(unowned Channel ch in channels) {
 				if(ch.bin_min <= random && ch.bin_max > random) {
-					ch.function();
-					break;
+					return ch.function();
 				}
 			}
+			error("The code never reaches here");
+			breakpoint();
+			return false;
 		}
 	}
 	namespace Randist {

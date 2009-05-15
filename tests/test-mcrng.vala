@@ -5,14 +5,17 @@ public class TestChannels {
 	public int ch1_count;
 	public int ch2_count;
 	public int ch3_count;
-	public void channel1() {
+	public bool channel1() {
 		ch1_count++;
+		return false;
 	}
-	public void channel2() {
+	public bool channel2() {
 		ch2_count++;
+		return false;
 	}
-	public void channel3() {
+	public bool channel3() {
 		ch3_count++;
+		return false;
 	}
 	public void reset() {
 		ch1_count = ch2_count = ch3_count = 0;
@@ -27,7 +30,7 @@ public int main(string[] args) {
 	mcrng.add_channel(0.5, chs.channel1);
 	mcrng.add_channel(0.5, chs.channel2);
 	mcrng.add_channel(0.5, chs.channel3);
-	for(int j = 0; j< 10; j++) {
+	for(int j = 0; j< 10000; j++) {
 		chs.reset();
 		for(int i = 0; i < 100000; i++) {
 			mcrng.execute(rng);

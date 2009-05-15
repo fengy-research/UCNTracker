@@ -13,31 +13,35 @@ public class Transport {
 	public double diffuse_channel_size;
 	public double fermi_channel_size;
 	public double reflect_channel_size;
+	private Track track;
+	private Vertex enter;
+	private Vertex leave;
+	private MultiChannelRNG mcrng = new MultiChannelRNG();
+
 	public Transport(double diffuse, double fermi, double reflect) {
 		diffuse_channel_size = diffuse;
 		fermi_channel_size = fermi;
 		reflect_channel_size= reflect;
+		mcrng.add_channel(diffuse_channel_size, this.diffuse_channel);
+		mcrng.add_channel(reflect_channel_size, this.reflect_channel);
+		mcrng.add_channel(fermi_channel_size, this.fermi_channel);
 	}
 	public bool execute(Track track, Vertex leave, Vertex enter) {
-		double r = UniqueRNG.rng.uniform() * (
-			diffuse_channel_size 
-			+ fermi_channel_size
-			+ reflect_channel_size);
-		if(r < diffuse_channel_size) {
-			diffuse(track, leave);
-			return false;
-		}
-		r -= diffuse_channel_size;
-		if(r < fermi_channel_size) {
-			return fermi(track, leave, enter);
-		}
-		r -= fermi_channel_size;
-		if(r <= reflect_channel_size) {
-			reflect(track, leave);
-			return false;
-		}
-		error("never reaches here");
+		this.track = track;
+		this.leave = leave;
+		this.enter = enter;
+		return mcrng.execute(UniqueRNG.rng);
+	}
+	private bool reflect_channel() {
+		reflect(track, leave);
 		return false;
+	}
+	private bool diffuse_channel() {
+		diffuse(track, leave);
+		return false;
+	}
+	private bool fermi_channel() {
+		return fermi(track, leave, enter);
 	}
 	public static void reflect(Track track, Vertex leave) {
 		Vector norm = track.tail.volume.grad(leave.position);
