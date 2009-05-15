@@ -61,7 +61,7 @@
 - &Lab
   class: Part
   layer: 0
-  material_V: -193.0
+  material_V: 193.0
   material_f:  8.5e-5
   children:
   - class: Ball
