@@ -161,7 +161,7 @@ namespace Vala.Runtime.YAML {
 				if(!EOS) accept_node_line();
 			}
 		}
-		private bool accept_comment_line() {
+		private bool accept_comment_line() throws Error {
 			switch(accept_indicator("#")){
 				case '#':
 				accept_until('\n');
@@ -170,7 +170,7 @@ namespace Vala.Runtime.YAML {
 			}
 			return false;
 		}
-		private void accept_bod_line() {
+		private void accept_bod_line() throws Error {
 			int n = skip_chars('-');
 			string tag = null;
 			bool bod = false;
@@ -197,7 +197,7 @@ namespace Vala.Runtime.YAML {
 				documents.append((owned) doc);
 			}
 		}
-		private void accept_eod_line() {
+		private void accept_eod_line() throws Error {
 			int n = skip_chars('.');
 			if(n >= 3) {
 				skip_chars('\n');
@@ -332,7 +332,7 @@ namespace Vala.Runtime.YAML {
 			}
 			return null;
 		}
-		private weak Node pop_to_parent (Node k) {
+		private weak Node pop_to_parent (Node k) throws Error {
 			weak Node tail = stack.peek_tail();
 			while(k.ind <= tail.ind) {
 				weak Node finished_node = stack.pop_tail();
@@ -341,14 +341,14 @@ namespace Vala.Runtime.YAML {
 			}
 			return tail;
 		}
-		private void begin_node(Node k){
+		private void begin_node(Node k) throws Error {
 			if(parser.node_start != null)
 				parser.node_start(this, k);
 		}
 		private string location() {
 			return "line %d char %d".printf(line, position);
 		}
-		private void finish_node(Node k) {
+		private void finish_node(Node k) throws Error {
 			assert(k.key != null);
 			if(k.is_map && k.is_seq) {
 				throw new 
