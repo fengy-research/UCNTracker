@@ -71,7 +71,8 @@ AC_CONFIG_FILES([include/Makefile \
                  src/Makefile Makefile
                  tests/Makefile
                  win32/Makefile
-                 libyaml-1.0.pc])
+                 libyaml-1.0.pc
+                 vala/Makefile])
 
 # Generate the "configure" script.
 AC_OUTPUT
