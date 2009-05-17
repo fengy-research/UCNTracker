@@ -35,6 +35,7 @@ AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
 
 AC_CONFIG_SUBDIRS([libyaml])
+AC_CONFIG_SUBDIRS([libyaml-glib])
 AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile

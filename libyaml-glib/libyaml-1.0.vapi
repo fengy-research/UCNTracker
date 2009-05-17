@@ -26,6 +26,62 @@
 [CCode (cprefix="YAML", cheader_filename="yaml.h", lower_case_cprefix="yaml_")]
 namespace YAML {
 
+	[CCode (prefix="YAML_", cname="yaml_node_type_t", has_type_id=false)]
+	public enum NodeType {
+		NO_NODE,
+		SCALAR_NODE,
+		SEQUENCE_NODE,
+		MAPPING_NODE
+	}
+	[CCode (prefix="YAML_", cname="yaml_scalar_style_t", has_type_id=false)]
+	public enum ScalarStyle {
+		ANY_SCALAR_STYLE,
+		PLAIN_SCALAR_STYLE,
+		SINGLE_QUOTED_SCALAR_STYLE,
+		DOUBLE_QUOTED_SCALAR_STYLE,
+		LITERAL_SCALAR_STYLE,
+		FOLDED_SCALAR_STYLE
+	}
+
+	/** Sequence styles. */
+	[CCode (prefix="YAML_", cname="yaml_sequence_style_t", has_type_id=false)]
+	public enum SequenceStyle{
+		/** Let the emitter choose the style. */
+		ANY_SEQUENCE_STYLE,
+		/** The block sequence style. */
+		BLOCK_SEQUENCE_STYLE,
+		/** The flow sequence style. */
+		FLOW_SEQUENCE_STYLE
+	}
+	/** Mapping styles. */
+	[CCode (prefix="YAML_", cname="yaml_mapping_style_t", has_type_id=false)]
+	public enum MappingStyle {
+		/** Let the emitter choose the style. */
+		ANY_MAPPING_STYLE,
+		/** The block mapping style. */
+		BLOCK_MAPPING_STYLE,
+		/** The flow mapping style. */
+		FLOW_MAPPING_STYLE
+		/*YAML_FLOW_SET_MAPPING_STYLE is not there*/
+	}
+
+	/** The version directive data. */
+	[CCode (cname="yaml_version_directive_t", has_type_id = false)]
+	public struct VersionDirective {
+		/** The major version number. */
+		public int major;
+		/** The minor version number. */
+		public int minor;
+	}
+
+	/** The tag directive data. */
+	[CCode (cname = "yaml_tag_directive_t", has_type_id = false)]
+	public struct TagDirective {
+		/** The tag handle. */
+		public string handle;
+		/** The tag prefix. */
+		public string prefix;
+	}
 	[CCode (cname="yaml_mark_t", has_type_id = false)]
 	/** The pointer position. */
 	public struct Mark {
