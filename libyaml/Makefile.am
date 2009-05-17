@@ -9,7 +9,11 @@ maintainer-clean-local:
 	-rm -f aclocal.m4 config.h.in configure config/*
 	-find ${builddir} -name Makefile.in -exec rm -f '{}' ';'
 
+pkgconfigdir=$(libdir)/pkgconfig
+pkgconfig_DATA= libyaml-1.0.pc
+
 .PHONY: bootstrap
 bootstrap: maintainer-clean
 	./bootstrap
 
+DISTCLEANFILES = libyaml-1.0.pc
