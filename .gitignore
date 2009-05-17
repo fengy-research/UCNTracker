@@ -23,8 +23,6 @@ _inst/
 *.lo
 *.tar.gz
 *.la
-*.vapi
-*.deps
 *.gir
 */tests/test*
 .dirstamp
@@ -34,4 +32,4 @@ temp/
 Documentation
 
 !valartl/value*.c
-!*/tests/*.vala
+!*.vala
