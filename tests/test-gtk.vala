@@ -1,9 +1,9 @@
 using GLib;
 using GL;
 using GLU;
-using Vala.Runtime;
 using UCNTracker;
 using UCNPhysics;
+
 Builder builder;
 UCNTracker.Camera gl;
 
@@ -14,7 +14,7 @@ public int main(string[] args) {
 	Gtk.gl_init ( ref args);
 
 	builder = new Builder("UCN");
-	builder.add_from_string(GML, -1);
+	builder.add_from_string(GML);
 
 	Experiment experiment = builder.get_object("experiment") as Experiment;
 	assert(experiment != null);

@@ -1,5 +1,3 @@
-using GLib;
-using Vala.Runtime;
 using UCNTracker;
 public class TestChannels {
 	public int ch1_count;

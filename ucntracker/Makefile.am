@@ -70,7 +70,6 @@ ucntrackerincludedir = $(includedir)/ucntracker
 
 ucntracker.deps: 
 	echo gmodule-2.0 > $@
-	echo valartl >> $@
 	echo gsl >> $@
 
 EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker.vapi ucntracker.deps vala-doc
