@@ -1,11 +1,14 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	errordomain Error {
+	public errordomain Error {
 		/* Demangler Could not find a symbol */
 		SYMBOL_NOT_FOUND,
 
-		/* Build could not resolve a type*/
+		/* Builder could not resolve a type*/
 		TYPE_NOT_FOUND,
-		NOT_A_BUILDABLE
+		NOT_A_BUILDABLE,
+		PROPERTY_NOT_FOUND,
+		OBJECT_NOT_FOUND
+
 	}
 }

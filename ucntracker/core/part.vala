@@ -8,7 +8,7 @@ namespace UCNTracker {
 		public double material_f {get; set; default = 0.0;}
 		public double material_V {get; set; default = 0.0;}
 
-		public void add_child(Builder builder, GLib.Object child, string? type) {
+		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				message("adding child %s.", (child as Buildable).get_name());
 				volumes.prepend(child as Volume);

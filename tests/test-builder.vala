@@ -22,7 +22,7 @@ private const string GML =
 # pretty much already there?
 # w hours work ahead.
 
---- !Experiment
+--- !Experiment &experiment
 objects:
 - !Part &Cell
   layer: 1

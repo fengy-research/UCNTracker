@@ -9,7 +9,7 @@ public class Experiment: Object, Buildable {
 
 	public double max_time_step {get; set; default=0.01;}
 
-	public void add_child(Builder builder, GLib.Object child, string? type) {
+	public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 		if(child is Part) {
 			parts.insert_sorted(child as Part,
 			      (CompareFunc) Part.layer_compare_func);

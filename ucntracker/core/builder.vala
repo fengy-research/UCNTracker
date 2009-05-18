@@ -2,7 +2,7 @@
 namespace UCNTracker {
 	public class Builder : GLib.Object {
 		private string prefix = null;
-		private HashTable<string, Object> objects;
+		private HashTable<string, Object> objects = new HashTable<string, Object>(str_hash, str_equal);
 
 		public Builder(string? prefix = null) {
 			this.prefix = prefix;
@@ -10,20 +10,22 @@ namespace UCNTracker {
 		public void add_from_string(string str) throws GLib.Error {
 			var document = new GLib.YAML.Document.from_string(str);
 			bootstrap_objects(document);
+			process_children(document);
 		}
 
+		public string get_full_class_name(string class_name) {
+			if(prefix != null)
+				return prefix + "." + class_name;
+			else
+				return class_name;
+		}
 		private void bootstrap_objects(GLib.YAML.Document document) 
 		throws GLib.Error {
 			foreach(var node in document.nodes) {
 				/* skip non objects */
 				if(!(node is GLib.YAML.Node.Mapping)) continue;
 				if(node.tag.get_char() != '!') continue;
-
-				string real_name;
-				if(prefix != null)
-					real_name = prefix + "." + node.tag.next_char();
-				else
-					real_name = node.tag.next_char();
+				string real_name = get_full_class_name(node.tag.next_char());
 				try {
 					Type type = Demangler.resolve_type(real_name);
 					message("%s", type.name());
@@ -34,8 +36,12 @@ namespace UCNTracker {
 						.printf(type.name(), node.start_mark.to_string());
 						throw new Error.NOT_A_BUILDABLE(message);
 					}
-					(obj as Buildable).set_node(node as GLib.YAML.Node.Mapping);
-
+					Buildable buildable = obj as Buildable;
+					buildable.set_name(node.anchor);
+					if(node.anchor != null) {
+						objects.insert(node.anchor, obj);
+					}
+					node.set_pointer(obj.ref(), g_object_unref);
 				} catch (Error.SYMBOL_NOT_FOUND e) {
 					string message =
 					"Type %s(%s) is not found".
@@ -43,7 +49,30 @@ namespace UCNTracker {
 					throw new Error.TYPE_NOT_FOUND(message);
 				}
 			}
+		}
+		private void process_properties(GLib.YAML.Document document) throws GLib.Error {
 			
+		}
+		private void process_children(GLib.YAML.Document document) throws GLib.Error {
+			foreach(var node in document.nodes) {
+				/* skip non objects */
+				if(!(node is GLib.YAML.Node.Mapping)) continue;
+				Object obj = (Object) node.get_pointer();
+				Buildable buildable = obj as Buildable;
+				if(obj == null || buildable == null) continue;
+				var mapping = node as GLib.YAML.Node.Mapping;
+				foreach(var key in mapping.keys) {
+					assert(key is GLib.YAML.Node.Scalar);
+					var scalar = key as GLib.YAML.Node.Scalar;
+					if(scalar.value != "objects") continue;
+					var children = mapping.pairs.lookup(key) as GLib.YAML.Node.Sequence;
+					foreach(var item in children.items) {
+						var child = (Object) item.get_pointer();
+						if(child == null) continue;
+						buildable.add_child(this, child, null);
+					}
+				}
+			}
 		}
 		public Object? get_object(string anchor) {
 			return objects.lookup(anchor);

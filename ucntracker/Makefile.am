@@ -64,14 +64,13 @@ vala-doc:
 endif
 BUILT_SOURCES+=vala-doc
 
-vapi_DATA = ucntracker.vapi ucntracker.deps
+vapi_DATA = ucntracker.vapi
 vapidir=$(datadir)/vala/vapi
 ucntrackerinclude_HEADERS = ucntracker.h
 ucntrackerincludedir = $(includedir)/ucntracker
 
 ucntracker.deps: 
 	echo gmodule-2.0 > $@
-	echo libyaml-glib-1.0 >> $@
 	echo gsl >> $@
 
 EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker.vapi ucntracker.deps vala-doc

@@ -17,7 +17,6 @@ AM_LDFLAGS = -export-dynamic -rdynamic
 
 VALAFLAGS = --vapidir=../vapi \
 	--vapidir=../ucntracker \
-	--vapidir=../libyaml-glib \
 	--vapidir=../ucntracker-vis
 
 VALAPKGS = --pkg ucntracker-vis
@@ -25,15 +24,12 @@ VALAPKGS = --pkg ucntracker-vis
 ucntracker_vis_test_CPPFLAGS = $(GTK_CFLAGS) \
 		$(GTKGL_CFLAGS) \
 		-I../ucntracker \
-		-I../ucntracker-vis \
-		-I../libyaml/include \
-		-I../libyaml-glib
+		-I../ucntracker-vis
 ucntracker_vis_test_LDADD = ../ucntracker-vis/libucntracker-vis.la \
  ../ucntracker/libucntracker.la 
 
 ucntracker_test_CPPFLAGS = $(GLIB_CFLAGS) \
-		-I../ucntracker -I../libyaml-glib \
-		-I../libyaml/include 
+		-I../ucntracker 
 ucntracker_test_LDADD = ../ucntracker/libucntracker.la 
 
 noinst_PROGRAMS = $(ucntracker_test:.vala=) $(ucntracker_vis_test:.vala=)

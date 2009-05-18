@@ -2,7 +2,7 @@
 namespace UCNTracker {
 	public abstract class Field: Object, Buildable {
 		public List<Volume> volumes;
-		public void add_child(Builder builder, GLib.Object child, string? type) {
+		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				message("adding child %s.", (child as Buildable).get_name());
 				volumes.prepend(child as Volume);
