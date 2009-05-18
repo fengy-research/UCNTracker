@@ -14,6 +14,12 @@ namespace UCNTracker {
 			process_children(document);
 			process_properties(document);
 		}
+		public void add_from_file (FileStream file) throws GLib.Error {
+			var document = new GLib.YAML.Document.from_file(file);
+			bootstrap_objects(document);
+			process_children(document);
+			process_properties(document);
+		}
 
 		public string get_full_class_name(string class_name) {
 			if(prefix != null)
@@ -91,7 +97,9 @@ namespace UCNTracker {
 		public Object? get_object(string anchor) {
 			return anchors.lookup(anchor);
 		}
-
+		public unowned List<Object>? get_objects() {
+			return objects;
+		}
 	}
 	/**
 	 * Demangle vala names to c names in the standard way.

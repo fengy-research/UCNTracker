@@ -1,12 +1,11 @@
 using GLib;
 using UCNTracker;
-using Vala.Runtime;
 
 public int main(string[] args) {
 
 	UCNTracker.init(ref args);
 	Builder builder = new Builder("UCN");
-	builder.add_from_file("/dev/stdin");
+	builder.add_from_file(stdin);
 
 	Object obj = builder.get_object(args[1]) as Object;
 	int points = args[2].to_int();

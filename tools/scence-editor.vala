@@ -1,5 +1,4 @@
 using GLib;
-using Vala.Runtime;
 using UCNTracker;
 /*Really should not depend on UCNPhysics!*/
 using UCNPhysics;
@@ -154,8 +153,8 @@ public class ScenceEditor {
 	}
 	private void rebuild(string yml) {
 		Builder builder = new Builder("UCN");
-		builder.add_from_string(yml, -1);
-		List<unowned Object> list = builder.get_objects();
+		builder.add_from_string(yml);
+		unowned List<unowned Object> list = builder.get_objects();
 		experiment = null;
 		foreach(Object obj in list) {
 			if(obj is Experiment) {
