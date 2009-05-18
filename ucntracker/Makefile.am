@@ -20,6 +20,7 @@ libucntracker_la_SOURCES = \
 
 VALASOURCES = \
 	main/main.vala \
+	main/error.vala \
 	main/plugin-manager.vala \
 	math/const.vala \
 	math/eulerangles.vala \
@@ -70,6 +71,7 @@ ucntrackerincludedir = $(includedir)/ucntracker
 
 ucntracker.deps: 
 	echo gmodule-2.0 > $@
+	echo libyaml-glib-1.0 >> $@
 	echo gsl >> $@
 
 EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker.vapi ucntracker.deps vala-doc
