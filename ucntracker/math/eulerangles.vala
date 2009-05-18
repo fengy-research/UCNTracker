@@ -1,6 +1,3 @@
-using GLib;
-using Math;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public struct EulerAngles {
@@ -38,9 +35,9 @@ namespace UCNTracker {
 
 		/* update the quaternion */
 		private void update_q() {
-			q = Quaternion.from_rotation(Vector(0, 0, 1), alpha /180.0 * PI);
-			q.mul(Quaternion.from_rotation(Vector(1, 0, 0), beta/ 180.0 * PI));
-			q.mul(Quaternion.from_rotation(Vector(0, 0, 1), gamma/ 180.0 * PI));
+			q = Quaternion.from_rotation(Vector(0, 0, 1), alpha /180.0 * Math.PI);
+			q.mul(Quaternion.from_rotation(Vector(1, 0, 0), beta/ 180.0 * Math.PI));
+			q.mul(Quaternion.from_rotation(Vector(0, 0, 1), gamma/ 180.0 * Math.PI));
 			q.normalize();
 		}
 		public string to_string(string format="%lf %lf %lf") {

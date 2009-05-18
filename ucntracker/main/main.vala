@@ -1,7 +1,3 @@
-
-using GLib;
-using Math;
-
 namespace GLib {
 	namespace Log {
 		public extern void default_handler(string log_domain, LogLevelFlags flags, string message, void* data);

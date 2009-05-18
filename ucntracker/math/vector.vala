@@ -1,6 +1,3 @@
-using GLib;
-using Math;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public struct Vector {
@@ -52,7 +49,7 @@ namespace UCNTracker {
 		}
 
 		public double norm() {
-			return sqrt(norm2());
+			return Math.sqrt(norm2());
 		}
 
 		public double norm2() {
@@ -78,7 +75,7 @@ namespace UCNTracker {
 			double dx = v.x - x;
 			double dy = v.y - y;
 			double dz = v.z - z;
-			return sqrt(dx * dx + dy * dy + dz * dz);
+			return Math.sqrt(dx * dx + dy * dy + dz * dz);
 		}
 
 		public void rotate_i(EulerAngles r) {

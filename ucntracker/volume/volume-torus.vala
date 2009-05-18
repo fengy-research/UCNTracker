@@ -1,7 +1,3 @@
-using GLib;
-using Math;
-using Vala.Runtime;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Torus: Primitive , Buildable {
@@ -18,8 +14,8 @@ namespace UCNTracker {
 
 		public override double sfunc(Vector point) {
 			Vector p = world_to_body(point);
-			double dn = sqrt(p.x * p.x + p.y * p.y);
-			return sqrt((dn - _radius)*(dn - _radius) + p.z * p.z) - _tube_radius;
+			double dn = Math.sqrt(p.x * p.x + p.y * p.y);
+			return Math.sqrt((dn - _radius)*(dn - _radius) + p.z * p.z) - _tube_radius;
 		}
 	}
 }

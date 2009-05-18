@@ -1,6 +1,9 @@
-namespace Vala.Runtime {
+[CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
+namespace UCNTracker {
 	public interface Buildable : Object {
-		public virtual void add_child(Builder builder, Object child, string? type) {}
+		public virtual void add_child(Builder builder, Object child, 
+			string? type) {
+		}
 		public virtual unowned string get_name() {
 			return (string) this.get_data("buildable-name");
 		}

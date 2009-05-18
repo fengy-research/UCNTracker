@@ -1,7 +1,3 @@
-using GLib;
-using Math;
-using Vala.Runtime;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Cylinder : Primitive , Buildable {
@@ -16,7 +12,7 @@ namespace UCNTracker {
 			set {
 				_length = value;
 				bounding_radius =
-				  sqrt(_length * _length + _radius * _radius);
+				  Math.sqrt(_length * _length + _radius * _radius);
 				surfaces[BOTTOM].center.z = 0;
 				surfaces[TOP].center.z = _length;
 			}
@@ -27,7 +23,7 @@ namespace UCNTracker {
 			set {
 				_radius= value;
 				bounding_radius =
-				  sqrt(_length * _length + _radius * _radius);
+				  Math.sqrt(_length * _length + _radius * _radius);
 				(surfaces[TUBE] as Tube).radius = _radius;
 			}
 		}

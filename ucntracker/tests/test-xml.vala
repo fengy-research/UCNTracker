@@ -1,6 +1,4 @@
-using GLib;
 using UCNTracker;
-using Vala.Runtime;
 
 public double my_mfp_func(Part part, Vertex vertex) {
 	return 1.0;

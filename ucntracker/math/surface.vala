@@ -1,6 +1,3 @@
-using GLib;
-using Math;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public delegate Vector CurveFunc(double t);
@@ -26,7 +23,7 @@ namespace UCNTracker {
 			v.y -= center.y;
 			v.z -= center.z;
 			double proj = v.dot(direction);
-			return sqrt(v.norm2() - proj * proj) - radius;
+			return Math.sqrt(v.norm2() - proj * proj) - radius;
 		}
 	}
 

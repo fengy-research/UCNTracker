@@ -1,6 +1,3 @@
-using GLib;
-using Math;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public abstract class Track : Object{
@@ -18,7 +15,7 @@ namespace UCNTracker {
 
 		public virtual Vertex create_vertex_with_kinetics(double kinetic, Vector direction) {
 			Vertex v = create_vertex();
-			double vel = sqrt(2 * kinetic / mass);
+			double vel = Math.sqrt(2 * kinetic / mass);
 			v.velocity = direction.mul(vel);
 			return v;
 		}

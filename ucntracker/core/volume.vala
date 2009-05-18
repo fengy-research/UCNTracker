@@ -1,7 +1,3 @@
-using GLib;
-using Math;
-using Vala.Runtime;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public enum Sense {
@@ -57,7 +53,7 @@ namespace UCNTracker {
 			do{
 				Gsl.Randist.dir_3d( rng, out x, out y, out z);
 				r = rng.uniform();
-				r = cbrt(r) * bounding_radius;
+				r = Math.cbrt(r) * bounding_radius;
 				point = Vector(x * r, y * r, z * r);
 				body_to_world(point);
 				s = sense(point);

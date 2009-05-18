@@ -1,7 +1,3 @@
-using GLib;
-using Math;
-using Vala.Runtime;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	/* Never intended to be created by a builder.

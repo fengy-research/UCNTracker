@@ -1,6 +1,3 @@
-using GLib;
-using Math;
-using Vala.Runtime;
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
@@ -45,7 +42,7 @@ namespace UCNTracker {
 			Vector body_p = world_to_body(point);
 			foreach(Volume child in children) {
 				double s = child.sfunc(body_p);
-				if(fabs(s) < small) small_count++;
+				if(Math.fabs(s) < small) small_count++;
 				if( s > 0.0 ) {
 					if(min > s ) min = s;
 				} else {
@@ -62,7 +59,7 @@ namespace UCNTracker {
 				 * */
 				if(small_count > 1) {
 					debug("common boundary detected");
-					sum = sum - exp(sum * 10.0 /small);
+					sum = sum - Math.exp(sum * 10.0 /small);
 				}
 				return sum;
 			} else {

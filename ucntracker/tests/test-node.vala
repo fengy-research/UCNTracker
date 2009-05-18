@@ -1,5 +1,3 @@
-using GLib;
-
 
 public class MyClass {
 	public Node<Object> node;

@@ -1,15 +1,18 @@
 #SUBDIRS = math physics core main . tests
 SUBDIRS = .
 
+YAMLGLIB_LIBS = -L../libyaml-glib -lyaml-glib
+YAMLGLIB_CFLAGS = -I../libyaml-glib -I../libyaml/include
+
 lib_LTLIBRARIES = libucntracker.la 
 libucntracker_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) \
-			$(top_builddir)/valartl/libvalartl.la 
-libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_CFLAGS) -I$(top_srcdir)/valartl
+	$(YAMLGLIB_LIBS)
+libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_CFLAGS) $(YAMLGLIB_CFLAGS)
 
 BUILT_SOURCES = vala-ccode
-VALAFLAGS= --library=ucntracker --vapidir=$(top_srcdir)/valartl -H ucntracker.h
-VALADOCFLAGS = -o Documentation --package-name=ucntracker --vapidir=$(top_srcdir)/valartl
-VALAPKGS = --pkg gmodule-2.0 --pkg valartl --pkg gsl
+VALAFLAGS= --library=ucntracker --vapidir=$(top_srcdir)/libyaml-glib -H ucntracker.h
+VALADOCFLAGS = -o Documentation --package-name=ucntracker --vapidir=$(top_srcdir)/libyaml-glib
+VALAPKGS = --pkg gmodule-2.0 --pkg libyaml-glib-1.0 --pkg gsl
 
 libucntracker_la_SOURCES = \
 	$(VALASOURCES:.vala=.c)\
@@ -24,6 +27,8 @@ VALASOURCES = \
 	math/random.vala \
 	math/quaternion.vala \
 	math/surface.vala \
+	core/buildable.vala \
+	core/builder.vala \
 	core/volume.vala \
 	core/group.vala \
 	core/field.vala \

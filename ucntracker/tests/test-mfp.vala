@@ -1,6 +1,4 @@
-using GLib;
 using UCNTracker;
-using Vala.Runtime;
 
 public int main(string[] args) {
 

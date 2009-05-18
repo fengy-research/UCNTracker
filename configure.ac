@@ -41,7 +41,6 @@ AC_CONFIG_FILES([
 				ucntracker/Makefile
 				ucntracker-vis/Makefile
 				tests/Makefile
-				valartl/Makefile
 				vapi/Makefile
 				examples/Makefile
 				examples/E01/Makefile

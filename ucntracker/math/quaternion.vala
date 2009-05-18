@@ -1,6 +1,3 @@
-using GLib;
-using Math;
-
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public struct Quaternion {
@@ -37,15 +34,15 @@ namespace UCNTracker {
 			dirty = true;
 		}
 		public Quaternion.from_rotation(Vector axis, double angle) {
-			w = cos(angle/2.0);
-			double s = sin(angle/2.0);
+			w = Math.cos(angle/2.0);
+			double s = Math.sin(angle/2.0);
 			v.x = axis.x * s;
 			v.y = axis.y * s;
 			v.z = axis.z * s;
 			dirty = true;
 		}
 		public double get_angle() {
-			return 2.0 * atan2(v.norm(), w);
+			return 2.0 * Math.atan2(v.norm(), w);
 		}
 		public Vector get_axis() {
 			Vector rt = v;
@@ -79,7 +76,7 @@ namespace UCNTracker {
 		}
 		public void normalize() {
 			double norm2 = w * w + v.norm2();
-			double norm = sqrt(norm2);
+			double norm = Math.sqrt(norm2);
 			w /= norm;
 			v.x /= norm;
 			v.y /= norm;
