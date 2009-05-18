@@ -1,6 +1,7 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Builder : GLib.Object {
+		private static delegate void ParseFunc(string foo, void* location);
 		private string prefix = null;
 		private HashTable<string, Object> anchors = new HashTable<string, Object>(str_hash, str_equal);
 		private List<Object> objects;
@@ -11,14 +12,14 @@ namespace UCNTracker {
 		public void add_from_string(string str) throws GLib.Error {
 			var document = new GLib.YAML.Document.from_string(str);
 			bootstrap_objects(document);
-			process_children(document);
-			process_properties(document);
+			process_children();
+			process_properties();
 		}
 		public void add_from_file (FileStream file) throws GLib.Error {
 			var document = new GLib.YAML.Document.from_file(file);
 			bootstrap_objects(document);
-			process_children(document);
-			process_properties(document);
+			process_children();
+			process_properties();
 		}
 
 		public string get_full_class_name(string class_name) {
@@ -61,23 +62,84 @@ namespace UCNTracker {
 				}
 			}
 		}
-		private void process_properties(GLib.YAML.Document document) throws GLib.Error {
+		private void process_properties() throws GLib.Error {
 			foreach(var obj in objects) {
 				Buildable buildable = obj as Buildable;
 				var mapping = (GLib.YAML.Node.Mapping)obj.get_data("node");
 				foreach(var key in mapping.keys) {
 					assert(key is GLib.YAML.Node.Scalar);
-					var scalar_key = key as GLib.YAML.Node.Scalar;
+					var scalar = key as GLib.YAML.Node.Scalar;
+					if(scalar.value == "objects") continue;
 					var value = mapping.pairs.lookup(key).get_resolved();
-					var scalar_value = value as GLib.YAML.Node.Scalar;
-					/* Sliently ignore all non-scalars */
-					if(scalar_value == null) continue;
-					buildable.process_property(this, scalar_key.value, scalar_value.value);
+					process_property(obj, scalar.value, value);
 				}
 			}
 			
 		}
-		private void process_children(GLib.YAML.Document document) throws GLib.Error {
+		private void process_property(Object object, string property_name, GLib.YAML.Node value_node) throws Error {
+			ParamSpec pspec = ((ObjectClass)object.get_type().class_peek()).find_property(property_name);
+			var value_scalar = (value_node as GLib.YAML.Node.Scalar);
+			if(value_scalar == null) {
+				string message = "Non-Scalar node as a property value for '%s' is not supported"
+				.printf(property_name);
+				throw new Error.NOT_IMPLEMENTED(message);
+			}
+			unowned string property_value = value_scalar.value;
+			if(pspec == null) {
+				string message = "Property %s.%s not found".printf(object.get_type().name(), property_name);
+				throw new Error.PROPERTY_NOT_FOUND(message);
+			}
+			Value value = Value(pspec.value_type);
+			if(pspec.value_type == typeof(int)) {
+				value.set_int((int)property_value.to_long());
+			} else
+			if(pspec.value_type == typeof(uint)) {
+				value.set_uint((uint)property_value.to_long());
+			} else
+			if(pspec.value_type == typeof(long)) {
+				value.set_long(property_value.to_long());
+			} else
+			if(pspec.value_type == typeof(ulong)) {
+				value.set_ulong(property_value.to_ulong());
+			} else
+			if(pspec.value_type == typeof(string)) {
+				value.set_string(property_value);
+			} else
+			if(pspec.value_type == typeof(float)) {
+				value.set_float((float)property_value.to_double());
+			} else
+			if(pspec.value_type == typeof(double)) {
+				value.set_double(property_value.to_double());
+			} else
+			if(pspec.value_type == typeof(bool)) {
+				value.set_boolean(property_value.to_bool());
+			} else
+			if(pspec.value_type == typeof(Type)) {
+				value.set_gtype(Demangler.resolve_type(this.get_full_class_name(property_value)));
+			} else
+			if(pspec.value_type == typeof(Object)) {
+				Object ref_obj = this.get_object(property_value);
+				if(ref_obj == null) {
+					string message = "Object '%s' not found".printf(property_value);
+					throw new Error.OBJECT_NOT_FOUND(message);
+				}
+				value.set_object(ref_obj);
+			} else
+			if(pspec.value_type.is_a(typeof(Boxed))) {
+				message("working on a boxed type %s <- %s", pspec.value_type.name(), property_value);
+				void* symbol = Demangler.resolve_function(pspec.value_type.name(), "parse");
+				void* memory = malloc0(65500);
+				ParseFunc func = (ParseFunc) symbol;
+				func(property_value, memory);
+				value.set_boxed(memory);
+				free(memory);
+			} else {
+				string message = "Unhandled property type %s".printf(pspec.value_type.name());
+				throw new Error.UNKNOWN_PROPERTY_TYPE(message);
+			}
+			object.set_property(property_name, value);
+		}
+		private void process_children() throws GLib.Error {
 			foreach(var obj in objects) {
 				Buildable buildable = obj as Buildable;
 				var mapping = (GLib.YAML.Node.Mapping)obj.get_data("node");
