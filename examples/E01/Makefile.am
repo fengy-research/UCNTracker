@@ -1,7 +1,6 @@
 VALASOURCES = main.vala
-UCN_CFLAGS = -I$(top_srcdir)/valartl -I$(top_srcdir)/ucntracker $(GLIB_CFLAGS) $(GSL_CFLAGS)
-UCN_LIBS = $(GLIB_LIBS) $(GSL_LIBS) \
-$(top_builddir)/ucntracker/libucntracker.la
+UCN_CFLAGS = -I$(top_srcdir)/ucntracker $(GLIB_CFLAGS) $(GSL_CFLAGS)
+UCN_LIBS = $(top_builddir)/ucntracker/libucntracker.la
 
 noinst_PROGRAMS = example-01
 example_01_SOURCES = main.c main.h

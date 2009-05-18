@@ -1,6 +1,5 @@
 using UCNTracker;
 using UCNPhysics;
-using Vala.Runtime;
 Builder builder;
 
 int N_TRACKS = 1;
@@ -12,7 +11,7 @@ public class Simulation {
 	CrossSection down;
 	private void init() {
  		builder = new Builder("UCN");
-		builder.add_from_file("geometry.yml");
+		builder.add_from_file(FileStream.open("geometry.yml", "r"));
 		experiment = builder.get_object("Experiment") as Experiment;
 		cell = builder.get_object("Cell") as Part;
 		up = builder.get_object("up") as CrossSection;
