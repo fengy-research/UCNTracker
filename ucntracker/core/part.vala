@@ -1,12 +1,31 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+	public struct FermiPotential {
+		public double f;
+		public double V;
+		[CCode (instance_pos = 2)]
+		public bool parse(string foo) {
+			string[] words = foo.split(" ");
+			if(words == null || words.length != 2) 
+				words = foo.split(",");
+			if(words == null || words.length != 2) 
+				return false;
+			f = words[0].to_double();
+			V = words[1].to_double();
+			return true;
+		}
+		public FermiPotential(double f, double V) {
+			this.f = f;
+			this.V = V;
+		}
+	}
 	public class Part: Object, Buildable {
 		public List<Volume> volumes;
 		public List<CrossSection> cross_sections;
 
 		public int layer {get; set; default = 0;}
-		public double material_f {get; set; default = 0.0;}
-		public double material_V {get; set; default = 0.0;}
+		private FermiPotential _potential = FermiPotential(0.0, 0.0);
+		public FermiPotential potential {get {return _potential;} set{ _potential = value;}}
 
 		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {

@@ -69,9 +69,9 @@ public class Transport {
 	public static bool fermi(Track track,
 		   Vertex leave, Vertex enter) {
 		Vector norm = leave.volume.grad(leave.position);
-		double DV = (enter.part.material_V - leave.part.material_V) * UNITS.EV;
-		double DW = (enter.part.material_f * enter.part.material_V 
-		           - leave.part.material_f * leave.part.material_V) * UNITS.EV;
+		double DV = (enter.part.potential.V - leave.part.potential.V) * UNITS.EV;
+		double DW = (enter.part.potential.f * enter.part.potential.V 
+		           - leave.part.potential.f * leave.part.potential.V) * UNITS.EV;
 
 		if(DV == 0.0) {
 			/* Same potential, directly transport to the next part.*/
