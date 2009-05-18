@@ -17,7 +17,7 @@ public class Experiment: Object, Buildable {
 		if(child is Field) {
 			fields.prepend(child as Field);
 		}
-		message("add_child %s", (child as Buildable).get_name());
+		//(base as Buildable).add_child(builder, child, type);
 	}
 
 	public signal void prepare(Run run);

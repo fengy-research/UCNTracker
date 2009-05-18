@@ -4,13 +4,13 @@ namespace UCNTracker {
 		public List<Volume> volumes;
 		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
-				message("adding child %s.", (child as Buildable).get_name());
 				volumes.prepend(child as Volume);
 			} else {
 				critical("expecting type %s for a child but found type %s",
 					typeof(Volume).name(),
 					child.get_type().name());
 			}
+			//base.add_child(builder, child, type);
 		}
 		public abstract void fieldfunc(Track track, Vertex Q, Vertex dQ);
 

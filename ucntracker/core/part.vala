@@ -10,7 +10,6 @@ namespace UCNTracker {
 
 		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
-				message("adding child %s.", (child as Buildable).get_name());
 				volumes.prepend(child as Volume);
 			} else if (child is CrossSection) {
 				cross_sections.prepend(child as CrossSection);
@@ -20,6 +19,8 @@ namespace UCNTracker {
 					typeof(CrossSection).name(),
 					child.get_type().name());
 			}
+			/*VALA BUG!*/
+			//base.add_child(builder, child, type);
 		}
 
 		/**

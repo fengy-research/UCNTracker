@@ -2,7 +2,8 @@
 namespace UCNTracker {
 	public class Builder : GLib.Object {
 		private string prefix = null;
-		private HashTable<string, Object> objects = new HashTable<string, Object>(str_hash, str_equal);
+		private HashTable<string, Object> anchors = new HashTable<string, Object>(str_hash, str_equal);
+		private List<Object> objects;
 
 		public Builder(string? prefix = null) {
 			this.prefix = prefix;
@@ -11,6 +12,7 @@ namespace UCNTracker {
 			var document = new GLib.YAML.Document.from_string(str);
 			bootstrap_objects(document);
 			process_children(document);
+			process_properties(document);
 		}
 
 		public string get_full_class_name(string class_name) {
@@ -19,6 +21,7 @@ namespace UCNTracker {
 			else
 				return class_name;
 		}
+
 		private void bootstrap_objects(GLib.YAML.Document document) 
 		throws GLib.Error {
 			foreach(var node in document.nodes) {
@@ -39,9 +42,11 @@ namespace UCNTracker {
 					Buildable buildable = obj as Buildable;
 					buildable.set_name(node.anchor);
 					if(node.anchor != null) {
-						objects.insert(node.anchor, obj);
+						anchors.insert(node.anchor, obj);
 					}
 					node.set_pointer(obj.ref(), g_object_unref);
+					obj.set_data("node", node);
+					objects.prepend(obj);
 				} catch (Error.SYMBOL_NOT_FOUND e) {
 					string message =
 					"Type %s(%s) is not found".
@@ -51,23 +56,32 @@ namespace UCNTracker {
 			}
 		}
 		private void process_properties(GLib.YAML.Document document) throws GLib.Error {
+			foreach(var obj in objects) {
+				Buildable buildable = obj as Buildable;
+				var mapping = (GLib.YAML.Node.Mapping)obj.get_data("node");
+				foreach(var key in mapping.keys) {
+					assert(key is GLib.YAML.Node.Scalar);
+					var scalar_key = key as GLib.YAML.Node.Scalar;
+					var value = mapping.pairs.lookup(key).get_resolved();
+					var scalar_value = value as GLib.YAML.Node.Scalar;
+					/* Sliently ignore all non-scalars */
+					if(scalar_value == null) continue;
+					buildable.process_property(this, scalar_key.value, scalar_value.value);
+				}
+			}
 			
 		}
 		private void process_children(GLib.YAML.Document document) throws GLib.Error {
-			foreach(var node in document.nodes) {
-				/* skip non objects */
-				if(!(node is GLib.YAML.Node.Mapping)) continue;
-				Object obj = (Object) node.get_pointer();
+			foreach(var obj in objects) {
 				Buildable buildable = obj as Buildable;
-				if(obj == null || buildable == null) continue;
-				var mapping = node as GLib.YAML.Node.Mapping;
+				var mapping = (GLib.YAML.Node.Mapping)obj.get_data("node");
 				foreach(var key in mapping.keys) {
 					assert(key is GLib.YAML.Node.Scalar);
 					var scalar = key as GLib.YAML.Node.Scalar;
 					if(scalar.value != "objects") continue;
 					var children = mapping.pairs.lookup(key) as GLib.YAML.Node.Sequence;
 					foreach(var item in children.items) {
-						var child = (Object) item.get_pointer();
+						var child = (Object) item.get_resolved().get_pointer();
 						if(child == null) continue;
 						buildable.add_child(this, child, null);
 					}
@@ -75,7 +89,7 @@ namespace UCNTracker {
 			}
 		}
 		public Object? get_object(string anchor) {
-			return objects.lookup(anchor);
+			return anchors.lookup(anchor);
 		}
 
 	}
