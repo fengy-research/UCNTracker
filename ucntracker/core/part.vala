@@ -23,6 +23,8 @@ namespace UCNTracker {
 		public List<Volume> volumes;
 		public List<CrossSection> cross_sections;
 
+		public HashTable<unowned Part, UCNPhysics.Transport> neighbours =
+			new HashTable<unowned Part, UCNPhysics.Transport>(direct_hash, direct_equal);
 		public int layer {get; set; default = 0;}
 		private FermiPotential _potential = FermiPotential(0.0, 0.0);
 		public FermiPotential potential {get {return _potential;} set{ _potential = value;}}
@@ -42,6 +44,24 @@ namespace UCNTracker {
 			//base.add_child(builder, child, type);
 		}
 
+		internal void custom_node(Builder builder, string tag, void* node_pointer) throws Error {
+			if(tag != "neighbours") {
+				string message = "Property %s.%s not found".printf(get_type().name(), tag);
+				throw new Error.PROPERTY_NOT_FOUND(message);
+			}
+			GLib.YAML.Node node = (GLib.YAML.Node)node_pointer;
+			if(!(node is GLib.YAML.Node.Mapping)) {
+				string message = "A mapping is expected for a neighbour tag (%s)"
+				.printf(node.start_mark.to_string());
+				throw new Error.CUSTOM_NODE_ERROR(message);
+			}
+			var mapping = node as GLib.YAML.Node.Mapping;
+			foreach(var key in mapping.keys) {
+				Part neib = key.get_resolved().get_pointer() as Part;
+				assert(neib != null);
+				neighbours.insert(neib, new UCNPhysics.Transport(0.0, 0.0, 1.0));
+			}
+		}
 		/**
 		 * emitted when a track tries to go through a surface.
 		 * next == null if the track is getting into the ambient.

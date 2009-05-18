@@ -86,7 +86,7 @@ private const string GML =
 objects:
 - !Part &part1
   layer: 1
-  potential: { f: 8.5e-5, V: 193nev }
+  potential: 8.5e-5, 193
   objects:
   - !Box
     center: 0, 0, 0
@@ -95,7 +95,7 @@ objects:
     const_sigma: 0.34barn
     density: 1.0
   neighbours:
-  - *Lab : { absorb: 50%, diffuse: 40%, fermi: 10% }
+    *Lab : { absorb: 50%, diffuse: 40%, fermi: 10% }
 - !Part &Lab
   layer: 0
   objects:
