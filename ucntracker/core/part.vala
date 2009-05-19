@@ -60,6 +60,7 @@ namespace UCNTracker {
 				Part neib = key.get_resolved().get_pointer() as Part;
 				assert(neib != null);
 				neighbours.insert(neib, new UCNPhysics.Transport(0.0, 0.0, 1.0));
+				message("new transport");
 			}
 		}
 		/**

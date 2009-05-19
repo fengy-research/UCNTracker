@@ -1,7 +1,7 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public interface Buildable : Object {
-		private static delegate void ParseFunc(string foo, void* location);
+		private static delegate bool ParseFunc(string foo, void* location);
 
 		public virtual unowned string get_name() {
 			return (string) this.get_data("buildable-name");
@@ -24,64 +24,85 @@ namespace UCNTracker {
 				add_child(builder, child, null);
 			}
 		}
-		internal void process_property(Builder builder, ParamSpec pspec, GLib.YAML.Node node) throws Error {
+		private unowned string cast_to_scalar(GLib.YAML.Node node) throws Error {
 			var value_scalar = (node as GLib.YAML.Node.Scalar);
 			if(value_scalar == null) {
-				string message = "Non-Scalar node as a property value for '%s' is not supported"
-				.printf(pspec.name);
-				throw new Error.NOT_IMPLEMENTED(message);
+				string message = "Expecting a Scalar (%s)"
+				.printf(node.start_mark.to_string());
+				throw new Error.UNEXPECTED_NODE(message);
 			}
-			unowned string property_value = value_scalar.value;
+			return value_scalar.value;
+		}
+		private unowned Object cast_to_object(GLib.YAML.Node node) throws Error {
+			var value = (node as GLib.YAML.Node.Mapping);
+			if(value == null || value.get_pointer() == null) {
+				string message = "Expecting a Mapping (%s) with an Object"
+				.printf(node.start_mark.to_string());
+				throw new Error.UNEXPECTED_NODE(message);
+			}
+			return (Object) value.get_pointer();
+		}
+		internal void process_property(Builder builder, ParamSpec pspec, GLib.YAML.Node node) throws Error {
 
-			Value value = Value(pspec.value_type);
+			Value gvalue = Value(pspec.value_type);
 			if(pspec.value_type == typeof(int)) {
-				value.set_int((int)property_value.to_long());
+				gvalue.set_int((int)cast_to_scalar(node).to_long());
 			} else
 			if(pspec.value_type == typeof(uint)) {
-				value.set_uint((uint)property_value.to_long());
+				gvalue.set_uint((uint)cast_to_scalar(node).to_long());
 			} else
 			if(pspec.value_type == typeof(long)) {
-				value.set_long(property_value.to_long());
+				gvalue.set_long(cast_to_scalar(node).to_long());
 			} else
 			if(pspec.value_type == typeof(ulong)) {
-				value.set_ulong(property_value.to_ulong());
+				gvalue.set_ulong(cast_to_scalar(node).to_ulong());
 			} else
 			if(pspec.value_type == typeof(string)) {
-				value.set_string(property_value);
+				gvalue.set_string(cast_to_scalar(node));
 			} else
 			if(pspec.value_type == typeof(float)) {
-				value.set_float((float)property_value.to_double());
+				gvalue.set_float((float)cast_to_scalar(node).to_double());
 			} else
 			if(pspec.value_type == typeof(double)) {
-				value.set_double(property_value.to_double());
+				gvalue.set_double(cast_to_scalar(node).to_double());
 			} else
 			if(pspec.value_type == typeof(bool)) {
-				value.set_boolean(property_value.to_bool());
+				gvalue.set_boolean(cast_to_scalar(node).to_bool());
 			} else
 			if(pspec.value_type == typeof(Type)) {
-				value.set_gtype(Demangler.resolve_type(builder.get_full_class_name(property_value)));
+				gvalue.set_gtype(Demangler.resolve_type(builder.get_full_class_name(cast_to_scalar(node))));
 			} else
 			if(pspec.value_type == typeof(Object)) {
-				Object ref_obj = builder.get_object(property_value);
-				if(ref_obj == null) {
-					string message = "Object '%s' not found".printf(property_value);
-					throw new Error.OBJECT_NOT_FOUND(message);
+				Object ref_obj = null;
+				if(node is GLib.YAML.Node.Scalar) {
+					ref_obj = builder.get_object(cast_to_scalar(node));
+					if(ref_obj == null) {
+						string message = "Object '%s' not found".printf(cast_to_scalar(node));
+						throw new Error.OBJECT_NOT_FOUND(message);
+					}
 				}
-				value.set_object(ref_obj);
+				if(node is GLib.YAML.Node.Mapping) {
+					ref_obj = cast_to_object(node);
+				}
+				gvalue.set_object(ref_obj);
 			} else
 			if(pspec.value_type.is_a(typeof(Boxed))) {
-				message("working on a boxed type %s <- %s", pspec.value_type.name(), property_value);
+				var strval = cast_to_scalar(node);
+				message("working on a boxed type %s <- %s", pspec.value_type.name(), strval);
 				void* symbol = Demangler.resolve_function(pspec.value_type.name(), "parse");
-				void* memory = malloc0(65500);
+				char[] memory = new char[65500];
 				ParseFunc func = (ParseFunc) symbol;
-				func(property_value, memory);
-				value.set_boxed(memory);
-				free(memory);
+				if(!func(strval, (void*)memory)) {
+					string message = "Failed to parse the boxed type %s at (%s)"
+					.printf(pspec.value_type.name(), node.start_mark.to_string());
+					throw new Error.UNEXPECTED_NODE(message);
+				}
+				gvalue.set_boxed(memory);
 			} else {
 				string message = "Unhandled property type %s".printf(pspec.value_type.name());
 				throw new Error.UNKNOWN_PROPERTY_TYPE(message);
 			}
-			this.set_property(pspec.name, value);
+			this.set_property(pspec.name, gvalue);
 			
 		}
 		/**
