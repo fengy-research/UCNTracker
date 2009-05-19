@@ -5,18 +5,23 @@ namespace UCNTracker {
 		private HashTable<string, Object> anchors = new HashTable<string, Object>(str_hash, str_equal);
 		private List<Object> objects;
 
+		private GLib.YAML.Document document;
 		public Builder(string? prefix = null) {
 			this.prefix = prefix;
 		}
 		public void add_from_string(string str) throws GLib.Error {
-			var document = new GLib.YAML.Document.from_string(str);
+			assert(document == null);
+			document = new GLib.YAML.Document.from_string(str);
 			bootstrap_objects(document);
 			process_value_nodes();
+			cleanup_objects(document);
 		}
 		public void add_from_file (FileStream file) throws GLib.Error {
-			var document = new GLib.YAML.Document.from_file(file);
+			assert(document == null);
+			document = new GLib.YAML.Document.from_file(file);
 			bootstrap_objects(document);
 			process_value_nodes();
+			cleanup_objects(document);
 		}
 
 		public string get_full_class_name(string class_name) {
@@ -32,32 +37,37 @@ namespace UCNTracker {
 				/* skip non objects */
 				if(!(node is GLib.YAML.Node.Mapping)) continue;
 				if(node.tag.get_char() != '!') continue;
-				string real_name = get_full_class_name(node.tag.next_char());
-				try {
-					Type type = Demangler.resolve_type(real_name);
-					message("%s", type.name());
-					Object obj = Object.new(type);
-					if(!(obj is Buildable)) {
-						string message = 
-						"Object type %s(%s) is not a buildable"
-						.printf(type.name(), node.start_mark.to_string());
-						throw new Error.NOT_A_BUILDABLE(message);
-					}
-					Buildable buildable = obj as Buildable;
-					buildable.set_name(node.anchor);
-					if(node.anchor != null) {
-						anchors.insert(node.anchor, obj);
-					}
-					node.set_pointer(obj.ref(), g_object_unref);
-					obj.set_data("node", node);
-					objects.prepend(obj);
-				} catch (Error.SYMBOL_NOT_FOUND e) {
-					string message =
-					"Type %s(%s) is not found".
-					printf(real_name, node.start_mark.to_string());
-					throw new Error.TYPE_NOT_FOUND(message);
-				}
+				build_object(node);
 			}
+		}
+
+		internal Object build_object(GLib.YAML.Node node) {
+			string real_name = get_full_class_name(node.tag.next_char());
+			try {
+				Type type = Demangler.resolve_type(real_name);
+				message("%s", type.name());
+				Object obj = Object.new(type);
+				if(!(obj is Buildable)) {
+					string message = 
+					"Object type %s(%s) is not a buildable"
+					.printf(type.name(), node.start_mark.to_string());
+					throw new Error.NOT_A_BUILDABLE(message);
+				}
+				Buildable buildable = obj as Buildable;
+				buildable.set_name(node.anchor);
+				if(node.anchor != null) {
+					anchors.insert(node.anchor, obj);
+				}
+				node.set_pointer(obj.ref(), g_object_unref);
+				obj.set_data("node", node);
+				objects.prepend(obj);
+			} catch (Error.SYMBOL_NOT_FOUND e) {
+				string message =
+				"Type %s(%s) is not found".
+				printf(real_name, node.start_mark.to_string());
+				throw new Error.TYPE_NOT_FOUND(message);
+			}
+			return obj;
 		}
 		private void process_value_nodes() throws GLib.Error {
 			foreach(var obj in objects) {
