@@ -22,7 +22,7 @@ VALASOURCES = \
 	main/main.vala \
 	main/error.vala \
 	main/plugin-manager.vala \
-	math/const.vala \
+	math/units.vala \
 	math/eulerangles.vala \
 	math/vector.vala \
 	math/random.vala \
