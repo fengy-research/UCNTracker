@@ -83,6 +83,8 @@ namespace UCNTracker {
 			child = null;
 			return false;
 		}
-		
+		public Border? get_border(Part part) {
+			return neighbours.lookup(part);
+		}
 	}
 }
