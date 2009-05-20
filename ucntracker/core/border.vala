@@ -34,6 +34,11 @@ namespace UCNTracker {
 			set {mcrng.set_ch_width(Type.ANY, value);}
 		}
 
+		public delegate bool BorderFunction (Track track,
+				Vertex vertex_leave, Vertex vertex_enter);
+
+		public BorderFunction border_function = null;
+
 		private Track track;
 		private Vertex enter;
 		private Vertex leave;
@@ -70,7 +75,7 @@ namespace UCNTracker {
 		}
 		private bool any_chn() {
 			/* FIXME: call a private delegate */
-			return false;
+			return border_function(track, leave, enter);
 		}
 	}
 }
