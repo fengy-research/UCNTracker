@@ -2,12 +2,11 @@
 SUBDIRS = .
 
 lib_LTLIBRARIES = libucntracker.la 
-libucntracker_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) $(YAMLGLIB_LIBS)
 libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_CFLAGS) $(YAMLGLIB_CFLAGS)
 
 BUILT_SOURCES = vala-ccode
-VALAFLAGS= --library=ucntracker --vapidir=$(top_srcdir)/libyaml-glib -H ucntracker.h
-VALADOCFLAGS = -o Documentation --package-name=ucntracker --vapidir=$(top_srcdir)/libyaml-glib
+VALAFLAGS= --library=ucntracker -H ucntracker.h
+VALADOCFLAGS = -o Documentation --package-name=ucntracker
 VALAPKGS = --pkg gmodule-2.0 --pkg libyaml-glib-1.0 --pkg gsl
 
 libucntracker_la_SOURCES = \

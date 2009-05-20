@@ -53,12 +53,9 @@ dnl --------------------------------------------------------------------------
 AC_DEFUN([VALA_PROG_VALAC],[
   AC_PATH_PROG([VALAC_BIN], [valac], [])
   AC_SUBST(VALAC_BIN)
-  VALAC="$VALAC_BIN --vapidir=\$(top_srcdir)/vapi"
+  VALAC="$VALAC_BIN \$(vala_default_vapi_dirs)"
   AC_SUBST(VALAC)
   VALA_CCODE_RULES='vala-ccode: $(VALASOURCES); $(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) && touch vala-ccode'
-  VALA_OBJECT_RULES='vala-object: $(VALASOURCES); $(VALAC) $(VALAFLAGS) -c $^ $(VALAPKGS) && touch vala-object'
-
-  AC_SUBST(VALA_OBJECT_RULES)
   AC_SUBST(VALA_CCODE_RULES)
 
   if test -z "x${VALAC_BIN}"; then
@@ -74,4 +71,20 @@ AC_DEFUN([VALA_PROG_VALAC],[
       AC_MSG_ERROR([Vala $1 not found.])
     fi
   fi
+])
+
+AC_DEFUN([VALA_VAPI_DIRS], [
+	if test "x$2" == x; then
+		vala_default_vapi_dirs=
+		for i in $1; do 
+			vala_default_vapi_dirs="$vala_default_vapi_dirs --vapidir=$i";
+		done;
+		AC_SUBST(vala_default_vapi_dirs)
+	else
+		vala_tmp=
+		for i in $2; do 
+			vala_tmp="$vala_tmp --vapidir=$i";
+		done;
+		$1="$vala_tmp"
+	fi
 ])

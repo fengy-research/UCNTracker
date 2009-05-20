@@ -1,12 +1,13 @@
 
 VALAPKGS = --pkg ucntracker --pkg ucntracker-vis
-VALAFLAGS = --vapidir=../ucntracker --vapidir=../ucntracker-vis
-LDADD = ../ucntracker/libucntracker.la ../ucntracker-vis/libucntracker-vis.la
-AM_CPPFLAGS = $(GLIB_CFLAGS) $(GTK_CFLAGS) $(GTKGL_CFLAGS) -I../ucntracker -I../ucntracker-vis
 noinst_PROGRAMS = sample-volume scence-editor
 
 sample_volume_SOURCES = sample-volume.c
+sample_volume_LDADD = $(NONVIS_PROGRAM_LIBS)
+sample_volume_CFLAGS = $(NONVIS_PROGRAM_CFLAGS)
 scence_editor_SOURCES = scence-editor.c
+scence_editor_LDADD = $(VIS_PROGRAM_LIBS)
+scence_editor_CFLAGS = $(VIS_PROGRAM_CFLAGS)
 
 BUILT_SOURCES = sample-volume.c scence-editor.c
 SUFFIXES = .vala .c
@@ -16,3 +17,4 @@ SUFFIXES = .vala .c
 	touch $@
 
 EXTRA_DIST = *.vala
+

@@ -1,9 +1,8 @@
 SUBDIRS = .
 
 lib_LTLIBRARIES = libucntracker-vis.la
-libucntracker_vis_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) $(GTK_LIBS) $(GTKGL_LIBS)
 libucntracker_vis_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) $(GTK_CFLAGS) \
-	$(GTKGL_CFLAGS) $(UCNTRACKER_CFLAGS) \
+	$(GTKGL_CFLAGS) $(YAMLGLIB_CFLAGS) $(UCNTRACKER_CFLAGS) \
 	-DG_LOG_DOMAIN=\"UCNTracker\" -DINFO=
 
 libucntracker_vis_la_SOURCES =  \
@@ -16,12 +15,10 @@ VALASOURCES = \
 	tracer.vala \
 	vertex-editor.vala
 
-BUILT_SOURCES = vala-ccode
+BUILT_SOURCES = vala-ccode vala-doc
 
-VALAFLAGS= --library=ucntracker-vis -H ucntracker-vis.h \
-	--vapidir=$(top_srcdir)/vapi --vapidir=$(top_srcdir)/ucntracker
+VALAFLAGS= --library=ucntracker-vis -H ucntracker-vis.h
 VALADOCFLAGS = --package-name=ucntracker-vis -o Documentation \
-	--vapidir=$(top_srcdir)/vapi --vapidir=$(top_srcdir)/ucntracker
 VALAPKGS = --pkg ucntracker \
 	--pkg glu --pkg gl --pkg gtkglext-1.0 --pkg gtk+-2.0
 
@@ -37,14 +34,12 @@ vala-ccode: $(VALASOURCES)
 	echo ucntracker >> ucntracker-vis.deps
 	touch $@
 
-@VALA_CCODE_RULES@
 if ENABLE_VALADOC
 @VALA_DOC_RULES@
 else
 vala-doc:
 	touch vala-doc;
 endif
-BUILT_SOURCES += vala-doc
 
 EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker-vis.gir ucntracker-vis.vapi ucntracker-vis.deps vala-doc
 

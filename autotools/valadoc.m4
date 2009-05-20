@@ -73,7 +73,7 @@ AC_DEFUN([VALA_PROG_VALADOC],[
   AM_CONDITIONAL(ENABLE_VALADOC, [ test "x$enable_valadoc" == xyes ])
 
   AC_SUBST(VALADOC_BIN)
-  VALADOC="$VALADOC_BIN --force --vapidir=\$(top_srcdir)/vapi"
+  VALADOC="$VALADOC_BIN --force \$(vala_default_vapi_dirs)"
   AC_SUBST(VALADOC)
   VALA_DOC_RULES='vala-doc: $(VALASOURCES); $(VALADOC) $(VALADOCFLAGS) $^ $(VALAPKGS) && touch vala-doc'
 
