@@ -22,7 +22,13 @@ namespace UCNTracker {
 			process_value_nodes();
 		}
 
-		public string get_full_class_name(string class_name) {
+		internal Object build_object(GLib.YAML.Node node) throws GLib.Error {
+			Object obj = bootstrap_object(node);
+			process_object_value_nodes(obj, node);
+			return obj;
+		}
+
+		internal string get_full_class_name(string class_name) {
 			if(prefix != null)
 				return prefix + "." + class_name;
 			else
@@ -35,11 +41,19 @@ namespace UCNTracker {
 				/* skip non objects */
 				if(!(node is GLib.YAML.Node.Mapping)) continue;
 				if(node.tag.get_char() != '!') continue;
-				build_object(node);
+				bootstrap_object(node);
 			}
 		}
 
-		internal Object build_object(GLib.YAML.Node node) {
+		private void process_value_nodes() throws GLib.Error {
+			foreach(var obj in objects) {
+				var node = (GLib.YAML.Node)obj.get_data("node");
+				process_object_value_nodes(obj, node);
+			}
+			
+		}
+
+		private Object bootstrap_object(GLib.YAML.Node node) throws GLib.Error {
 			string real_name = get_full_class_name(node.tag.next_char());
 			try {
 				Type type = Demangler.resolve_type(real_name);
@@ -68,24 +82,22 @@ namespace UCNTracker {
 			}
 		}
 
-		private void process_value_nodes() throws GLib.Error {
-			foreach(var obj in objects) {
-				Buildable buildable = obj as Buildable;
-				var mapping = (GLib.YAML.Node.Mapping)obj.get_data("node");
-				foreach(var key in mapping.keys) {
-					assert(key is GLib.YAML.Node.Scalar);
-					var scalar = key as GLib.YAML.Node.Scalar;
-					var value = mapping.pairs.lookup(key).get_resolved();
-					if(scalar.value == "objects") {
-						(obj as Buildable).process_children(this, value);
-						continue;
-					}
-					ParamSpec pspec = ((ObjectClass)obj.get_type().class_peek()).find_property(scalar.value);
-					if(pspec != null) {
-						(obj as Buildable).process_property(this, pspec, value);
-					} else {
-						(obj as Buildable).custom_node(this, scalar.value, value);
-					}
+		private void process_object_value_nodes(Object obj, GLib.YAML.Node node) throws GLib.Error {
+			Buildable buildable = obj as Buildable;
+			var mapping = node as GLib.YAML.Node.Mapping;
+			foreach(var key in mapping.keys) {
+				assert(key is GLib.YAML.Node.Scalar);
+				var scalar = key as GLib.YAML.Node.Scalar;
+				var value = mapping.pairs.lookup(key).get_resolved();
+				if(scalar.value == "objects") {
+					(obj as Buildable).process_children(this, value);
+					continue;
+				}
+				ParamSpec pspec = ((ObjectClass)obj.get_type().class_peek()).find_property(scalar.value);
+				if(pspec != null) {
+					(obj as Buildable).process_property(this, pspec, value);
+				} else {
+					(obj as Buildable).custom_node(this, scalar.value, value);
 				}
 			}
 			
