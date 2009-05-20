@@ -1,6 +1,9 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Transport :Object, Buildable {
+	/**
+	 * Border is the properties of the adjacent between two parts.
+	 * */
+	public class Border:Object, Buildable {
 		public enum Type {
 		ANY = 0,
 		DIFFUSE = 1,
@@ -35,7 +38,6 @@ namespace UCNTracker {
 		private Vertex enter;
 		private Vertex leave;
 
-		public Transport() { }
 		construct {
 			mcrng.set_ch_function(Type.FERMI, this.fermi_chn);
 			mcrng.set_ch_function(Type.REFLECT, this.reflect_chn);

@@ -40,7 +40,7 @@ VALASOURCES = \
 	core/freelength-table.vala \
 	core/run.vala \
 	core/evolve.vala \
-	core/transport.vala \
+	core/border.vala \
 	core/vertex.vala \
 	core/track.vala \
 	core/part.vala \

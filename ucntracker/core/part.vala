@@ -24,8 +24,8 @@ namespace UCNTracker {
 		public List<Volume> volumes;
 		public List<CrossSection> cross_sections;
 
-		public HashTable<unowned Part, Transport> neighbours =
-			new HashTable<unowned Part, Transport>(direct_hash, direct_equal);
+		public HashTable<unowned Part, Border> neighbours =
+			new HashTable<unowned Part, Border>(direct_hash, direct_equal);
 		public int layer {get; set; default = 0;}
 		private FermiPotential _potential = FermiPotential(0.0, 0.0);
 		public FermiPotential potential {get {return _potential;} set{ _potential = value;}}
@@ -60,8 +60,8 @@ namespace UCNTracker {
 			foreach(var key in mapping.keys) {
 				Part neib = cast_to_object(key.get_resolved()) as Part;
 				GLib.YAML.Node value = mapping.pairs.lookup(key).get_resolved();
-				value.tag = "!Transport";
-				Transport trans = builder.build_object(value) as Transport;
+				value.tag = "!Border";
+				Border trans = builder.build_object(value) as Border;
 				assert(neib != null);
 				assert(trans!= null);
 				neighbours.insert(neib, trans);
@@ -71,7 +71,7 @@ namespace UCNTracker {
 		 * Emitted when a track goes through a surface.
 		 *
 		 */
-		public signal void transport(Transport.Type type, 
+		public signal void transport(Border.Type type, 
 		       Track track,
 		       Vertex s_leave, Vertex s_enter);
 
