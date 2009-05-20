@@ -10,22 +10,6 @@ namespace UCNPhysics {
  * Always fork the current track on enter.
  * */
 namespace TransportChannels {
-	public static void reflect(Track track, Vertex leave) {
-		Vector norm = track.tail.volume.grad(leave.position);
-		Vector reflected = leave.velocity.reflect(norm);
-		leave.velocity = reflected;
-	}
-	public static void diffuse(Track track, Vertex leave) {
-		Vector norm = track.tail.volume.grad(leave.position);
-		Vector v = Vector(0,0,0);
-		do {
-	//		the new velocity has to be pointing inside
-			Gsl.Randist.dir_3d(UniqueRNG.rng, out v.x,
-						out v.y,
-						out v.z);
-		} while(v.dot(norm) >= -0.01) ;
-		leave.velocity = v.mul(leave.velocity.norm());
-	}
 	/**
 	 * Transport/Reflect based on the fermi potential.
 	 *
@@ -62,7 +46,9 @@ namespace TransportChannels {
 			double mu = 2.0 * f * Math.sqrt(Ecos2_s/(DV - Ecos2_s));
 			double R2 = 1.0 - mu;
 			leave.weight = weight * R2;
-			reflect(track, leave);
+
+			leave.velocity = leave.velocity.reflect(norm);
+
 			enter.weight = weight * mu;
 			return false;
 		} else {

@@ -58,18 +58,27 @@ namespace UCNTracker {
 			return mcrng.select(UniqueRNG.rng);
 		}
 		private bool reflect_chn() {
-			UCNPhysics.TransportChannels.reflect(track, leave);
+			Vector norm = track.tail.volume.grad(leave.position);
+			Vector reflected = leave.velocity.reflect(norm);
+			leave.velocity = reflected;
 			return false;
 		}
 		private bool diffuse_chn() {
-			UCNPhysics.TransportChannels.diffuse(track, leave);
+			Vector norm = track.tail.volume.grad(leave.position);
+			Vector v = Vector(0,0,0);
+			do {
+		//		the new velocity has to be pointing inside
+				Gsl.Randist.dir_3d(UniqueRNG.rng, out v.x,
+							out v.y,
+							out v.z);
+			} while(v.dot(norm) >= -0.01) ;
+			leave.velocity = v.mul(leave.velocity.norm());
 			return false;
 		}
 		private bool fermi_chn() {
 			return UCNPhysics.TransportChannels.fermi(track, leave, enter);
 		}
 		private bool absorb_chn() {
-			message("shit");
 			track.terminate();
 			return false;
 		}
