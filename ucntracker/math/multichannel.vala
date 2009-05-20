@@ -1,7 +1,7 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class MultiChannelRNG {
-		public delegate bool ChannelFunction ();
+		public delegate void ChannelFunction ();
 		private struct Channel {
 			public double width;
 			public double bin_min;
@@ -50,18 +50,19 @@ namespace UCNTracker {
 			}
 		}
 
-		public bool select(Gsl.RNG rng) {
+		public int select(Gsl.RNG rng) {
 			assert(total > 0.0);
 			double random = rng.uniform() * total;
 			for (int i = 0; i< chs.length; i++) {
 				if(chs[i].bin_min <= random && chs[i].bin_max > random) {
 					assert(chs[i].function != null);
-					return chs[i].function();
+					chs[i].function();
+					return i;
 				}
 			}
 			error("The code never reaches here");
 			breakpoint();
-			return false;
+			return -1;
 		}
 	}
 }

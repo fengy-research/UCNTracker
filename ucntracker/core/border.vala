@@ -4,7 +4,7 @@ namespace UCNTracker {
 	 * Border is the properties of the adjacent between two parts.
 	 * */
 	public class Border:Object, Buildable {
-		public enum Type {
+		public enum ChannelType {
 		ANY = 0,
 		DIFFUSE = 1,
 		FERMI = 2,
@@ -12,26 +12,26 @@ namespace UCNTracker {
 		ABSORB = 4,
 		MAX_VALUE = 5
 		}
-		private MultiChannelRNG mcrng = new MultiChannelRNG(Type.MAX_VALUE);
+		private MultiChannelRNG mcrng = new MultiChannelRNG(ChannelType.MAX_VALUE);
 		public double diffuse {
-			get {return mcrng.get_ch_width(Type.DIFFUSE);} 
-			set {mcrng.set_ch_width(Type.DIFFUSE, value);}
+			get {return mcrng.get_ch_width(ChannelType.DIFFUSE);} 
+			set {mcrng.set_ch_width(ChannelType.DIFFUSE, value);}
 		}
 		public double fermi {
-			get {return mcrng.get_ch_width(Type.FERMI);} 
-			set {mcrng.set_ch_width(Type.FERMI, value);}
+			get {return mcrng.get_ch_width(ChannelType.FERMI);} 
+			set {mcrng.set_ch_width(ChannelType.FERMI, value);}
 		}
 		public double reflect {
-			get {return mcrng.get_ch_width(Type.REFLECT);} 
-			set {mcrng.set_ch_width(Type.REFLECT, value);}
+			get {return mcrng.get_ch_width(ChannelType.REFLECT);} 
+			set {mcrng.set_ch_width(ChannelType.REFLECT, value);}
 		}
 		public double absorb {
-			get {return mcrng.get_ch_width(Type.ABSORB);} 
-			set {mcrng.set_ch_width(Type.ABSORB, value);}
+			get {return mcrng.get_ch_width(ChannelType.ABSORB);} 
+			set {mcrng.set_ch_width(ChannelType.ABSORB, value);}
 		}
 		public double any {
-			get {return mcrng.get_ch_width(Type.ANY);} 
-			set {mcrng.set_ch_width(Type.ANY, value);}
+			get {return mcrng.get_ch_width(ChannelType.ANY);} 
+			set {mcrng.set_ch_width(ChannelType.ANY, value);}
 		}
 
 		public delegate bool BorderFunction (Track track,
@@ -39,31 +39,40 @@ namespace UCNTracker {
 
 		public BorderFunction border_function = null;
 
-		private Track track;
-		private Vertex enter;
-		private Vertex leave;
+		public Track track;
+		public Track forked_track;
+		public Vertex enter;
+		public Vertex leave;
+		public bool transported;
+		/**
+		 * Emitted when a track goes through a surface.
+		 *
+		 */
+		public signal void transport(Border.ChannelType chn);
 
 		construct {
-			mcrng.set_ch_function(Type.FERMI, this.fermi_chn);
-			mcrng.set_ch_function(Type.REFLECT, this.reflect_chn);
-			mcrng.set_ch_function(Type.DIFFUSE, this.diffuse_chn);
-			mcrng.set_ch_function(Type.ABSORB, this.absorb_chn);
-			mcrng.set_ch_function(Type.ANY, this.any_chn);
+			mcrng.set_ch_function(ChannelType.FERMI, this.fermi_chn);
+			mcrng.set_ch_function(ChannelType.REFLECT, this.reflect_chn);
+			mcrng.set_ch_function(ChannelType.DIFFUSE, this.diffuse_chn);
+			mcrng.set_ch_function(ChannelType.ABSORB, this.absorb_chn);
+			mcrng.set_ch_function(ChannelType.ANY, this.any_chn);
 		}
-		public bool execute(Track track, Vertex leave, Vertex enter) {
+		internal void execute(Track track, Vertex leave, Vertex enter) {
 			this.track = track;
 			this.leave = leave;
 			this.enter = enter;
-			message("%lf %lf %lf", absorb, reflect, fermi);
-			return mcrng.select(UniqueRNG.rng);
+			this.forked_track = null;
+			this.transported = false;
+			ChannelType chn = (ChannelType)mcrng.select(UniqueRNG.rng);
+			transport(chn);
 		}
-		private bool reflect_chn() {
+		private void reflect_chn() {
 			Vector norm = track.tail.volume.grad(leave.position);
 			Vector reflected = leave.velocity.reflect(norm);
 			leave.velocity = reflected;
-			return false;
+			transported = false;
 		}
-		private bool diffuse_chn() {
+		private void diffuse_chn() {
 			Vector norm = track.tail.volume.grad(leave.position);
 			Vector v = Vector(0,0,0);
 			do {
@@ -73,18 +82,25 @@ namespace UCNTracker {
 							out v.z);
 			} while(v.dot(norm) >= -0.01) ;
 			leave.velocity = v.mul(leave.velocity.norm());
-			return false;
+			transported = false;
 		}
-		private bool fermi_chn() {
-			return UCNPhysics.TransportChannels.fermi(track, leave, enter);
+		private void fermi_chn() {
+			bool need_fork = UCNPhysics.TransportChannels.fermi(track, leave, enter);
+			if(need_fork) {
+				/* this misterious. if need_fork then the current track is bounced back,
+				 * therefore transported == false*/
+				forked_track = track.fork(track.get_type(), enter);
+				transported = false;
+			} else {
+				transported = true;
+			}
 		}
-		private bool absorb_chn() {
+		private void absorb_chn() {
 			track.terminate();
-			return false;
+			transported = false;
 		}
-		private bool any_chn() {
-			/* FIXME: call a private delegate */
-			return border_function(track, leave, enter);
+		private void any_chn() {
+			transported = border_function(track, leave, enter);
 		}
 	}
 }

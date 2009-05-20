@@ -13,9 +13,7 @@ namespace TransportChannels {
 	/**
 	 * Transport/Reflect based on the fermi potential.
 	 *
-	 * When there is a reflection, Only the track itself is calculated. AKA,
-	 * When transported == false, you NEED to fork the track
-	 * at vertex enter.
+	 * returns true if need to fork a new track at Vertex enter;
 	 * */
 	public static bool fermi(Track track,
 		   Vertex leave, Vertex enter) {
@@ -28,7 +26,7 @@ namespace TransportChannels {
 			/* Same potential, directly transport to the next part.*/
 			enter.velocity = leave.velocity;
 			enter.weight = leave.weight;
-			return true;
+			return false;
 		}
 		double f = DW / DV;
 		
@@ -50,9 +48,9 @@ namespace TransportChannels {
 			leave.velocity = leave.velocity.reflect(norm);
 
 			enter.weight = weight * mu;
-			return false;
-		} else {
 			return true;
+		} else {
+			return false;
 		}
 	}
 }

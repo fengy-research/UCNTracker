@@ -67,13 +67,6 @@ namespace UCNTracker {
 				neighbours.insert(neib, trans);
 			}
 		}
-		/**
-		 * Emitted when a track goes through a surface.
-		 *
-		 */
-		public signal void transport(Border.Type type, 
-		       Track track,
-		       Vertex s_leave, Vertex s_enter);
 
 		public static int layer_compare_func(Part a, Part b) {
 			return -(a.layer - b.layer);

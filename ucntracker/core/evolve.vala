@@ -274,9 +274,10 @@ namespace UCNTracker {
 
 			bool transported = true;
 			var old_leave_velocity = leave.velocity;
-			var trans = track.tail.part.neighbours.lookup(enter.part);
-			if(trans != null) {
-				transported = trans.execute(track, leave, enter);
+			var border = track.tail.part.neighbours.lookup(enter.part);
+			if(border != null) {
+				border.execute(track, leave, enter);
+				transported = border.transported;
 			}
 
 			track.run.run_motion_notify();
