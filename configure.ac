@@ -35,6 +35,12 @@ AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
 
 AC_CONFIG_SUBDIRS([libyaml-glib])
+YAMLGLIB_CFLAGS='-I$(top_srcdir)/libyaml-glib -I$(top_srcdir)/libyaml-glib/libyaml/include'
+YAMLGLIB_LIBS='-L$(top_builddir)/libyaml-glib -lyaml-glib'
+
+AC_SUBST(YAMLGLIB_CFLAGS)
+AC_SUBST(YAMLGLIB_LIBS)
+
 AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile

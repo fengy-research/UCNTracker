@@ -1,12 +1,8 @@
 #SUBDIRS = math physics core main . tests
 SUBDIRS = .
 
-YAMLGLIB_LIBS = -L../libyaml-glib -lyaml-glib
-YAMLGLIB_CFLAGS = -I../libyaml-glib -I../libyaml/include
-
 lib_LTLIBRARIES = libucntracker.la 
-libucntracker_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) \
-	$(YAMLGLIB_LIBS)
+libucntracker_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) $(YAMLGLIB_LIBS)
 libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_CFLAGS) $(YAMLGLIB_CFLAGS)
 
 BUILT_SOURCES = vala-ccode
@@ -57,7 +53,12 @@ VALASOURCES = \
 	physics/ultracold-neutron.vala \
 	physics/transport.vala
 
-@VALA_CCODE_RULES@
+vala-ccode: $(VALASOURCES)
+	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
+	echo gmodule-2.0 > ucntracker.deps
+	echo gsl >> ucntracker.deps
+	touch vala-ccode
+
 if ENABLE_VALADOC
 @VALA_DOC_RULES@
 else
@@ -71,9 +72,10 @@ vapidir=$(datadir)/vala/vapi
 ucntrackerinclude_HEADERS = ucntracker.h
 ucntrackerincludedir = $(includedir)/ucntracker
 
-ucntracker.deps: 
-	echo gmodule-2.0 > $@
-	echo gsl >> $@
+EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker.vapi ucntracker.gir ucntracker.deps vala-doc
 
-EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker.vapi ucntracker.deps vala-doc
-EXTRA_CLEAN = ucntracker.deps ucntracker.vapi
+$(DIST_SOURCES) : vala-ccode vala-doc
+
+MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) ucntracker.h \
+                       ucntracker.vapi ucntracker.deps ucntracker.gir \
+                       Documentation

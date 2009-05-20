@@ -3,7 +3,7 @@ SUBDIRS = .
 lib_LTLIBRARIES = libucntracker-vis.la
 libucntracker_vis_la_LIBADD = $(GLIB_LIBS) $(GSL_LIBS) $(GTK_LIBS) $(GTKGL_LIBS)
 libucntracker_vis_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) $(GTK_CFLAGS) \
-	$(GTKGL_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/ucntracker -I$(top_srcdir)/valartl \
+	$(GTKGL_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/ucntracker \
 	-I$(top_srcdir)/ucntracker-vis -DG_LOG_DOMAIN=\"UCNTracker\" -DINFO=
 
 libucntracker_vis_la_SOURCES =  \
