@@ -17,7 +17,7 @@ AM_PROG_CC_C_O
 CFLAGS="$CFLAGS -std=c99"
 VALA_PROG_VALAC(0.5.7)
 VALA_PROG_VALADOC()
-VALA_VAPI_DIRS(['$(top_srcdir)/vapi' '$(top_srcdir)/ucntracker' '$(top_srcdir)/ucntracker-vis'])
+VALA_VAPI_DIRS(['$(top_srcdir)/vapi' '$(top_srcdir)/libyaml-glib' '$(top_srcdir)/ucntracker' '$(top_srcdir)/ucntracker-vis'])
 
 AC_CHECK_LIB(m, log1p)
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.10 gobject-2.0 >= 2.10 gmodule-2.0 >= 2.10])
