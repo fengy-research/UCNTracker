@@ -68,28 +68,12 @@ namespace UCNTracker {
 			}
 		}
 		/**
-		 * Called when a track tries to go through a surface.
-		 * next == null if the track is getting into the ambient.
+		 * Emitted when a track goes through a surface.
 		 *
-		 * transported: whether the track successfully transports 
-		 *   to the next part.
-		 *
-		 * if true, 
-		 *   the track continues to the next part.
-		 *   v_enter should be set to the vertex for the transported track
-		 *
-		 * if false, 
-		 *   the track doesn't continue to the next part.
-		 *   v_leave should be set to the new vertex for the reflected track.
-		 *
-		 * in either case, the handler can fork the track at the surface
-		 * to produce the track for the other case.
-		 *
-		 * NOTE: this syntax of ref bool depends on a local patch for
-		 * Bug 574403
 		 */
-		public signal void transport(Track track,
-		       Vertex s_leave, Vertex s_enter, int type);
+		public signal void transport(Transport.Type type, 
+		       Track track,
+		       Vertex s_leave, Vertex s_enter);
 
 		public static int layer_compare_func(Part a, Part b) {
 			return -(a.layer - b.layer);

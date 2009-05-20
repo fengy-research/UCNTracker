@@ -43,18 +43,6 @@ public int main(string[] args) {
 		message("hit on track %p, at %s", track, state.position.to_string());
 	};
 
-	part1.transport += (obj, track, leave, enter, transported)
-	  => {
-		Vector norm = track.tail.volume.grad(leave.position);
-		leave.velocity = leave.velocity.reflect(norm);
-		
-		Track t = track.fork(typeof(Neutron), enter);
-
-		transported = false;
-		message("fork %p", track);
-	};
-//	part1.transport += .optic_reflect;
-
 	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
 	Gtk.Button button = new Gtk.Button.with_label("Start");
 	Gtk.Box vbox = new Gtk.VBox(false, 0);
@@ -95,7 +83,7 @@ objects:
     const_sigma: 0.34barn
     density: 1.0
   neighbours:
-    *Lab : { absorb: 50%, diffuse: 40%, fermi: 10% }
+    *Lab : { absorb: 100, diffuse: 0, fermi: 0 }
 - !Part &Lab
   layer: 0
   objects:

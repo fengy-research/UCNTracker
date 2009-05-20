@@ -1,26 +1,34 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Transport :Object, Buildable {
-		private const int _DIFFUSE = 0;
-		private const int _FERMI = 1;
-		private const int _REFLECT = 2;
-		private const int _ANY = 3;
-		private MultiChannelRNG mcrng = new MultiChannelRNG(4);
+		public enum Type {
+		ANY = 0,
+		DIFFUSE = 1,
+		FERMI = 2,
+		REFLECT = 3,
+		ABSORB = 4,
+		MAX_VALUE = 5
+		}
+		private MultiChannelRNG mcrng = new MultiChannelRNG(Type.MAX_VALUE);
 		public double diffuse {
-			get {return mcrng.get_ch_width(_DIFFUSE);} 
-			set {mcrng.set_ch_width(_DIFFUSE, value);}
+			get {return mcrng.get_ch_width(Type.DIFFUSE);} 
+			set {mcrng.set_ch_width(Type.DIFFUSE, value);}
 		}
 		public double fermi {
-			get {return mcrng.get_ch_width(_FERMI);} 
-			set {mcrng.set_ch_width(_FERMI, value);}
+			get {return mcrng.get_ch_width(Type.FERMI);} 
+			set {mcrng.set_ch_width(Type.FERMI, value);}
 		}
 		public double reflect {
-			get {return mcrng.get_ch_width(_REFLECT);} 
-			set {mcrng.set_ch_width(_REFLECT, value);}
+			get {return mcrng.get_ch_width(Type.REFLECT);} 
+			set {mcrng.set_ch_width(Type.REFLECT, value);}
+		}
+		public double absorb {
+			get {return mcrng.get_ch_width(Type.ABSORB);} 
+			set {mcrng.set_ch_width(Type.ABSORB, value);}
 		}
 		public double any {
-			get {return mcrng.get_ch_width(_ANY);} 
-			set {mcrng.set_ch_width(_ANY, value);}
+			get {return mcrng.get_ch_width(Type.ANY);} 
+			set {mcrng.set_ch_width(Type.ANY, value);}
 		}
 
 		private Track track;
@@ -29,16 +37,17 @@ namespace UCNTracker {
 
 		public Transport() { }
 		construct {
-			mcrng.set_ch_function(0, this.fermi_chn);
-			mcrng.set_ch_function(1, this.reflect_chn);
-			mcrng.set_ch_function(2, this.diffuse_chn);
-			mcrng.set_ch_function(3, this.any_chn);
+			mcrng.set_ch_function(Type.FERMI, this.fermi_chn);
+			mcrng.set_ch_function(Type.REFLECT, this.reflect_chn);
+			mcrng.set_ch_function(Type.DIFFUSE, this.diffuse_chn);
+			mcrng.set_ch_function(Type.ABSORB, this.absorb_chn);
+			mcrng.set_ch_function(Type.ANY, this.any_chn);
 		}
 		public bool execute(Track track, Vertex leave, Vertex enter) {
 			this.track = track;
 			this.leave = leave;
 			this.enter = enter;
-			message("%lf %lf %lf", diffuse, reflect, fermi);
+			message("%lf %lf %lf", absorb, reflect, fermi);
 			return mcrng.select(UniqueRNG.rng);
 		}
 		private bool reflect_chn() {
@@ -51,6 +60,11 @@ namespace UCNTracker {
 		}
 		private bool fermi_chn() {
 			return UCNPhysics.TransportChannels.fermi(track, leave, enter);
+		}
+		private bool absorb_chn() {
+			message("shit");
+			track.terminate();
+			return false;
 		}
 		private bool any_chn() {
 			/* FIXME: call a private delegate */
