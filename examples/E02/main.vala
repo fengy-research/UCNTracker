@@ -1,6 +1,5 @@
 using UCNTracker;
 using UCNPhysics;
-using Vala.Runtime;
 using Math;
 
 public class Simulation {
@@ -26,7 +25,7 @@ public class Simulation {
 	Gtk.CheckButton check_visual = new Gtk.CheckButton.with_label("Visualization");
 
 	public void init() {
-		builder.add_from_file("T.yml");
+		builder.add_from_file(FileStream.open("T.yml", "r"));
 		experiment = builder.get_object("experiment") as Experiment;
 		guide = builder.get_object("Guide") as Part;
 		disc = builder.get_object("Disc") as Part;
@@ -85,7 +84,9 @@ public class Simulation {
 		
 	}
 	private void init_physics() {
-		guide.transport += (part, track, leave, enter, transported) => {
+			/* Deprecated code. 
+		guide.transport +=
+		(part, track, leave, enter, transported) => {
 			assert(enter.part != leave.part);
 			double d = 0.01;
 			var next_name = enter.part.get_name();
@@ -97,12 +98,12 @@ public class Simulation {
 				track.terminate();
 				received += track.tail.weight;
 			} else if(enter.part == cell) {
-				Transport transport = new Transport(0.0, 0.0, 1.0);
-				transported = transport.execute(track, leave, enter);
+				//Transport transport = new Transport(0.0, 0.0, 1.0);
+				//transported = transport.execute(track, leave, enter);
 			} else {
 				double bounces = track.get_double("bounces");
 				track.set_double("bounces", bounces + 1);
-				Transport transport = new Transport(0.01, 0.99, 0.0);
+				//Transport transport = new Transport(0.01, 0.99, 0.0);
 				transported = transport.execute(track, leave, enter);
 				if(transported == false) {
 					track.fork(typeof(Neutron), enter);//.terminate();
@@ -113,6 +114,7 @@ public class Simulation {
 				}
 			}
 		};
+		*/
 	}
 	private void init_gui() {
 		Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);

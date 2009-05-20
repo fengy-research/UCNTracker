@@ -1,6 +1,5 @@
 using UCNTracker;
 using UCNPhysics;
-using Vala.Runtime;
 using Math;
 
 public class Simulation {
@@ -9,7 +8,7 @@ public class Simulation {
 	Builder builder = new Builder("UCN");
 	Part cell;
 	public void init() {
-		builder.add_from_file("geometry.yml");
+		builder.add_from_file(FileStream.open("geometry.yml", "r"));
 		experiment = builder.get_object("experiment") as Experiment;
 		cell = builder.get_object("cell") as Part;
 		experiment.prepare += (ex, run) => {
