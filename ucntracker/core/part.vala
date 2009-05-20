@@ -38,6 +38,7 @@ namespace UCNTracker {
 			this.track = track;
 			this.leave = leave;
 			this.enter = enter;
+			message("%lf %lf %lf", diffuse, reflect, fermi);
 			return mcrng.select(UniqueRNG.rng);
 		}
 		private bool reflect_chn() {
@@ -124,7 +125,7 @@ namespace UCNTracker {
 			}
 		}
 		/**
-		 * emitted when a track tries to go through a surface.
+		 * Called when a track tries to go through a surface.
 		 * next == null if the track is getting into the ambient.
 		 *
 		 * transported: whether the track successfully transports 
@@ -144,8 +145,8 @@ namespace UCNTracker {
 		 * NOTE: this syntax of ref bool depends on a local patch for
 		 * Bug 574403
 		 */
-		public virtual signal void transport(Track track,
-		       Vertex s_leave, Vertex s_enter, ref bool transported);
+		public signal void transport(Track track,
+		       Vertex s_leave, Vertex s_enter, int type);
 
 		public static int layer_compare_func(Part a, Part b) {
 			return -(a.layer - b.layer);
