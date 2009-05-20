@@ -34,6 +34,7 @@ _inst/
 vala-doc
 temp/
 
+
 test-*
 examples/E01/example-01
 examples/E02/example-02
