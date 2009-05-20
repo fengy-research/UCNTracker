@@ -26,6 +26,7 @@ VALASOURCES = \
 	math/eulerangles.vala \
 	math/vector.vala \
 	math/random.vala \
+	math/multichannel.vala \
 	math/quaternion.vala \
 	math/surface.vala \
 	core/buildable.vala \
@@ -39,6 +40,7 @@ VALASOURCES = \
 	core/freelength-table.vala \
 	core/run.vala \
 	core/evolve.vala \
+	core/transport.vala \
 	core/vertex.vala \
 	core/track.vala \
 	core/part.vala \
