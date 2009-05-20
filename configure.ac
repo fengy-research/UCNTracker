@@ -41,6 +41,12 @@ YAMLGLIB_LIBS='-L$(top_builddir)/libyaml-glib -lyaml-glib'
 AC_SUBST(YAMLGLIB_CFLAGS)
 AC_SUBST(YAMLGLIB_LIBS)
 
+UCNTRACKER_CFLAGS='$(GLIB_CFLAGS) $(GSL_CFLAGS) $(YAMLGLIB_CFLAGS)'
+UCNTRACKER_LIBS='-l$(top_builddir)/ucntracker -lucntracker'
+
+AC_SUBST(UCNTRACKER_CFLAGS)
+AC_SUBST(UCNTRACKER_LIBS)
+
 AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
