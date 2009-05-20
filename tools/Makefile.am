@@ -13,5 +13,6 @@ SUFFIXES = .vala .c
 
 .vala.c:
 	$(VALAC) -C $(VALAFLAGS) $< $(VALAPKGS)
+	touch $@
 
 EXTRA_DIST = *.vala
