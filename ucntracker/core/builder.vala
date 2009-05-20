@@ -14,14 +14,12 @@ namespace UCNTracker {
 			document = new GLib.YAML.Document.from_string(str);
 			bootstrap_objects(document);
 			process_value_nodes();
-			cleanup_objects(document);
 		}
 		public void add_from_file (FileStream file) throws GLib.Error {
 			assert(document == null);
 			document = new GLib.YAML.Document.from_file(file);
 			bootstrap_objects(document);
 			process_value_nodes();
-			cleanup_objects(document);
 		}
 
 		public string get_full_class_name(string class_name) {
@@ -61,14 +59,15 @@ namespace UCNTracker {
 				node.set_pointer(obj.ref(), g_object_unref);
 				obj.set_data("node", node);
 				objects.prepend(obj);
+				return obj;
 			} catch (Error.SYMBOL_NOT_FOUND e) {
 				string message =
 				"Type %s(%s) is not found".
 				printf(real_name, node.start_mark.to_string());
 				throw new Error.TYPE_NOT_FOUND(message);
 			}
-			return obj;
 		}
+
 		private void process_value_nodes() throws GLib.Error {
 			foreach(var obj in objects) {
 				Buildable buildable = obj as Buildable;

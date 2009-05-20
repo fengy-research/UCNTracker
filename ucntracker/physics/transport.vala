@@ -9,40 +9,7 @@ namespace UCNPhysics {
  * Take a special note on fermi: When the return value is false;
  * Always fork the current track on enter.
  * */
-public class Transport {
-	public double diffuse_channel_size;
-	public double fermi_channel_size;
-	public double reflect_channel_size;
-	private Track track;
-	private Vertex enter;
-	private Vertex leave;
-	private MultiChannelRNG mcrng = new MultiChannelRNG();
-
-	public Transport(double diffuse, double fermi, double reflect) {
-		diffuse_channel_size = diffuse;
-		fermi_channel_size = fermi;
-		reflect_channel_size= reflect;
-		mcrng.add_channel(diffuse_channel_size, this.diffuse_channel);
-		mcrng.add_channel(reflect_channel_size, this.reflect_channel);
-		mcrng.add_channel(fermi_channel_size, this.fermi_channel);
-	}
-	public bool execute(Track track, Vertex leave, Vertex enter) {
-		this.track = track;
-		this.leave = leave;
-		this.enter = enter;
-		return mcrng.execute(UniqueRNG.rng);
-	}
-	private bool reflect_channel() {
-		reflect(track, leave);
-		return false;
-	}
-	private bool diffuse_channel() {
-		diffuse(track, leave);
-		return false;
-	}
-	private bool fermi_channel() {
-		return fermi(track, leave, enter);
-	}
+namespace TransportChannels {
 	public static void reflect(Track track, Vertex leave) {
 		Vector norm = track.tail.volume.grad(leave.position);
 		Vector reflected = leave.velocity.reflect(norm);
@@ -95,7 +62,7 @@ public class Transport {
 			double mu = 2.0 * f * Math.sqrt(Ecos2_s/(DV - Ecos2_s));
 			double R2 = 1.0 - mu;
 			leave.weight = weight * R2;
-			Transport.reflect(track, leave);
+			reflect(track, leave);
 			enter.weight = weight * mu;
 			return false;
 		} else {

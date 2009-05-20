@@ -24,7 +24,7 @@ namespace UCNTracker {
 				add_child(builder, child, null);
 			}
 		}
-		private unowned string cast_to_scalar(GLib.YAML.Node node) throws Error {
+		internal unowned string cast_to_scalar(GLib.YAML.Node node) throws Error {
 			var value_scalar = (node as GLib.YAML.Node.Scalar);
 			if(value_scalar == null) {
 				string message = "Expecting a Scalar (%s)"
@@ -33,7 +33,7 @@ namespace UCNTracker {
 			}
 			return value_scalar.value;
 		}
-		private unowned Object cast_to_object(GLib.YAML.Node node) throws Error {
+		internal unowned Object cast_to_object(GLib.YAML.Node node) throws Error {
 			var value = (node as GLib.YAML.Node.Mapping);
 			if(value == null || value.get_pointer() == null) {
 				string message = "Expecting a Mapping (%s) with an Object"
