@@ -23,15 +23,15 @@ public int main(string[] args) {
 	UCNTracker.init(ref args);
 	Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 
-	var mcrng = new MultiChannelRNG();
+	var mcrng = new MultiChannelRNG(3);
 	var chs = new TestChannels();
-	mcrng.add_channel(0.5, chs.channel1);
-	mcrng.add_channel(0.5, chs.channel2);
-	mcrng.add_channel(0.5, chs.channel3);
+	mcrng.set_ch(0, 0.5, chs.channel1);
+	mcrng.set_ch(1, 0.5, chs.channel2);
+	mcrng.set_ch(2, 0.5, chs.channel3);
 	for(int j = 0; j< 10000; j++) {
 		chs.reset();
 		for(int i = 0; i < 100000; i++) {
-			mcrng.execute(rng);
+			mcrng.select(rng);
 		}
 		stdout.printf("%d  =aprox= %d = aprox= %d\n", chs.ch1_count, chs.ch2_count, chs.ch3_count);
 	}

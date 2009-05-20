@@ -5,33 +5,60 @@ namespace UCNTracker {
 	}
 	public class MultiChannelRNG {
 		public delegate bool ChannelFunction ();
-		private class Channel {
-			public double size;
+		private struct Channel {
+			public double width;
 			public double bin_min;
 			public double bin_max;
 			public ChannelFunction function;
 		}
-		List<Channel> channels = null;
-		public void add_channel(double size, ChannelFunction function) {
-			Channel channel = new Channel();
-			channel.size = size;
-			channel.function = function;
+		private Channel[] chs = null;
+		private double total = 0.0;
+		public MultiChannelRNG (size_t channels) {
+			this.chs = new Channel[channels];
+		}
+		public void set_ch(int id, double width, ChannelFunction function) {
+			assert(id < chs.length);
+			chs[id].width = width;
+			chs[id].function = function;
+			update();
+		}
+		public void set_ch_width(int id, double width) {
+			assert(id < chs.length);
+			chs[id].width = width;
+			update();
+		}
+		public double get_ch_width(int id) {
+			assert(id < chs.length);
+			return chs[id].width;
+		}
+		public void set_ch_function(int id, ChannelFunction function) {
+			assert(id < chs.length);
+			chs[id].function = function;
+			update();
+		}
+		public ChannelFunction get_ch_function(int id) {
+			assert(id < chs.length);
+			return chs[id].function;
+		}
+		public void resize(size_t new_size) {
+			this.chs.resize((int)new_size);
+		}
 
-			channel.bin_min = total_size();
-			channel.bin_max = channel.bin_min + size;
-			channels.prepend(channel);
-		}
-		private double total_size() {
-			if(channels == null) {
-				return 0.0;
+		private void update() {
+			total = 0.0;
+			for (int i = 0; i< chs.length; i++) {
+				chs[i].bin_min = total;
+				total += chs[i].width;
+				chs[i].bin_max = total;
 			}
-			return channels.data.bin_max;
 		}
-		public bool execute(Gsl.RNG rng) {
-			double random = rng.uniform() * total_size();
-			foreach(unowned Channel ch in channels) {
-				if(ch.bin_min <= random && ch.bin_max > random) {
-					return ch.function();
+
+		public bool select(Gsl.RNG rng) {
+			double random = rng.uniform() * total;
+			for (int i = 0; i< chs.length; i++) {
+				if(chs[i].bin_min <= random && chs[i].bin_max > random) {
+					assert(chs[i].function != null);
+					return chs[i].function();
 				}
 			}
 			error("The code never reaches here");
