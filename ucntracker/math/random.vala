@@ -54,6 +54,7 @@ namespace UCNTracker {
 		}
 
 		public bool select(Gsl.RNG rng) {
+			assert(total > 0.0);
 			double random = rng.uniform() * total;
 			for (int i = 0; i< chs.length; i++) {
 				if(chs[i].bin_min <= random && chs[i].bin_max > random) {
