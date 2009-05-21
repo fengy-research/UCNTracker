@@ -4,6 +4,14 @@ namespace UCNTracker {
 	 * Border is the properties of the adjacent between two parts.
 	 * */
 	public class Border:Object, Buildable {
+		public struct Event {
+			public Track track;
+			public Vector normal;
+			public Vertex leave;
+			public Vertex enter;
+			public Track forked_track;
+			public bool transported;
+		}
 		public enum ChannelType {
 		ANY = 0,
 		DIFFUSE = 1,
@@ -34,8 +42,7 @@ namespace UCNTracker {
 			set {mcrng.set_ch_width(ChannelType.ANY, value);}
 		}
 
-		public delegate bool BorderFunction (Track track,
-				Vertex vertex_leave, Vertex vertex_enter);
+		public delegate bool BorderFunction (ref Event event);
 
 		public BorderFunction border_function = null;
 
@@ -43,64 +50,40 @@ namespace UCNTracker {
 		public Track forked_track;
 		public Vertex enter;
 		public Vertex leave;
+		public Vector normal;
 		public bool transported;
 		/**
 		 * Emitted when a track goes through a surface.
 		 *
 		 */
-		public signal void transport(Border.ChannelType chn);
+		public signal void transport(Border.ChannelType chn, ref Event event);
 
 		construct {
-			mcrng.set_ch_function(ChannelType.FERMI, this.fermi_chn);
-			mcrng.set_ch_function(ChannelType.REFLECT, this.reflect_chn);
-			mcrng.set_ch_function(ChannelType.DIFFUSE, this.diffuse_chn);
-			mcrng.set_ch_function(ChannelType.ABSORB, this.absorb_chn);
-			mcrng.set_ch_function(ChannelType.ANY, this.any_chn);
 		}
-		internal void execute(Track track, Vertex leave, Vertex enter) {
-			this.track = track;
-			this.leave = leave;
-			this.enter = enter;
-			this.forked_track = null;
-			this.transported = false;
+		internal void execute(ref Event event) {
+
 			ChannelType chn = (ChannelType)mcrng.select(UniqueRNG.rng);
-			transport(chn);
-		}
-		private void reflect_chn() {
-			Vector norm = track.tail.volume.grad(leave.position);
-			Vector reflected = leave.velocity.reflect(norm);
-			leave.velocity = reflected;
-			transported = false;
-		}
-		private void diffuse_chn() {
-			Vector norm = track.tail.volume.grad(leave.position);
-			Vector v = Vector(0,0,0);
-			do {
-		//		the new velocity has to be pointing inside
-				Gsl.Randist.dir_3d(UniqueRNG.rng, out v.x,
-							out v.y,
-							out v.z);
-			} while(v.dot(norm) >= -0.01) ;
-			leave.velocity = v.mul(leave.velocity.norm());
-			transported = false;
-		}
-		private void fermi_chn() {
-			bool need_fork = UCNPhysics.TransportChannels.fermi(track, leave, enter);
-			if(need_fork) {
-				/* this misterious. if need_fork then the current track is bounced back,
-				 * therefore transported == false*/
-				forked_track = track.fork(track.get_type(), enter);
-				transported = false;
-			} else {
-				transported = true;
+			switch(chn) {
+				case ChannelType.FERMI:
+					UCNPhysics.Transport.fermi(ref event);
+				break;
+				case ChannelType.REFLECT: 
+					UCNPhysics.Transport.reflect(ref event);
+				break;
+				case ChannelType.DIFFUSE: 
+					UCNPhysics.Transport.diffuse(ref event);
+				break;
+				case ChannelType.ABSORB: 
+					UCNPhysics.Transport.absorb(ref event);
+				break;
+				case ChannelType.ANY: 
+					if(border_function == null) {
+						critical("border_function not set for the ANY channel");
+					} else
+						border_function(ref event);
+				break;
 			}
-		}
-		private void absorb_chn() {
-			track.terminate();
-			transported = false;
-		}
-		private void any_chn() {
-			transported = border_function(track, leave, enter);
+			transport(chn, ref event);
 		}
 	}
 }

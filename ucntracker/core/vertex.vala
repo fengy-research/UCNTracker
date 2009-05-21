@@ -25,6 +25,21 @@ namespace UCNTracker {
 			y[4] = velocity.y;
 			y[5] = velocity.z;
 		}
+		public virtual string to_string() {
+			return "t=%lf w= %lf(%s) v=(%s) in %s.%s".printf(
+						timestamp, 
+						weight,
+						position.to_string(), 
+						velocity.to_string(),
+						part!=null?part.get_name():"#nopart#",
+						volume!=null?volume.get_name():"#novolume#");
+		}
+		public double get_sfunc_value() {
+			if(volume != null) {
+				return volume.sfunc(position);
+			}
+			return double.NAN;
+		}
 		public virtual void from_array([CCode (array_length = false)]double[] y) {
 			position.x = y[0];
 			position.y = y[1];

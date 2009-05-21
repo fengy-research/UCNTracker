@@ -10,6 +10,7 @@ UCNTracker.Camera gl;
 public int main(string[] args) {
 
 	UCNTracker.init(ref args);
+	UCNTracker.set_verbose(true);
 	Gtk.init(ref args);
 	Gtk.gl_init ( ref args);
 
@@ -20,6 +21,8 @@ public int main(string[] args) {
 	assert(experiment != null);
 	Part environment = builder.get_object("environment") as Part;
 	Part part1 = builder.get_object("part1") as Part;
+	Part lab = builder.get_object("Lab") as Part;
+	Border b1 = part1.get_border(lab);
 	CrossSection cs1 = builder.get_object("cs1") as CrossSection;
 
 	experiment.prepare += (obj, run) => {
@@ -37,6 +40,10 @@ public int main(string[] args) {
 
 	experiment.finish += (obj, run) => {
 		message("run finished");
+	};
+
+	b1.transport += () => {
+		message("transport");
 	};
 
 	cs1.hit += (obj, track, state) => {
@@ -83,7 +90,7 @@ objects:
     const_sigma: 0.34barn
     density: 1.0
   neighbours:
-    *Lab : { absorb: 100, diffuse: 0, fermi: 0 }
+    *Lab : { absorb: 00, diffuse: 100, fermi: 0 }
 - !Part &Lab
   layer: 0
   objects:

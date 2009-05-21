@@ -24,7 +24,7 @@ namespace UCNTracker {
 			ode_system.jacobian = null; /*No Jacobian */
 			ode_system.dimension = track.dimensions;
 			ode_system.params = this;
-			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk8pd, track.dimensions);
+			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk2, track.dimensions);
 			ode_control = new Gsl.OdeivControl.scaled(1e-8, 1e-4, 1.0, 0.0, track.tolerance);
 			ode_evolve = new Gsl.OdeivEvolve(track.dimensions);
 			step_size = track.run.experiment.max_time_step;
@@ -86,6 +86,76 @@ namespace UCNTracker {
 		}
 
 
+		private void adjust_leave_enter(Vertex leave, Vertex enter) {
+			double t0 = leave.timestamp;
+			double t1 = enter.timestamp;
+
+			Part part_in = leave.part;
+			/* by definition leave.volume is never null. */
+			assert(leave.volume != null);
+
+			double last_out_t = t1;
+			double last_in_t = t0;
+			double dt;
+			double tc;
+			double dl = leave.position.distance(enter.position);
+			Vertex future = track.create_vertex();
+			int count = 0;
+			while(dl > 1e-9) {
+				leave.to_array(y);
+				tc = 0.5 * (t0 + t1);
+				dt = tc - t0;
+				ode_step.reset();
+				ode_step.apply(t0, dt, y, yerr, null, null, &ode_system);
+				future.from_array(y);
+				track.experiment.locate(future.position, out future.part, out future.volume);
+				if(future.part != part_in) {
+					t1 = tc;
+					enter.from_array(y);
+					enter.volume = future.volume;
+					enter.part = future.part;
+					enter.timestamp = t1;
+				} else {
+					t0 = tc;
+					leave.from_array(y);
+					/* leave.part == future.part == part_in */
+					leave.volume = future.volume;
+					leave.timestamp = t0;
+				}
+				dl = leave.position.distance(enter.position);
+				count ++;
+			}
+
+			debug("leave %s sfunc = %lg enter %s sfunc = %lg", 
+				leave.to_string(),
+				leave.get_sfunc_value(), 
+				enter.to_string(),
+				enter.get_sfunc_value());
+			debug("dl = %lg count = %d", dl, count);
+		}
+
+		/* Guess a surface normal vector based on leave and enter.
+		 * The two vertices should already have been adjusted by
+		 * adjust_leave_enter
+		 * */
+		private Vector guess_surface_normal(Vertex leave, Vertex enter) {
+			double sl = leave.get_sfunc_value();
+			double se = enter.get_sfunc_value();
+			/* se could be nan if enter.volume == null
+			 * sl could not be nan because leave.volume is always non-null
+			 * compaing with anything to nan is always false, according to IEEE 754.
+			 * Refer to 
+			 * http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
+			 * Search for NAN in the left-frame.
+			 * */
+			if(Math.fabs(sl) > Math.fabs(se)) {
+				return enter.volume.grad(enter.position);
+			} else {
+				/* false, either leave is closer to the border or
+				 * se is NAN. */
+				return leave.volume.grad(leave.position);
+			}
+		}
 		/**
 		 * about reset_free_length:
 		 *   When there is a surface transport, we don't want to emit
@@ -136,6 +206,7 @@ namespace UCNTracker {
 		public double evolve() {
 			if(track.tail.part == null) {
 				track.terminate();
+				track.run.run_motion_notify();
 				return 0.0;
 			}
 			double dt = track.experiment.max_time_step;
@@ -143,16 +214,9 @@ namespace UCNTracker {
 			        (HOPS_PER_MFP * track.tail.velocity.norm());
 			if(dt_by_mfp < dt) dt = dt_by_mfp;
 
-			//message("mfp = %lf dt = %lf",
-			//track.tail.part.calculate_mfp(track.tail.vertex), dt);
 			Vertex next = track.create_vertex();
 			integrate(next, ref dt);
-			/*
-			message("next: %lf %lf %lf",
-			    next.vertex.position.x,
-			    next.vertex.position.y,
-			    next.vertex.position.z);
-			*/
+
 			track.experiment.locate(next.position, out next.part, out next.volume);
 			next.weight = track.tail.weight;
 
@@ -163,34 +227,29 @@ namespace UCNTracker {
 
 			Vertex leave = track.clone_vertex(track.tail);
 			Vertex enter = track.clone_vertex(next);
+			adjust_leave_enter(leave, enter);
 			/* Reset the weight of enter.
 			 * NOTE: this has to be removed after we addin the weight tracking!
 			 * */
 			enter.weight = leave.weight;
 
-			debug("leave sfunc = %lg", leave.volume.sfunc(leave.position));
+			Vector normal = guess_surface_normal(leave, enter);
 
 			bool transported = true;
+			Border.Event event = Border.Event();
+			event.track = track;
+			event.normal = normal;
+			event.leave = leave;
+			event.enter = enter;
 			var border = track.tail.part.neighbours.lookup(enter.part);
 			if(border != null) {
-				border.execute(track, leave, enter);
-				transported = border.transported;
+				border.execute(ref event);
+				transported = event.transported;
 			}
 
 			/* This is a key frame, we want the visualization get it.*/
 			track.run.run_motion_notify();
-			/*
-			debug ("transport event leave = %s(%s/%s) oldvel = %s newvel = %s enter = %s(%s/%s) next = %s", 
-			leave.position.to_string(),
-			leave.part.get_name(),
-			leave.volume.get_name(),
-			old_leave_velocity.to_string(),
-			leave.velocity.to_string(),
-			enter.position.to_string(),
-			enter.part!=null?enter.part.get_name():"NULL",
-			enter.volume!=null?enter.volume.get_name():"NULL",
-			next.position.to_string());
-			*/
+
 			if(transported == false) {
 				move_to(leave, false);
 				return dt;

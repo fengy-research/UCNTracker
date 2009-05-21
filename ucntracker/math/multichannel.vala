@@ -55,8 +55,7 @@ namespace UCNTracker {
 			double random = rng.uniform() * total;
 			for (int i = 0; i< chs.length; i++) {
 				if(chs[i].bin_min <= random && chs[i].bin_max > random) {
-					assert(chs[i].function != null);
-					chs[i].function();
+					if(chs[i].function != null) chs[i].function();
 					return i;
 				}
 			}

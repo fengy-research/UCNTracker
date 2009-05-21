@@ -3,17 +3,14 @@ public class TestChannels {
 	public int ch1_count;
 	public int ch2_count;
 	public int ch3_count;
-	public bool channel1() {
+	public void channel1() {
 		ch1_count++;
-		return false;
 	}
-	public bool channel2() {
+	public void channel2() {
 		ch2_count++;
-		return false;
 	}
-	public bool channel3() {
+	public void channel3() {
 		ch3_count++;
-		return false;
 	}
 	public void reset() {
 		ch1_count = ch2_count = ch3_count = 0;
