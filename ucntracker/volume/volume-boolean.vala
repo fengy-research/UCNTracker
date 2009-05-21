@@ -24,10 +24,10 @@ namespace UCNTracker {
 		 *
 		 * FIXME:
 		 *   If two volumes taking union share the same surface,
-		 *   this sfunc is going to give small values for these inside surfaces.
-		 *   A clean solution would be in sense detect whether the sfunc
-		 *   changes sign along some direction.. But this solution is not
-		 *   easy to cleanly define in a mathematical way.
+		 *   this sfunc is going to give small values. However they
+		 *   are second order solutions. Brent should fail to detect these
+		 *   points. And because we are even going to throw away brent,
+		 *   lets see what is going to happend for these inside surfaces.
 		 */
 		public override double sfunc(Vector point) {
 			double min = double.MAX;
@@ -37,12 +37,9 @@ namespace UCNTracker {
 			 * */
 			double sum = 0.0;
 			bool in_or_on = false;
-			double small = 1e-7;
-			int small_count = 0;
 			Vector body_p = world_to_body(point);
 			foreach(Volume child in children) {
 				double s = child.sfunc(body_p);
-				if(Math.fabs(s) < small) small_count++;
 				if( s > 0.0 ) {
 					if(min > s ) min = s;
 				} else {
@@ -52,15 +49,6 @@ namespace UCNTracker {
 			}
 			if(in_or_on) {
 				/*inside some volumes*/
-				/*if we are inside two or more subvolumes,
-				 * and close to two surfaces,
-				 * adjust the sfunc so that we are not close
-				 * to zero.
-				 * */
-				if(small_count > 1) {
-					debug("common boundary detected");
-					sum = sum - Math.exp(sum * 10.0 /small);
-				}
 				return sum;
 			} else {
 				/*outside of all volumes*/

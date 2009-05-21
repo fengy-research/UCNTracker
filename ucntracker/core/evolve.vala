@@ -16,8 +16,6 @@ namespace UCNTracker {
 
 		private double step_size;
 
-		private bool just_transported = false;
-		private double free_length;
 		private double [] y;
 		private double [] yerr;
 
@@ -72,15 +70,7 @@ namespace UCNTracker {
 		    return Gsl.Status.SUCCESS;
 		} */
 
-		public void reintegrate_to(Vertex future, double dt) {
-			track.tail.to_array(y);
-			double t0 = track.tail.timestamp;
-			ode_step.reset();
-			ode_step.apply(t0, dt, y, yerr, null, null, &ode_system);
-			future.from_array(y);
-			future.timestamp = t0 + dt;
-		}
-		public void integrate(Vertex future, ref double dt) {
+		private void integrate(Vertex future, ref double dt) {
 			track.tail.to_array(y);
 			double t0 = track.tail.timestamp;
 			double t1 = t0 + dt;
@@ -95,18 +85,6 @@ namespace UCNTracker {
 			//message("%lf %lf %lf %lf %lf %lf", y[0], y[1], y[2], y[3], y[4], y[5]);
 		}
 
-		public Vector cfunc(double dt) {
-			Vertex future = track.create_vertex();
-			reintegrate_to(future, dt);
-			/*
-			message("dt = %lf vertex.position = %lf %lf %lf",
-					dt,	
-					future.position.x,
-					future.position.y,
-					future.position.z);
-			*/
-			return future.position;
-		}
 
 		/**
 		 * about reset_free_length:
@@ -179,109 +157,28 @@ namespace UCNTracker {
 			next.weight = track.tail.weight;
 
 			if(track.tail.part == next.part) {
-				just_transported = false;
 				move_to(next, false);
 				return dt;
 			}
 
-			double dt_leave = 0.0;
-			/* assign a value to shut up the compiler,
-			 * dt_enter is used only if is_enter is true, which means
-			 * out dt_enter is excuted. */
-			double dt_enter = 0.0;
+			Vertex leave = track.clone_vertex(track.tail);
+			Vertex enter = track.clone_vertex(next);
+			/* Reset the weight of enter.
+			 * NOTE: this has to be removed after we addin the weight tracking!
+			 * */
+			enter.weight = leave.weight;
 
-			double leave_in = 0.0;
-			double leave_out = dt;
-			double enter_in = 0.0;
-			double enter_out = dt;
-			if(just_transported) {
-				 /*FIXME: to avoid the last position of the particle
-				  * This is a dirty hack by slightly move forward the boundary
-				  * of the solution so that the last transportation point is 
-				  * skipped.
-				  * May fail if two points are too close
-				  * or the sfunc is to steep.
-				  * */
-				 leave_in = dt/1000.0;
-				 //leave_in= 0.0;
-			} else {
-				 leave_in= 0.0;
-			 }
-
-			bool is_leave = false;
-			bool is_enter = false;
-			int count = 0;
-			while(!is_leave && !is_enter) {
-				/* If failed to determine the transport location, 
-				 *
-				 */
-
-				is_leave = track.tail.volume.intersect(cfunc, 0, leave_in, leave_out, out dt_leave);
-				if(next.part != null) {
-			    	is_enter = next.volume.intersect(cfunc, 0, enter_in, enter_out, out dt_enter);
-				}
-				leave_in /= 2;
-				count ++;
-				if(count == 10) {
-					warning(
-					"failed to detect a surface transportation, at tail %s(%s)=%lg next = %s(%s)=%lg, track moved to errors", 
-						track.tail.position.to_string(),
-						track.tail.part.get_name(),
-						track.tail.volume.sfunc(track.tail.position),
-						next.position.to_string(),
-						next.part!=null?next.part.get_name():"null",
-						track.tail.volume.sfunc(next.position)
-						);
-					track.error();
-					return dt;
-				}
-			}
-			Vertex leave = null;
-			Vertex enter = null;
-			debug("%s %s", is_leave.to_string(), is_enter.to_string());
-
-			if(is_leave && is_enter) {
-				leave = track.create_vertex();
-				enter = track.create_vertex();
-				track.tail.volume.intersect(cfunc, -1, leave_in, leave_out, out dt_leave);
-				reintegrate_to(leave, dt_leave);
-			    next.volume.intersect(cfunc, -1, enter_in, enter_out, out dt_enter);
-				reintegrate_to(enter, dt_enter);
-			}
-			if(is_leave) {
-				leave = track.create_vertex();
-				track.tail.volume.intersect(cfunc, -1, leave_in, leave_out, out dt_leave);
-				reintegrate_to(leave, dt_leave);
-				enter = track.clone_vertex(leave);
-			}
-			if(is_enter) {
-				enter = track.create_vertex();
-			    next.volume.intersect(cfunc, -1, enter_in, enter_out, out dt_enter);
-				reintegrate_to(enter, dt_enter);
-				leave = track.clone_vertex(enter);
-			}
-
-			leave.part = track.tail.part;
-			leave.volume = track.tail.volume;
-			leave.weight = track.tail.weight;
 			debug("leave sfunc = %lg", leave.volume.sfunc(leave.position));
-			/* Make sure the particle is inside the volume. */
-			// maybe don't need this assert(leave.volume.sfunc(leave.position) < 0.0);
-
-			enter.part = next.part;
-			enter.volume = next.volume;
-			enter.weight = track.tail.weight;
 
 			bool transported = true;
-			var old_leave_velocity = leave.velocity;
 			var border = track.tail.part.neighbours.lookup(enter.part);
 			if(border != null) {
 				border.execute(track, leave, enter);
 				transported = border.transported;
 			}
 
+			/* This is a key frame, we want the visualization get it.*/
 			track.run.run_motion_notify();
-			just_transported = true;
 			/*
 			debug ("transport event leave = %s(%s/%s) oldvel = %s newvel = %s enter = %s(%s/%s) next = %s", 
 			leave.position.to_string(),
@@ -296,12 +193,11 @@ namespace UCNTracker {
 			*/
 			if(transported == false) {
 				move_to(leave, false);
-				return dt_leave;
+				return dt;
 			} else {
 				move_to(leave, true);
-				free_length = 0.0;
 				move_to(enter, true);
-				return dt_enter;
+				return dt;
 			}
 		}
 	}
