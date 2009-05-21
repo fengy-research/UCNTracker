@@ -49,12 +49,6 @@ public class Simulation {
 			}
 			message("finished");
 		};
-		cell.transport += (obj, track, leave, enter, transported) => {
-			track.set_vector("out", leave.position);
-			track.terminate();
-			transported = true;
-			message("transported");
-		};
 		up.hit += (obj, track, state) => {
 			message("up hitted");
 		};

@@ -18,7 +18,7 @@ VALASOURCES = \
 BUILT_SOURCES = vala-ccode vala-doc
 
 VALAFLAGS= --library=ucntracker-vis -H ucntracker-vis.h
-VALADOCFLAGS = --package-name=ucntracker-vis -o Documentation \
+VALADOCFLAGS = --package-name=ucntracker-vis -o Documentation 
 VALAPKGS = --pkg ucntracker \
 	--pkg glu --pkg gl --pkg gtkglext-1.0 --pkg gtk+-2.0
 
