@@ -22,6 +22,9 @@ namespace UCNTracker {
 			process_value_nodes();
 		}
 
+		/**
+		 * Build a object according to a given type
+		 */
 		internal Object build_object(GLib.YAML.Node node, Type type) throws GLib.Error {
 			Object obj = bootstrap_object(node, type);
 			process_object_value_nodes(obj, node);
