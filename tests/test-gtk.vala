@@ -4,8 +4,6 @@ using GLU;
 using UCNTracker;
 using UCNPhysics;
 
-UCNTracker.Camera gl;
-
 public class Application :UCNTracker.VisSimulation {
 	public override void init() throws GLib.Error {
 		base.init();
@@ -15,11 +13,13 @@ public class Application :UCNTracker.VisSimulation {
 		var b1 = part1.get_border(lab);
 		var cs1 = get_cross_section("cs1");
 
+		if(!first_time_init) return;
+
 		prepare += (obj, run) => {
 			Track t = Track.new(typeof(Neutron));
 			Vertex start = t.create_vertex();
-			start.position = Vector(1.0, 1.2, -10.0);
-			start.velocity = Vector(0.0, 0.0, 2.0);
+			start.position = Vector(1.0, 1.2, 10.0);
+			start.velocity = Vector(0.0, rng.uniform(), 2.0);
 			start.weight = 1.0;
 			run.time_limit = 1000;
 			run.frame_length = 1.0;
@@ -46,7 +46,9 @@ public class Application :UCNTracker.VisSimulation {
 
 		button.clicked += (obj) => {
 			message("clicked");
-			current_run.attach();
+			init_from_string(GML);
+			message("clicked-2");
+			add_run().attach();
 		};
 		
 	}
@@ -82,7 +84,7 @@ parts:
     const_sigma: 0.34barn
     density: 1.0
   neighbours:
-    *Lab : { absorb: 00, diffuse: 100, fermi: 0 }
+    *Lab : { absorb: 50, diffuse: 50, fermi: 0 }
 - !Part &Lab
   layer: 0
   volumes:

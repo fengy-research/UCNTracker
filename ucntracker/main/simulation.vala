@@ -1,7 +1,7 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Simulation {
-		public GLib.YAML.Builder builder = new GLib.YAML.Builder("UCN");
+		public GLib.YAML.Builder builder;
 		public unowned Gsl.RNG rng = UniqueRNG.rng;
 		public Experiment experiment {get; private set;}
 		public List<Run> runs;
@@ -12,6 +12,7 @@ namespace UCNTracker {
 
 		public static bool created = false;
 
+		public bool first_time_init {get; private set; default = true;}
 		private static string opt_geometry_filename = null;
 		private static string opt_experiment_objname = null;
 		public string geometry_filename = null;
@@ -30,14 +31,18 @@ namespace UCNTracker {
 
 		public virtual void init() throws GLib.Error {
 			experiment = get_with_cast(experiment_objname, typeof(Experiment)) as Experiment;
+			runs = null;
 		}
 
 		public void init_from_string(string geometry_string) throws GLib.Error {
+			builder = new GLib.YAML.Builder("UCN");
 			this.geometry_filename = null;
 			builder.add_from_string(geometry_string);
 			init();
+			first_time_init = false;
 		}
 		public void init_from_file(string geometry_filename) throws GLib.Error {
+			builder = new GLib.YAML.Builder("UCN");
 			this.geometry_filename = geometry_filename;
 			assert(created  == false);
 			created = true;
@@ -48,6 +53,7 @@ namespace UCNTracker {
 			}
 			builder.add_from_file(fs);
 			init();
+			first_time_init = false;
 		}
 
 		public Object get(string? name) throws GLib.Error {
@@ -90,8 +96,10 @@ namespace UCNTracker {
 		 */
 		public virtual void run(bool auto_attach = true, bool auto_quit = true) {
 			loop = new MainLoop(this.context, false);
-			Run run = add_run();
-			if(auto_attach) attach_run(run);
+			if(auto_attach) {
+				Run run = add_run();
+				attach_run(run);
+			}
 			if(auto_quit)
 				finish += this.quit;
 			loop.run();
