@@ -15,7 +15,7 @@ namespace UCNTracker {
 	public abstract class Volume: Object, GLib.YAML.Buildable {
 		private Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 		private const double delta = 1.0e-5; /* Used by grad*/
-		public const double thickness = 1e-6; /* Used by sense and intersect*/
+		public const double thickness = 1e-6; /* Used by sense */
 		private Vector _center = Vector(0.0, 0.0, 0.0);
 		private EulerAngles _rotation = EulerAngles(0.0, 0.0, 0.0);
 		public double bounding_radius { get; protected set; }
@@ -61,28 +61,6 @@ namespace UCNTracker {
 			return point;
 		}
 
-		/**
-		 * find the intersection on the surface of the volume
-		 * with the straight line from point_in to point_out.
-		 * the default implementaion looks for the intersection
-		 * with brent solver from gsl.
-		 *
-		 * point_in: starting point of the line. 
-		 * 			NOT neccesary inside the volume
-		 * point_out: end point of the line.
-		 * 			NOT neccesary outside the volume
-		 *
-		 * t: (0-1), the distances between the intersection and point_in,
-		 *    normalized to the distance between point_out and pointer_in
-		 *
-		 * Returns: false if no intersection is found.
-		 */
-
-		public virtual bool intersect(CurveFunc curve, int direction,
-			   double s_min, double s_max, out double s) {
-			return Intersector.solve(this, curve, direction, s_min, s_max, out s);
-		
-		}
 
 		/**
 		 * return the sense of the point.
