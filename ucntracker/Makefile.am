@@ -31,7 +31,6 @@ VALASOURCES = \
 	buildables/experiment.vala \
 	buildables/cross-section.vala \
 	buildables/border.vala \
-	core/group.vala \
 	core/intersector.vala \
 	core/freelength-table.vala \
 	core/evolve.vala \
