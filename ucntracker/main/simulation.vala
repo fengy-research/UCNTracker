@@ -23,14 +23,15 @@ namespace UCNTracker {
 			{null}
 		};
 
-		public Simulation(string experiment_objname) {
+		public Simulation(){}
+		public Simulation.with_anchor(string experiment_objname) {
 			this.experiment_objname = experiment_objname;
 		}
 
 		public virtual void init() throws GLib.Error {
-			experiment = get(experiment_objname) as Experiment;
-
+			experiment = get_with_cast(experiment_objname, typeof(Experiment)) as Experiment;
 		}
+
 		public void init_from_string(string geometry_string) throws GLib.Error {
 			this.geometry_filename = null;
 			builder.add_from_string(geometry_string);
@@ -49,7 +50,7 @@ namespace UCNTracker {
 			init();
 		}
 
-		public Object get(string name) throws GLib.Error {
+		public Object get(string? name) throws GLib.Error {
 			Object obj = builder.get_object(name);
 			if(obj == null) {
 				throw new Error.OBJECT_NOT_FOUND("object %s not not found".printf(name));
@@ -57,7 +58,7 @@ namespace UCNTracker {
 			return obj;
 		}
 
-		private Object get_with_cast(string name, Type type) throws GLib.Error {
+		private Object get_with_cast(string? name, Type type) throws GLib.Error {
 			Object obj = get(name);
 			if(!obj.get_type().is_a(type)) {
 				throw new Error.OBJECT_NOT_FOUND("object %s(%s) not a %s.".printf(name, obj.get_type().name(), type.name()));
@@ -80,21 +81,27 @@ namespace UCNTracker {
 		/**
 		 * Start a simulation run.
 		 *
-		 * attach: if attach == true, the run is attached to the main context,
+		 * auto_attach: if auto_attach == true, the run is attached to the main context,
 		 *       thus the simulation immediately starts.
-		 *       if attach == false, the run is not attached to the main context,
+		 *       if auto_attach == false, the run is not attached to the main context,
 		 *       thus the simulation does not start. Unless you have a GUI or something
 		 *       to attach the run later always pass-in attach = true.
+		 *
 		 */
-		public virtual void run(bool attach = true) {
+		public virtual void run(bool auto_attach = true, bool auto_quit = true) {
 			loop = new MainLoop(this.context, false);
 			Run run = add_run();
-			if(attach) attach_run(run);
-			finish += loop.quit;
+			if(auto_attach) attach_run(run);
+			if(auto_quit)
+				finish += this.quit;
 			loop.run();
-			finish -= loop.quit;
+			if(auto_quit)
+				finish -= this.quit;
 		}
 
+		public virtual void quit() {
+			loop.quit();
+		}
 		public void attach_run(Run run) {
 			/*The run detaches itself by returning false in Run.run1,
 			 * when it finishes.*/

@@ -3,20 +3,16 @@ using UCNPhysics;
 Builder builder;
 
 int N_TRACKS = 1;
-public class Simulation {
+public class Application: Simulation {
 	
-	Experiment experiment;
-	Part cell;
-	CrossSection up;
-	CrossSection down;
-	private void init() {
- 		builder = new Builder("UCN");
-		builder.add_from_file(FileStream.open("geometry.yml", "r"));
-		experiment = builder.get_object("Experiment") as Experiment;
-		cell = builder.get_object("Cell") as Part;
-		up = builder.get_object("up") as CrossSection;
-		down = builder.get_object("down") as CrossSection;
-		experiment.prepare += (obj, run) => {
+	public override void init() throws GLib.Error {
+ 		base.init();
+
+		var cell = get_part("Cell");
+		var up = get_cross_section("up");
+		var down = get_cross_section("down");
+
+		prepare += (obj, run) => {
 			var volume = cell.volumes.data; /* the first volume*/
 			message("run prepare");
 			for(int i = 0; i < N_TRACKS; i++) {
@@ -33,7 +29,7 @@ public class Simulation {
 				track.start(run, head);
 			}
 		};
-		experiment.finish += (obj, run) => {
+		finish += (obj, run) => {
 			foreach (Track track in run.tracks) {
 				Vector @in = track.get_vector("in");
 				Vector in_vel = track.get_vector("in-vel");
@@ -52,34 +48,13 @@ public class Simulation {
 		up.hit += (obj, track, state) => {
 			message("up hitted");
 		};
-		/*
-		cell.hit += (obj, track, state) => {
-			stdout.printf("%lf %lf %lf\n", 
-			state.vertex.position.x,
-			state.vertex.position.y,
-			state.vertex.position.z);
-			track.set_double("#scatters", track.get_double("#scatters") + 1.0);
-
-			return ;
-			double norm = state.velocity.norm();
-			Vector v = Vector(0.0, 0.0, 0.0);
-			UCNTracker.Random.dir_3d(out v.x, out v.y, out v.z);
-			v.mul(norm);
-			state.velocity = v;
-			//message("%p %s", track, state.vertex.position.to_string());
-		};*/
-		
-		
-	}
-	public void run() {
-		experiment.run();
 		
 	}
 	public static int main(string[] args) {
 		UCNTracker.init(ref args);
 		UCNTracker.set_verbose(true);
-		Simulation sim = new Simulation();
-		sim.init();
+		Application sim = new Application ();
+		sim.init_from_file("geometry.yml");
 		sim.run();
 		return 0;
 

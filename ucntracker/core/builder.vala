@@ -102,8 +102,15 @@ namespace UCNTracker {
 			}
 			
 		}
-		public Object? get_object(string anchor) {
+		/** 
+		 * if anchor == null, return the object built by the root node of the yaml file
+		 * Do not throw exceptions.
+		 */
+		public Object? get_object(string? anchor) {
+			if(anchor != null)
 			return anchors.lookup(anchor);
+			else 
+			return document.root.get_pointer() as Object;
 		}
 		public unowned List<Object>? get_objects() {
 			return objects;

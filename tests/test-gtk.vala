@@ -8,9 +8,6 @@ Builder builder;
 UCNTracker.Camera gl;
 
 public class Application :UCNTracker.VisSimulation {
-	public Application () {
-		base("experiment");
-	}
 	public override void init() throws GLib.Error {
 		base.init();
 
