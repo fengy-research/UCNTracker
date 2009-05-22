@@ -85,10 +85,10 @@ parts:
   cross-sections:
   - !CrossSection &cs1
 #    ptype: Neutron
-    const_sigma: 1000
+    const_sigma: 10
     density: 1.0
   neighbours:
-    *Lab : { absorb: 00, reflect : 100, diffuse: 00, fermi: 0 }
+    *Lab : { absorb: 70, reflect : 000, diffuse: 30, fermi: 0 }
 - !Part &Lab
   layer: 0
   volumes:
@@ -96,7 +96,7 @@ parts:
     center: 0, 0, 0
     radius: 30
   neighbours:
-    *part1 : { absorb: 00, reflect: 100, diffuse: 00, fermi: 0 }
+    *part1 : { absorb: 00, reflect: 000, diffuse: 00, fermi: 0 }
 fields:
 - !AccelField
   direction: 0, 0, -1

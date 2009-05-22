@@ -76,5 +76,8 @@ namespace Transport {
 		event.track.terminate();
 		event.transported = false;
 	}
+	public void through(ref Border.Event event) {
+		event.transported = true;
+	}
 }
 }

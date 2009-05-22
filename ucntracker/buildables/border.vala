@@ -18,7 +18,8 @@ namespace UCNTracker {
 		FERMI = 2,
 		REFLECT = 3,
 		ABSORB = 4,
-		MAX_VALUE = 5
+		THROUGH = 5,
+		MAX_VALUE = 6,
 		}
 		private MultiChannelRNG mcrng = new MultiChannelRNG(ChannelType.MAX_VALUE);
 		public double diffuse {
@@ -42,6 +43,10 @@ namespace UCNTracker {
 			set {mcrng.set_ch_width(ChannelType.ANY, value);}
 		}
 
+		public double through {
+			get {return mcrng.get_ch_width(ChannelType.THROUGH);}
+			set {mcrng.set_ch_width(ChannelType.THROUGH, value);}
+		}
 		public delegate bool BorderFunction (ref Event event);
 
 		public BorderFunction border_function = null;
@@ -81,6 +86,10 @@ namespace UCNTracker {
 						critical("border_function not set for the ANY channel");
 					} else
 						border_function(ref event);
+				break;
+				case ChannelType.THROUGH:
+				default:
+					UCNPhysics.Transport.through(ref event);
 				break;
 			}
 			transport(chn, ref event);
