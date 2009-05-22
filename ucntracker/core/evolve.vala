@@ -127,11 +127,6 @@ namespace UCNTracker {
 				count ++;
 			}
 
-			debug("leave %s sfunc = %lg enter %s sfunc = %lg", 
-				leave.to_string(),
-				leave.get_sfunc_value(), 
-				enter.to_string(),
-				enter.get_sfunc_value());
 			debug("dl = %lg count = %d", dl, count);
 		}
 
@@ -247,6 +242,12 @@ namespace UCNTracker {
 				border.execute(ref event);
 				transported = event.transported;
 			}
+			debug("leave %s sfunc = %lg",
+				leave.to_string(),
+				leave.get_sfunc_value());
+			debug("enter %s sfunc = %lg", 
+				enter.to_string(),
+				enter.get_sfunc_value());
 
 			/* This is a key frame, we want the visualization get it.*/
 			track.run.run_motion_notify();

@@ -34,6 +34,9 @@ public class Application :UCNTracker.VisSimulation {
 			message("run prepared ");
 			t.start(run, start);
 			message("track added");
+			run.track_motion_notify += (r, t, v) => {
+				r.run_motion_notify();
+			};
 		};
 
 		finish += (obj, run) => {
@@ -78,20 +81,22 @@ parts:
   volumes:
   - !Box
     center: 0, 0, 0
-    size: 3, 4, 5
+    size: 10, 10, 5
   cross-sections:
   - !CrossSection &cs1
-    ptype: Neutron
+#    ptype: Neutron
     const_sigma: 1000
     density: 1.0
   neighbours:
-    *Lab : { absorb: 50, diffuse: 50, fermi: 0 }
+    *Lab : { absorb: 00, reflect : 100, diffuse: 00, fermi: 0 }
 - !Part &Lab
   layer: 0
   volumes:
   - !Ball
     center: 0, 0, 0
     radius: 30
+  neighbours:
+    *part1 : { absorb: 00, reflect: 100, diffuse: 00, fermi: 0 }
 fields:
 - !AccelField
   direction: 0, 0, -1
