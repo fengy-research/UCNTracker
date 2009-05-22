@@ -3,9 +3,6 @@ namespace UCNTracker {
 public class Experiment: Object, Buildable {
 	public List<Part> parts;
 	public List<Field> fields;
-	public List<Run> runs;
-	public MainContext context = null;
-	public MainLoop loop = null;
 
 	public double max_time_step {get; set; default=0.01;}
 
@@ -20,30 +17,7 @@ public class Experiment: Object, Buildable {
 		//(base as Buildable).add_child(builder, child, type);
 	}
 
-	public signal void prepare(Run run);
-	public signal void finish(Run run);
-	public Run add_run() {
-		Run run = new Run(this);
-		runs.prepend(run);
-		prepare(run);
-		return run;
-	}
-	public void attach_run(Run run) {
-		/*The run detaches itself by returning false in Run.run1,
-		 * when it finishes.*/
-		run.attach(this.context);
-	}
-	public void run() {
-		loop = new MainLoop(this.context, false);
-		Run run = add_run();
-		attach_run(run);
-		finish += quit;
-		loop.run();
-		finish -= quit;
-	}
-	public void quit() {
-		loop.quit();
-	}
+
 	public bool locate(Vector point,
 	       out unowned Part located, out unowned Volume volume) {
 		foreach(Part part in parts) {

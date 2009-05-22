@@ -7,72 +7,70 @@ using UCNPhysics;
 Builder builder;
 UCNTracker.Camera gl;
 
-public int main(string[] args) {
+public class Application :UCNTracker.VisSimulation {
+	public Application () {
+		base("experiment");
+	}
+	public override void init() throws GLib.Error {
+		base.init();
 
-	UCNTracker.init(ref args);
-	UCNTracker.set_verbose(true);
-	Gtk.init(ref args);
-	Gtk.gl_init ( ref args);
+		var part1= get_part("part1");
+		var lab = get_part("Lab");
+		var b1 = part1.get_border(lab);
+		var cs1 = get_cross_section("cs1");
 
-	builder = new Builder("UCN");
-	builder.add_from_string(GML);
+		prepare += (obj, run) => {
+			Track t = Track.new(typeof(Neutron));
+			Vertex start = t.create_vertex();
+			start.position = Vector(1.0, 1.2, -10.0);
+			start.velocity = Vector(0.0, 0.0, 2.0);
+			start.weight = 1.0;
+			run.time_limit = 1000;
+			run.frame_length = 1.0;
+			message("run prepared ");
+			camera.run = run;
+			t.start(run, start);
+			message("track added");
+		};
 
-	Experiment experiment = builder.get_object("experiment") as Experiment;
-	assert(experiment != null);
-	Part environment = builder.get_object("environment") as Part;
-	Part part1 = builder.get_object("part1") as Part;
-	Part lab = builder.get_object("Lab") as Part;
-	Border b1 = part1.get_border(lab);
-	CrossSection cs1 = builder.get_object("cs1") as CrossSection;
+		finish += (obj, run) => {
+			message("run finished");
+		};
 
-	experiment.prepare += (obj, run) => {
-		Track t = Track.new(typeof(Neutron));
-		Vertex start = t.create_vertex();
-		start.position = Vector(1.0, 1.2, -10.0);
-		start.velocity = Vector(0.0, 0.0, 2.0);
-		start.weight = 1.0;
-		run.time_limit = 1000;
-		run.frame_length = 1.0;
-		message("run started");
-		t.start(run, start);
-		message("track added");
-	};
+		b1.transport += () => {
+			message("transport");
+		};
 
-	experiment.finish += (obj, run) => {
-		message("run finished");
-	};
+		cs1.hit += (obj, track, state) => {
+			message("hit on track %p, at %s", track, state.position.to_string());
+		};
 
-	b1.transport += () => {
-		message("transport");
-	};
+		Gtk.Button button = new Gtk.Button.with_label("Start");
 
-	cs1.hit += (obj, track, state) => {
-		message("hit on track %p, at %s", track, state.position.to_string());
-	};
+		widget_box.pack_start(button, false, false, 0);
+		widget_box.add(camera);
 
-	Gtk.Window window = new Gtk.Window(Gtk.WindowType.TOPLEVEL);
-	Gtk.Button button = new Gtk.Button.with_label("Start");
-	Gtk.Box vbox = new Gtk.VBox(false, 0);
-	gl = new UCNTracker.Camera ();
-	gl.set_size_request(200, 200);
+		button.clicked += (obj) => {
+			message("clicked");
+			current_run.attach();
+		};
+		
+	}
 
-	window.add(vbox);
-	vbox.pack_start(button, false, false, 0);
-	vbox.add(gl);
+	public static int main(string[] args) {
 
-	Run run = experiment.add_run();
-	gl.experiment = experiment;
-	gl.use_solid = false;
-	gl.run = run;
-	button.clicked += (obj) => {
-		message("clicked");
-		Experiment ex
-		= builder.get_object("experiment") as Experiment;
-		ex.attach_run(gl.run);
-	};
-	window.show_all();
-	Gtk.main();
-	return 0;
+		UCNTracker.init(ref args);
+		UCNTracker.init_vis(ref args);
+		UCNTracker.set_verbose(true);
+
+		Application sim = new Application();
+		sim.init_from_string(GML);
+
+		sim.run(false);
+
+		return 0;
+	}
+
 }
 
 private const string GML = 

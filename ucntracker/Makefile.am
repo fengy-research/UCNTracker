@@ -17,6 +17,8 @@ VALASOURCES = \
 	main/main.vala \
 	main/error.vala \
 	main/plugin-manager.vala \
+	main/simulation.vala \
+	main/run.vala \
 	math/units.vala \
 	math/eulerangles.vala \
 	math/vector.vala \
@@ -33,7 +35,6 @@ VALASOURCES = \
 	core/intersector.vala \
 	core/crosssection.vala \
 	core/freelength-table.vala \
-	core/run.vala \
 	core/evolve.vala \
 	core/border.vala \
 	core/vertex.vala \

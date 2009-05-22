@@ -91,7 +91,6 @@ namespace UCNTracker {
 		 */
 		public void start(Run run, Vertex head) {
 			this.run = run;
-			this.experiment = run.experiment;
 			this.head = head;
 			tail = clone_vertex(head);
 			tail.timestamp = run.timestamp;
@@ -124,7 +123,7 @@ namespace UCNTracker {
 			run.tracks.remove(this);
 			run.error_tracks.prepend(this);
 		}
-		public weak Experiment experiment {get; private set;}
+		public weak Experiment experiment {get {return run.experiment;}}
 
 		public Vertex tail;
 		public Vertex head;

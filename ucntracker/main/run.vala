@@ -1,11 +1,15 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Run {
-		public weak Experiment experiment;
+		public weak Simulation sim;
 		/* The current time of this run,
 		 * individual tracks can be ahead of this stamp 
 		 */
 		public double time_limit = double.MAX;
+
+		public Experiment experiment {
+			get { return sim.experiment; }
+		}
 
 		public bool running = false;
 		public double timestamp = 0.0;
@@ -19,8 +23,8 @@ namespace UCNTracker {
 
 		private uint source_id = 0;
 		private MainContext context = null;
-		public Run(Experiment experiment) {
-			this.experiment = experiment;
+		public Run(Simulation sim) {
+			this.sim = sim;
 		}
 
 		/**
@@ -93,7 +97,7 @@ namespace UCNTracker {
 				(active_tracks == null || timestamp > time_limit)) {
 				debug("Run finished at %lf", timestamp);
 				running = false;
-				experiment.finish(this);
+				sim.finish(this);
 				return false;
 			}
 			if(running == false) {

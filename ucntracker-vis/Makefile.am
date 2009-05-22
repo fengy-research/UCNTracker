@@ -10,6 +10,8 @@ libucntracker_vis_la_SOURCES =  \
 	ucntracker-vis.h
 
 VALASOURCES = \
+	main.vala \
+	vis-simulation.vala \
 	camera.vala \
 	renderer.vala \
 	tracer.vala \
