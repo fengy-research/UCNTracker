@@ -1,29 +1,20 @@
----
-- &Experiment
-  class: Experiment
-  children:
-  - *Cell
-  - *Lab
-- &Cell
-  class: Part
+--- !Experiment
+objects:
+- !Part &cell
   layer: 1
-  children: 
-  - class: Box
+  objects:
+  - !Box &cell-volume
     size: 10, 10, 10
-  - &up
+  - !CrossSection &up
     density: 1.0
-    class: CrossSection
-    ptype: UcnpNeutron
     const_sigma: 10
-  - &down
+  - !CrossSection &down
     density: 1.0
-    class: CrossSection
-    ptype: UcnpNeutron
-- &Lab
-  class: Part
+    const_sigma: 10
+- !Part &Lab
   layer: 0
-  children:
-  - class: Ball
+  objects:
+  - !Ball
     radius: 40
 
 ...

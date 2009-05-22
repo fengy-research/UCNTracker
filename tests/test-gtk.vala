@@ -25,7 +25,6 @@ public class Application :UCNTracker.VisSimulation {
 			run.time_limit = 1000;
 			run.frame_length = 1.0;
 			message("run prepared ");
-			camera.run = run;
 			t.start(run, start);
 			message("track added");
 		};
@@ -45,7 +44,6 @@ public class Application :UCNTracker.VisSimulation {
 		Gtk.Button button = new Gtk.Button.with_label("Start");
 
 		widget_box.pack_start(button, false, false, 0);
-		widget_box.add(camera);
 
 		button.clicked += (obj) => {
 			message("clicked");
@@ -63,7 +61,7 @@ public class Application :UCNTracker.VisSimulation {
 		Application sim = new Application();
 		sim.init_from_string(GML);
 
-		sim.run(false);
+		sim.run(false, false);
 
 		return 0;
 	}

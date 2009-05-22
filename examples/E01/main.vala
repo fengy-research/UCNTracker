@@ -1,20 +1,19 @@
 using UCNTracker;
 using UCNPhysics;
-Builder builder;
 
 int N_TRACKS = 1;
-public class Application: Simulation {
+public class Application: VisSimulation {
 	
 	public override void init() throws GLib.Error {
  		base.init();
 
-		var cell = get_part("Cell");
+		var cell = get_part("cell");
 		var up = get_cross_section("up");
 		var down = get_cross_section("down");
 
 		prepare += (obj, run) => {
-			var volume = cell.volumes.data; /* the first volume*/
 			message("run prepare");
+			var volume = get_volume("cell-volume");
 			for(int i = 0; i < N_TRACKS; i++) {
 				var track = Track.new(typeof(Neutron));
 				Vertex head = track.create_vertex();
@@ -52,10 +51,11 @@ public class Application: Simulation {
 	}
 	public static int main(string[] args) {
 		UCNTracker.init(ref args);
+		UCNTracker.init_vis(ref args);
 		UCNTracker.set_verbose(true);
 		Application sim = new Application ();
 		sim.init_from_file("geometry.yml");
-		sim.run();
+		sim.run(true, false);
 		return 0;
 
 	}

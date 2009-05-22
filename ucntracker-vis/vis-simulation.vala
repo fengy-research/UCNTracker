@@ -14,7 +14,11 @@ namespace UCNTracker {
 			camera.experiment = experiment;
 			camera.set_size_request(200, 200);
 			window.add(widget_box);
+			widget_box.add(camera);
 			window.destroy += this.quit;
+			prepare += (obj, run) => {
+				camera.run = run;
+			};
 		}
 		public override void run(bool auto_attach = true, bool auto_quit = true) {
 			window.show_all();
