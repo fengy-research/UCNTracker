@@ -9,6 +9,11 @@ namespace UCNTracker {
 		public VisSimulation.with_anchor(string experiment_objname ) {
 			base.with_anchor(experiment_objname);
 		}
+		static construct {
+			if(!vis_initialized) {
+				UCNTracker.vis_init();
+			}
+		}
 		public override void init() throws GLib.Error {
 			base.init();
 			camera.experiment = experiment;

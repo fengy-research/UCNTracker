@@ -51,7 +51,6 @@ public class Application: VisSimulation {
 	}
 	public static int main(string[] args) {
 		UCNTracker.init(ref args);
-		UCNTracker.init_vis(ref args);
 		UCNTracker.set_verbose(true);
 		Application sim = new Application ();
 		sim.init_from_file("geometry.yml");

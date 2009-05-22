@@ -55,7 +55,6 @@ public class Application :UCNTracker.VisSimulation {
 	public static int main(string[] args) {
 
 		UCNTracker.init(ref args);
-		UCNTracker.init_vis(ref args);
 		UCNTracker.set_verbose(true);
 
 		Application sim = new Application();
