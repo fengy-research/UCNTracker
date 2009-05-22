@@ -15,6 +15,7 @@ namespace UCNTracker {
 		public abstract bool fieldfunc(Track track, Vector position, Vector velocity, out Vector acceleration);
 
 		public bool locate(Vector point, out unowned Volume child) {
+			if(volumes == null) return true;
 			foreach(Volume volume in volumes) {
 				Sense sense = volume.sense(point);
 				if(sense == Sense.IN) {

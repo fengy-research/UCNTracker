@@ -48,6 +48,7 @@ VALASOURCES = \
 	volume/volume-cylinder.vala \
 	field/accel.vala \
 	field/barrier.vala \
+	field/custom.vala \
 	physics/neutron.vala \
 	physics/cold-neutron.vala \
 	physics/ultracold-neutron.vala \
