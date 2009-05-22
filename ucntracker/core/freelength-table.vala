@@ -38,6 +38,7 @@ namespace UCNTracker {
 				section.hit(track, track.tail);
 				reset_all();
 				reacted = true;
+				track.run.run_motion_notify();
 			} else {
 				free_length += dl;
 				entry.free_length = free_length;
