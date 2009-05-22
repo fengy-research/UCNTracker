@@ -13,6 +13,14 @@ public class Application :UCNTracker.VisSimulation {
 		var b1 = part1.get_border(lab);
 		var cs1 = get_cross_section("cs1");
 
+		b1.transport += () => {
+			message("transport");
+		};
+
+		cs1.hit += (obj, track, state) => {
+			message("hit on track %p, at %s", track, state.position.to_string());
+		};
+
 		if(!first_time_init) return;
 
 		prepare += (obj, run) => {
@@ -30,14 +38,6 @@ public class Application :UCNTracker.VisSimulation {
 
 		finish += (obj, run) => {
 			message("run finished");
-		};
-
-		b1.transport += () => {
-			message("transport");
-		};
-
-		cs1.hit += (obj, track, state) => {
-			message("hit on track %p, at %s", track, state.position.to_string());
 		};
 
 		Gtk.Button button = new Gtk.Button.with_label("Start");
@@ -81,7 +81,8 @@ parts:
     size: 3, 4, 5
   cross-sections:
   - !CrossSection &cs1
-    const_sigma: 0.34barn
+    ptype: Neutron
+    const_sigma: 1000
     density: 1.0
   neighbours:
     *Lab : { absorb: 50, diffuse: 50, fermi: 0 }
