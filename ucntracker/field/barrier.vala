@@ -24,17 +24,19 @@ namespace UCNTracker {
 		}
 		}
 
-		public override void fieldfunc(Track track, Vertex Q, 
-		               Vertex dQ) {
+		public override bool fieldfunc(Track track, 
+		               Vector position,
+		               Vector velocity, 
+		               out Vector acceleration) {
 			/* FIXME: the rotation is not used.
 			 * Perhaps Part and Field should derive from a class
 			 * which has no center, neither be it a volume
 			 * */
-			Vector pos = Q.position;
+			Vector pos = position;
 			pos.translate_i(center);
 			double x = pos.dot(direction);
 
-			if(x < field_xs[0]) return;
+			if(x < field_xs[0]) return false;
 
 			for(int i = 0; i < field_xs.length - 1; i++) {
 				double x0 = field_xs[i];
@@ -42,15 +44,13 @@ namespace UCNTracker {
 				double y0 = field_Bs[i];
 				double y1 = field_Bs[i+1];
 				if(x >= x0 && x < x1) {
-					double dx = track.magnetic_helicity * factor * track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
-					dQ.velocity.x += direction.x * dx;
-					dQ.velocity.y += direction.y * dx;
-					dQ.velocity.z += direction.z * dx;
+					double a = track.magnetic_helicity * factor * track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
+					acceleration = Vector(direction.x * a, direction.y * a, direction.z * a);
 //					message("magnetic effect : slope= %lg mdm=%lg [%d] %lg", (y1- y0)/(x1-x0), track.mdm, i, dx);
-					return;
+					return true;
 				}
 			}
-			return;
+			return false;
 		}
 	}
 }

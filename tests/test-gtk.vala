@@ -90,5 +90,9 @@ parts:
   - !Ball
     center: 0, 0, 0
     radius: 30
+fields:
+- !AccelField
+  direction: 0, 0, -1
+  accel: 980
 ...
 """;

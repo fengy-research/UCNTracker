@@ -38,12 +38,16 @@ public class Experiment: Object, Buildable {
 		located = null;
 		return false;
 	}
-	public void QdQ(Track track, Vertex Q, 
-	                         /*out */Vertex dQ) {
-		dQ.position = Q.velocity;
-		dQ.velocity = Vector(0.0, 0.0, 0.0);
+	public Vector accelerate(Track track, Vertex Q) {
+		Vector accel = Vector(0, 0, 0);
 		foreach(Field field in fields) {
-			field.fieldfunc(track, Q, dQ);
+			Vector this_accel;
+			if(field.fieldfunc(track, Q.position, Q.velocity, out this_accel)){
+				accel.x += this_accel.x;
+				accel.y += this_accel.y;
+				accel.z += this_accel.z;
+			}
 		}
+		return accel;
 	}
 }}

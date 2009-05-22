@@ -12,7 +12,7 @@ namespace UCNTracker {
 			}
 			//base.add_child(builder, child, type);
 		}
-		public abstract void fieldfunc(Track track, Vertex Q, Vertex dQ);
+		public abstract bool fieldfunc(Track track, Vector position, Vector velocity, out Vector acceleration);
 
 		public bool locate(Vector point, out unowned Volume child) {
 			foreach(Volume volume in volumes) {

@@ -25,16 +25,13 @@ namespace UCNTracker {
 		construct {
 			acc = _direction.mul(_accel);
 		}
-		/**
-		 * pspace_pos: phase space position
-		 * pspace_vel: phase space velocity
-		 */
-		public override void fieldfunc(Track track, 
-		               Vertex Q, 
-		               Vertex dQ) {
-			dQ.velocity.x += acc.x;
-			dQ.velocity.y += acc.y;
-			dQ.velocity.z += acc.z;
+
+		public override bool fieldfunc(Track track, 
+		               Vector position,
+		               Vector velocity, 
+		               out Vector acceleration) {
+			acceleration = Vector(acc.x, acc.y, acc.z);
+			return true;
 		}
 	}
 }
