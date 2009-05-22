@@ -3,9 +3,9 @@ namespace UCNTracker {
 	/* Never intended to be created by a builder.
 	 * Instantiated by Part and Field.
 	 * */
-	public abstract class VolumeGroup: Volume, Buildable {
+	public abstract class VolumeGroup: Volume, GLib.YAML.Buildable {
 		public List<Volume> volumes;
-		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
+		public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				volumes.prepend(child as Volume);
 			} else {

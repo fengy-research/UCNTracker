@@ -1,12 +1,12 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-public class Experiment: Object, Buildable {
+public class Experiment: Object, GLib.YAML.Buildable {
 	public List<Part> parts;
 	public List<Field> fields;
 
 	public double max_time_step {get; set; default=0.01;}
 
-	public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
+	public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
 		if(child is Part) {
 			parts.insert_sorted(child as Part,
 			      (CompareFunc) Part.layer_compare_func);
@@ -14,11 +14,11 @@ public class Experiment: Object, Buildable {
 		if(child is Field) {
 			fields.prepend(child as Field);
 		}
-		//(base as Buildable).add_child(builder, child, type);
+		//(base as GLib.YAML.Buildable).add_child(builder, child, type);
 	}
 
 
-	public Type get_child_type(Builder builder, string tag) {
+	public Type get_child_type(GLib.YAML.Builder builder, string tag) {
 		if(tag == "parts") {
 			return typeof(Part);
 		}

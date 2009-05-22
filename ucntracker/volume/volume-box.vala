@@ -1,6 +1,6 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Box : Primitive , Buildable {
+	public class Box : Primitive , GLib.YAML.Buildable {
 		private Vector _size = Vector (0.0, 0.0, 0.0);
 		const int TOP = 0;
 		const int BOTTOM = 1;

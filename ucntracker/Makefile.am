@@ -26,8 +26,6 @@ VALASOURCES = \
 	math/multichannel.vala \
 	math/quaternion.vala \
 	math/surface.vala \
-	core/buildable.vala \
-	core/builder.vala \
 	core/volume.vala \
 	core/group.vala \
 	core/field.vala \
@@ -57,6 +55,7 @@ VALASOURCES = \
 vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
 	echo gmodule-2.0 > ucntracker.deps
+	echo libyaml-glib-1.0 >> ucntracker.deps
 	echo gsl >> ucntracker.deps
 	touch vala-ccode
 

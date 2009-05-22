@@ -1,11 +1,11 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class FermiPotential:Object, Buildable {
+	public class FermiPotential:Object, GLib.YAML.Buildable {
 		public double f {get; set;}
 		public double V {get; set;}
 	}
 
-	public class Part: Object, Buildable {
+	public class Part: Object, GLib.YAML.Buildable {
 		public List<Volume> volumes;
 		public List<CrossSection> cross_sections;
 
@@ -14,7 +14,7 @@ namespace UCNTracker {
 		public int layer {get; set; default = 0;}
 		public FermiPotential potential {get; set;}
 
-		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
+		public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				volumes.prepend(child as Volume);
 			} else if (child is CrossSection) {
@@ -29,7 +29,7 @@ namespace UCNTracker {
 			//base.add_child(builder, child, type);
 		}
 
-		public Type get_child_type(Builder builder, string tag) {
+		public Type get_child_type(GLib.YAML.Builder builder, string tag) {
 			if(tag == "volumes") {
 				return typeof(Volume);
 			}
@@ -38,7 +38,7 @@ namespace UCNTracker {
 			}
 			return Type.INVALID;
 		}
-		internal void custom_node(Builder builder, string tag, void* node_pointer) throws Error {
+		internal void custom_node(GLib.YAML.Builder builder, string tag, void* node_pointer) throws Error {
 			if(tag != "neighbours") {
 				string message = "Property %s.%s not found".printf(get_type().name(), tag);
 				throw new Error.PROPERTY_NOT_FOUND(message);

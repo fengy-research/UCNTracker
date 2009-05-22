@@ -2,6 +2,7 @@ using GLib;
 using UCNTracker;
 /*Really should not depend on UCNPhysics!*/
 using UCNPhysics;
+using GLib.YAML;
 
 private errordomain Error {
 	NO_EXPERIMENT,

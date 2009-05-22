@@ -4,7 +4,7 @@ namespace UCNTracker {
 	 * Although the Ball is also a Primitive,
 	 * it doesn't make use of the surfaces[] array.
 	 *****/
-	public class Ball : Primitive , Buildable {
+	public class Ball : Primitive , GLib.YAML.Buildable {
 		private double _radius;
 		public double radius {
 			get { return _radius; }

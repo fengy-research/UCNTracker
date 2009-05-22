@@ -12,7 +12,7 @@ namespace UCNTracker {
 		ON = 0,
 		OUT = 1
 	}
-	public abstract class Volume: Object, Buildable {
+	public abstract class Volume: Object, GLib.YAML.Buildable {
 		private Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 		private const double delta = 1.0e-5; /* Used by grad*/
 		public const double thickness = 1e-6; /* Used by sense and intersect*/

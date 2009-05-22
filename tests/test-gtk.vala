@@ -4,7 +4,6 @@ using GLU;
 using UCNTracker;
 using UCNPhysics;
 
-Builder builder;
 UCNTracker.Camera gl;
 
 public class Application :UCNTracker.VisSimulation {

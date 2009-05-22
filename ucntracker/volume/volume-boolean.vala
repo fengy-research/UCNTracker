@@ -1,9 +1,9 @@
 
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Union: Volume, Buildable {
+	public class Union: Volume, GLib.YAML.Buildable {
 		public List<Volume> children;
-		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
+		public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				Volume volume = child as Volume;
 				children.prepend(volume);
@@ -56,9 +56,9 @@ namespace UCNTracker {
 		}
 	}
 
-	public class Intersection: Volume, Buildable {
+	public class Intersection: Volume, GLib.YAML.Buildable {
 		public List<Volume> children;
-		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
+		public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				Volume volume = child as Volume;
 				children.prepend(volume);
