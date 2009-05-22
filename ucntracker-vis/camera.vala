@@ -208,23 +208,24 @@ namespace UCNTracker {
 
 		public override bool button_release_event(Gdk.EventButton event) {
 			get_pointer(out drag_end_x, out drag_end_y);
-			int dy = drag_end_y - drag_start_y;
-			int dx = drag_end_x - drag_start_x;
+			double dy = (drag_end_y - drag_start_y) / (double) allocation.height;
+			double dx = (drag_end_x - drag_start_x) / (double) allocation.width;
 			Vector x_vector = _location.direction().cross(_up).direction();
 			Vector y_vector = _up;
 			switch(event.button) {
 				case 1:
 					Quaternion q = Quaternion.from_rotation(
-							y_vector, -(double)dx/100.0);
+							y_vector, -dx * 1.57);
 					Quaternion p = Quaternion.from_rotation(
-							x_vector, (double) dy/100.0);
-					message("%lf %s", (double) dy, _location.direction().to_string());
+							x_vector, dy * 1.57);
+					message("%lf %s",  dy, _location.direction().to_string());
 					_location = q.rotate_vector(_location);
 					_location = p.rotate_vector(_location);
 					message("location rotated to %s", _location.to_string());
 				break;
 				case 2:
-					_target.translate(x_vector.mul(dx).add(y_vector.mul(dy)));
+					double d = _location.norm();
+					_target.translate(x_vector.mul(dx * d).add(y_vector.mul(dy * d)));
 					message("center moved rotated to %s", _target.to_string());
 				break;
 				case 3:
