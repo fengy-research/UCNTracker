@@ -70,14 +70,15 @@ public class Application :UCNTracker.VisSimulation {
 private const string GML = 
 """
 --- !Experiment &experiment
-objects:
+parts:
 - !Part &part1
   layer: 1
   potential: { f : 8.5e-5 , V : 193 }
-  objects:
+  volumes:
   - !Box
     center: 0, 0, 0
     size: 3, 4, 5
+  cross-sections:
   - !CrossSection &cs1
     const_sigma: 0.34barn
     density: 1.0
@@ -85,7 +86,7 @@ objects:
     *Lab : { absorb: 00, diffuse: 100, fermi: 0 }
 - !Part &Lab
   layer: 0
-  objects:
+  volumes:
   - !Ball
     center: 0, 0, 0
     radius: 30

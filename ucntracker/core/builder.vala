@@ -101,15 +101,15 @@ namespace UCNTracker {
 				assert(key is GLib.YAML.Node.Scalar);
 				var scalar = key as GLib.YAML.Node.Scalar;
 				var value = mapping.pairs.lookup(key).get_resolved();
-				if(scalar.value == "objects") {
-					(obj as Buildable).process_children(this, value);
+				if(buildable.get_child_type_internal(this, scalar.value) != Type.INVALID) {
+					buildable.process_children(this, scalar.value, value);
 					continue;
 				}
 				ParamSpec pspec = ((ObjectClass)obj.get_type().class_peek()).find_property(scalar.value);
 				if(pspec != null) {
-					(obj as Buildable).process_property(this, pspec, value);
+					buildable.process_property(this, pspec, value);
 				} else {
-					(obj as Buildable).custom_node(this, scalar.value, value);
+					buildable.custom_node(this, scalar.value, value);
 				}
 			}
 			

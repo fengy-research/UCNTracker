@@ -16,12 +16,25 @@ namespace UCNTracker {
 		public virtual void add_child(Builder builder, Object child, string? type) throws Error {
 			message("Adding %s to %s", (child as Buildable).get_name(), this.get_name());
 		}
-		internal void process_children(Builder builder, GLib.YAML.Node node) throws Error {
+
+		public virtual Type get_child_type(Builder builder, string tag) {
+			return Type.INVALID;
+		}
+		/* To workaround a vala limitation that the default interface implementation cannot be chained up.*/
+		internal Type get_child_type_internal(Builder builder, string tag) {
+			if(tag == "objects") return typeof(Object);
+			return get_child_type(builder, tag);
+		}
+
+		internal void process_children(Builder builder, string type, GLib.YAML.Node node) throws Error {
 			var children = node as GLib.YAML.Node.Sequence;
 			foreach(var item in children.items) {
 				var child = (Object) item.get_resolved().get_pointer();
-				if (child == null) continue;
-				add_child(builder, child, null);
+				if (child == null) {
+					var message = "Expecting an object, found nothing (%s)".printf(node.start_mark.to_string());
+					throw new Error.OBJECT_NOT_FOUND(message);
+				}
+				add_child(builder, child, type);
 			}
 		}
 		internal unowned string cast_to_scalar(GLib.YAML.Node node) throws Error {

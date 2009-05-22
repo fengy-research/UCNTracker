@@ -18,6 +18,15 @@ public class Experiment: Object, Buildable {
 	}
 
 
+	public Type get_child_type(Builder builder, string tag) {
+		if(tag == "parts") {
+			return typeof(Part);
+		}
+		if(tag == "fields") {
+			return typeof(Field);
+		}
+		return Type.INVALID;
+	}
 	public bool locate(Vector point,
 	       out unowned Part located, out unowned Volume volume) {
 		foreach(Part part in parts) {

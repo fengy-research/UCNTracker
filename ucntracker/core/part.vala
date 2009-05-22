@@ -29,6 +29,15 @@ namespace UCNTracker {
 			//base.add_child(builder, child, type);
 		}
 
+		public Type get_child_type(Builder builder, string tag) {
+			if(tag == "volumes") {
+				return typeof(Volume);
+			}
+			if(tag == "cross-sections") {
+				return typeof(CrossSection);
+			}
+			return Type.INVALID;
+		}
 		internal void custom_node(Builder builder, string tag, void* node_pointer) throws Error {
 			if(tag != "neighbours") {
 				string message = "Property %s.%s not found".printf(get_type().name(), tag);
