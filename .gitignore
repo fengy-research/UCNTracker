@@ -38,8 +38,10 @@ temp/
 test-*
 examples/E01/example-01
 examples/E02/example-02
+examples/E02/example-03
+examples/Mirror/mirror
 tools/sample-volume
-tools/scence-editor
+tools/scene-editor
 
 Documentation
 ucntracker/*.deps
