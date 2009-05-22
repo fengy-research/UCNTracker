@@ -33,15 +33,6 @@ namespace UCNTracker {
 			}
 			return value_scalar.value;
 		}
-		internal unowned Object cast_to_object(GLib.YAML.Node node) throws Error {
-			var value = (node as GLib.YAML.Node.Mapping);
-			if(value == null || value.get_pointer() == null) {
-				string message = "Expecting a Mapping (%s) with an Object"
-				.printf(node.start_mark.to_string());
-				throw new Error.UNEXPECTED_NODE(message);
-			}
-			return (Object) value.get_pointer();
-		}
 		internal void process_property(Builder builder, ParamSpec pspec, GLib.YAML.Node node) throws Error {
 
 			Value gvalue = Value(pspec.value_type);
@@ -72,7 +63,7 @@ namespace UCNTracker {
 			if(pspec.value_type == typeof(Type)) {
 				gvalue.set_gtype(Demangler.resolve_type(builder.get_full_class_name(cast_to_scalar(node))));
 			} else
-			if(pspec.value_type == typeof(Object)) {
+			if(pspec.value_type.is_a(typeof(Object))) {
 				Object ref_obj = null;
 				if(node is GLib.YAML.Node.Scalar) {
 					ref_obj = builder.get_object(cast_to_scalar(node));
@@ -82,7 +73,7 @@ namespace UCNTracker {
 					}
 				}
 				if(node is GLib.YAML.Node.Mapping) {
-					ref_obj = cast_to_object(node);
+					ref_obj = builder.build_object(node, pspec.value_type);
 				}
 				gvalue.set_object(ref_obj);
 			} else

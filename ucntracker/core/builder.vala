@@ -22,8 +22,8 @@ namespace UCNTracker {
 			process_value_nodes();
 		}
 
-		internal Object build_object(GLib.YAML.Node node) throws GLib.Error {
-			Object obj = bootstrap_object(node);
+		internal Object build_object(GLib.YAML.Node node, Type type) throws GLib.Error {
+			Object obj = bootstrap_object(node, type);
 			process_object_value_nodes(obj, node);
 			return obj;
 		}
@@ -41,6 +41,7 @@ namespace UCNTracker {
 				/* skip non objects */
 				if(!(node is GLib.YAML.Node.Mapping)) continue;
 				if(node.tag.get_char() != '!') continue;
+				/* bootstrap all objects with sufficient information */
 				bootstrap_object(node);
 			}
 		}
@@ -53,10 +54,18 @@ namespace UCNTracker {
 			
 		}
 
-		private Object bootstrap_object(GLib.YAML.Node node) throws GLib.Error {
+		/* 
+		 * Build a object without setting its properties and children
+		 * if type == Type.INVALID, the type is deducted from the node.tag.
+		 */
+		private Object bootstrap_object(GLib.YAML.Node node, Type type = Type.INVALID) throws GLib.Error {
 			string real_name = get_full_class_name(node.tag.next_char());
+			if(node.get_pointer() != null) {
+				return (Object) node.get_pointer();
+			}
 			try {
-				Type type = Demangler.resolve_type(real_name);
+				if(type == Type.INVALID) type = Demangler.resolve_type(real_name);
+
 				message("%s", type.name());
 				Object obj = Object.new(type);
 				if(!(obj is Buildable)) {

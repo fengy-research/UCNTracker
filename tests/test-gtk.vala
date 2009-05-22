@@ -73,7 +73,7 @@ private const string GML =
 objects:
 - !Part &part1
   layer: 1
-  potential: 8.5e-5, 193
+  potential: { f : 8.5e-5 , V : 193 }
   objects:
   - !Box
     center: 0, 0, 0

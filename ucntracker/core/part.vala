@@ -1,23 +1,8 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public struct FermiPotential {
-		public double f;
-		public double V;
-		[CCode (instance_pos = 2)]
-		public bool parse(string foo) {
-			string[] words = foo.split(" ");
-			if(words == null || words.length != 2) 
-				words = foo.split(",");
-			if(words == null || words.length != 2) 
-				return false;
-			f = words[0].to_double();
-			V = words[1].to_double();
-			return true;
-		}
-		public FermiPotential(double f, double V) {
-			this.f = f;
-			this.V = V;
-		}
+	public class FermiPotential:Object, Buildable {
+		public double f {get; set;}
+		public double V {get; set;}
 	}
 
 	public class Part: Object, Buildable {
@@ -27,8 +12,7 @@ namespace UCNTracker {
 		public HashTable<unowned Part, Border> neighbours =
 			new HashTable<unowned Part, Border>(direct_hash, direct_equal);
 		public int layer {get; set; default = 0;}
-		private FermiPotential _potential = FermiPotential(0.0, 0.0);
-		public FermiPotential potential {get {return _potential;} set{ _potential = value;}}
+		public FermiPotential potential {get; set;}
 
 		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
@@ -58,10 +42,9 @@ namespace UCNTracker {
 			}
 			var mapping = node as GLib.YAML.Node.Mapping;
 			foreach(var key in mapping.keys) {
-				Part neib = cast_to_object(key.get_resolved()) as Part;
+				Part neib = builder.build_object(key.get_resolved(), typeof(Part)) as Part;
 				GLib.YAML.Node value = mapping.pairs.lookup(key).get_resolved();
-				value.tag = "!Border";
-				Border trans = builder.build_object(value) as Border;
+				Border trans = builder.build_object(value, typeof(Border)) as Border;
 				assert(neib != null);
 				assert(trans!= null);
 				neighbours.insert(neib, trans);
