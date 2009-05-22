@@ -3,7 +3,7 @@
 namespace UCNTracker {
 	public class Union: Volume, Buildable {
 		public List<Volume> children;
-		public void add_child(Builder builder, GLib.Object child, string? type) {
+		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				Volume volume = child as Volume;
 				children.prepend(volume);
@@ -59,7 +59,7 @@ namespace UCNTracker {
 
 	public class Intersection: Volume, Buildable {
 		public List<Volume> children;
-		public void add_child(Builder builder, GLib.Object child, string? type) {
+		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				Volume volume = child as Volume;
 				children.prepend(volume);

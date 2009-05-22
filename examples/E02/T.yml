@@ -1,18 +1,9 @@
----
-- &experiment
-  class: Experiment
-  max_time_step: 0.0001
-  children:
-  - *Guide
-  - *Disc
-  - *Cell
-  - *Lab
-  - *Mag
-  - class: AccelField
-    accel: 980.0
-    direction: 0, 0, -1
-- &Mag
-  class: BarrierField
+--- !Experiment
+objects:
+- !AccelField
+  accel: 980.0
+  direction: 0, 0, -1
+- !BarrierField
   center: 0, 0, 0
   factor: 1.0
   direction: 0, 1, 0
@@ -38,85 +29,68 @@
     40.000,0.000
     45.000,0.000
     50.000,0.000
-- &Guide
-  class: Part
+- &Guide !Part
   layer: 1
-  children:
-  - class: Union
-    children:
-    - *pipe1
-    - *pipe2
-    - *pipe3
-    - *elbow50
-    - *elbow51
-- &Cell
-  class: Part
+  objects:
+  - !Union
+    objects: [ *pipe1, *pipe2, *pipe3, *elbow50, *elbow51 ]
+  neighbours:
+    *Lab : { reflect: 100 }
+- &Cell !Part
   layer: 2
-  children:
-  - class: Cylinder
+  objects:
+  - !Cylinder
     center: 0, 4, 0
     length: 8
     radius: 3.3
     rotation: 0, 90, 0
-- &Lab
-  class: Part
+- &Lab !Part
   layer: 0
-  material_V: 193.0
-  material_f:  8.5e-5
-  children:
-  - class: Ball
+  potential: 193.0 8.5e-5
+  objects:
+  - !Ball
     center: 0, 0, 0
     radius: 500
-- &Disc
-  class: Part
+- &Disc !Part
   layer: 2
-  children:
-  - class: Cylinder
+  objects:
+  - !Cylinder
     center: -74.83, 52.605,-100.965
     radius: 4.88696
     length: 1.00
-- &pipe1
-  class: Cylinder
+- &pipe1 !Cylinder
   center: 0,30.48,0
   rotation: 0, 90, 0
   radius: 4.88696
   length: 60.96
-- &pipe2
-  class: Cylinder
+- &pipe2 !Cylinder
   center: -22.225,52.605,0
   rotation: 90, -90, 0
   radius: 4.88696
   length: 30.48
-- &pipe3
-  class: Cylinder
+- &pipe3 !Cylinder
   center: -74.83,52.605,-100.965
   rotation: 0, 0, 0
   radius: 4.88696
   length: 78.74
-- &elbow50
-  class: Intersection
-  children:
-  - *torus50
+- &elbow50 !Intersection
+  objects:
+  - !Torus
+    center: -22.225, 30.48, 0
+    rotation: 0, 0, 0
+    radius: 22.225
+    tube_radius: 4.88696
   - class: Box
     center: 0, 52.605, 0
     size: 44.45, 44.45, 10
-- &torus50
-  class: Torus
-  center: -22.225, 30.48, 0
-  rotation: 0, 0, 0
-  radius: 22.225
-  tube_radius: 4.88696
-- &elbow51
-  class: Intersection
-  children:
-  - *torus51
-  - class: Box
+- &elbow51 !Intersection
+  objects:
+  - !Torus
+    center: -52.605, 52.605, -22.25
+    rotation: 0, 90, 0
+    radius: 22.225
+    tube_radius: 4.88696
+  - !Box
     center: -74.83, 52.605, 0
     size: 44.45, 10, 44.45
-- &torus51
-  class: Torus
-  center: -52.605, 52.605, -22.25
-  rotation: 0, 90, 0
-  radius: 22.225
-  tube_radius: 4.88696
 ...

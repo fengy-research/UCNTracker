@@ -19,7 +19,7 @@ namespace UCNTracker {
 			camera.experiment = experiment;
 			camera.set_size_request(200, 200);
 			window.add(widget_box);
-			widget_box.add(camera);
+			widget_box.pack_start(camera, true, true, 0);
 			window.destroy += this.quit;
 			prepare += (obj, run) => {
 				camera.run = run;

@@ -7,13 +7,14 @@ namespace UCNTracker {
 		double[] field_Bs = new double[0];
 		double[] field_xs = new double[0];
 		public string map {set {
+			message("%s", value);
 			string[] lines = value.split("\n");
 			field_Bs = new double[lines.length];
 			field_xs = new double[lines.length];
 			int i = 0;
 			foreach(unowned string line in lines) {
 				string[] words = line.split(",");
-				assert(words.length == 2);
+				if(words.length != 2) continue;
 				double x = words[0].to_double();
 				double B = words[1].to_double();
 				field_xs[i] = x;
