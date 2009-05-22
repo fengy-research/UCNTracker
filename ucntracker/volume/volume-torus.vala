@@ -12,8 +12,7 @@ namespace UCNTracker {
 			set { _radius = value; bounding_radius = _tube_radius + _radius;}
 		}
 
-		public override double sfunc(Vector point) {
-			Vector p = world_to_body(point);
+		public override double body_sfunc(Vector p) {
 			double dn = Math.sqrt(p.x * p.x + p.y * p.y);
 			return Math.sqrt((dn - _radius)*(dn - _radius) + p.z * p.z) - _tube_radius;
 		}

@@ -29,7 +29,7 @@ namespace UCNTracker {
 		 *   points. And because we are even going to throw away brent,
 		 *   lets see what is going to happend for these inside surfaces.
 		 */
-		public override double sfunc(Vector point) {
+		public override double body_sfunc(Vector point) {
 			double min = double.MAX;
 			/**
 			 * sum: sum of sfunc for all children that contains
@@ -37,9 +37,8 @@ namespace UCNTracker {
 			 * */
 			double sum = 0.0;
 			bool in_or_on = false;
-			Vector body_p = world_to_body(point);
 			foreach(Volume child in children) {
-				double s = child.sfunc(body_p);
+				double s = child.sfunc(point);
 				if( s > 0.0 ) {
 					if(min > s ) min = s;
 				} else {
@@ -78,14 +77,13 @@ namespace UCNTracker {
 		 * the point).
 		 *
 		 *****/
-		public override double sfunc(Vector point) {
+		public override double body_sfunc(Vector point) {
 			double min = double.MAX;
 			double max = -double.MAX;
 
 			bool in_or_on = true;
-			Vector body_p =world_to_body(point);
 			foreach(Volume child in children) {
-				double s = child.sfunc(body_p);
+				double s = child.sfunc(point);
 				if( s > 0.0 ) {
 					if(min > s ) min = s;
 					in_or_on = false;

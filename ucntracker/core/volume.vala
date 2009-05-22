@@ -112,8 +112,24 @@ namespace UCNTracker {
 		 * The estimation is accurate only when the point
 		 * is close to the surface.
 		 *
+		 * This function takes the world coordinate as input,
+		 * AKA world_to_body is not called.
+		 *
 		 */
-		public abstract double sfunc(Vector point);
+		public virtual double sfunc(Vector point) {
+			return body_sfunc(world_to_body(point));
+		}
+
+		/**
+		 * return an estimated 'signed' distance between a point
+		 * and the surface of the volume.
+		 * The sign of the distance follows the Sense convention.
+		 *
+		 * This function takes the body coordinate as input. AKA,
+		 * world_to_body is called.
+		 */
+
+		public abstract double body_sfunc(Vector point);
 
 		/**
 		 * return the gradient of the sfunc.
@@ -155,14 +171,14 @@ namespace UCNTracker {
 			return grad;
 		}
 
-		public Vector world_to_body(Vector point) {
+		private Vector world_to_body(Vector point) {
 			Vector rt = point;
 			rt.translate_i(center);
 			rt.rotate_i(rotation);
 			return rt;
 		}
 
-		public Vector body_to_world(Vector point) {
+		private Vector body_to_world(Vector point) {
 			Vector rt = point;
 			rt.rotate(rotation);
 			rt.translate(center);

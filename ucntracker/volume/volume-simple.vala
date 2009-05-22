@@ -7,8 +7,7 @@ namespace UCNTracker {
 	public abstract class Primitive : Volume {
 		protected Surface[] surfaces = null;
 
-		public override double sfunc(Vector point) {
-			Vector p = world_to_body(point);
+		public override double body_sfunc(Vector p) {
 			double max = -double.MAX;
 			double inside_max = -double.MAX;
 			double s;
