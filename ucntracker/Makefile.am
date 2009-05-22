@@ -26,18 +26,18 @@ VALASOURCES = \
 	math/multichannel.vala \
 	math/quaternion.vala \
 	math/surface.vala \
-	core/volume.vala \
+	buildables/volume.vala \
+	buildables/field.vala \
+	buildables/experiment.vala \
+	buildables/cross-section.vala \
+	buildables/border.vala \
 	core/group.vala \
-	core/field.vala \
-	core/experiment.vala \
 	core/intersector.vala \
-	core/cross-section.vala \
 	core/freelength-table.vala \
 	core/evolve.vala \
-	core/border.vala \
 	core/vertex.vala \
 	core/track.vala \
-	core/part.vala \
+	buildables/part.vala \
 	volume/volume-simple.vala \
 	volume/volume-boolean.vala \
 	volume/volume-ball.vala \
