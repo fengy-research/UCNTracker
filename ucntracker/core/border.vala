@@ -3,7 +3,7 @@ namespace UCNTracker {
 	/**
 	 * Border is the properties of the adjacent between two parts.
 	 * */
-	public class Border:Object, Buildable {
+	public class Border:Object, GLib.YAML.Buildable {
 		public struct Event {
 			public Track track;
 			public Vector normal;

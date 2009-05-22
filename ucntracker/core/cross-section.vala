@@ -1,6 +1,6 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class CrossSection : Object, Buildable {
+	public class CrossSection : Object, GLib.YAML.Buildable {
 		public static delegate double CrossSectionFunction(Track track, Vertex vertex);
 		public double density {get; set;}
 		public Type ptype {get; set;}

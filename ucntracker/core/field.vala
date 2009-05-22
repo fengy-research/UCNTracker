@@ -1,8 +1,8 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public abstract class Field: Object, Buildable {
+	public abstract class Field: Object, GLib.YAML.Buildable {
 		public List<Volume> volumes;
-		public void add_child(Builder builder, GLib.Object child, string? type) throws Error {
+		public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				volumes.prepend(child as Volume);
 			} else {
@@ -15,6 +15,7 @@ namespace UCNTracker {
 		public abstract bool fieldfunc(Track track, Vector position, Vector velocity, out Vector acceleration);
 
 		public bool locate(Vector point, out unowned Volume child) {
+			if(volumes == null) return true;
 			foreach(Volume volume in volumes) {
 				Sense sense = volume.sense(point);
 				if(sense == Sense.IN) {

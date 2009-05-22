@@ -26,14 +26,12 @@ VALASOURCES = \
 	math/multichannel.vala \
 	math/quaternion.vala \
 	math/surface.vala \
-	core/buildable.vala \
-	core/builder.vala \
 	core/volume.vala \
 	core/group.vala \
 	core/field.vala \
 	core/experiment.vala \
 	core/intersector.vala \
-	core/crosssection.vala \
+	core/cross-section.vala \
 	core/freelength-table.vala \
 	core/evolve.vala \
 	core/border.vala \
@@ -48,6 +46,7 @@ VALASOURCES = \
 	volume/volume-cylinder.vala \
 	field/accel.vala \
 	field/barrier.vala \
+	field/custom.vala \
 	physics/neutron.vala \
 	physics/cold-neutron.vala \
 	physics/ultracold-neutron.vala \
@@ -56,6 +55,7 @@ VALASOURCES = \
 vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
 	echo gmodule-2.0 > ucntracker.deps
+	echo libyaml-glib-1.0 >> ucntracker.deps
 	echo gsl >> ucntracker.deps
 	touch vala-ccode
 

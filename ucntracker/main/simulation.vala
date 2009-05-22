@@ -1,7 +1,7 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Simulation {
-		public Builder builder = new Builder("UCN");
+		public GLib.YAML.Builder builder = new GLib.YAML.Builder("UCN");
 		public unowned Gsl.RNG rng = UniqueRNG.rng;
 		public Experiment experiment {get; private set;}
 		public List<Run> runs;
