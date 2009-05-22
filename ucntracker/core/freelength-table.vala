@@ -27,16 +27,13 @@ namespace UCNTracker {
 				entry = new FreeLengthEntry();
 				entry.free_length = 0.0;
 				hash.insert(section, entry);
-				debug("new entry for section %s", section.get_name());
 			}
 			double free_length = entry.free_length;
 			double mfp = 1.0 / ((section.density / (UNITS.CM3) * section.sigma(track, track.tail)));
-			debug ( "mfp = %lg", mfp);
 			double dl =  physical_advanced_length / mfp;
-			double dP = Math.exp( -free_length) - Math.exp((-free_length - dl));
+			double dP = 1.0 - Math.exp((- dl));
 			double r = UniqueRNG.rng.uniform();
 			bool reacted = false;
-			debug("r = %lg dP = %lg",r, dP); 
 			if(r < dP) {
 				section.hit(track, track.tail);
 				reset_all();
@@ -45,8 +42,6 @@ namespace UCNTracker {
 				free_length += dl;
 				entry.free_length = free_length;
 			}
-			debug("%s physical_adv = %lg free_length is %lf", section.get_name(), 
-					physical_advanced_length, entry.free_length);
 			return reacted;
 		}
 		public void reset_all() {
