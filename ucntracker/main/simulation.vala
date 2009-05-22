@@ -112,10 +112,14 @@ namespace UCNTracker {
 		public signal void finish(Run run);
 
 		public Run add_run() {
-			Run run = new Run(this);
+			Run run = new Run.with_simulation (this);
 			runs.prepend(run);
+			run.finish += this.emit_finish;
 			prepare(run);
 			return run;
+		}
+		private void emit_finish(Run run) {
+			finish(run);
 		}
 	}
 	}

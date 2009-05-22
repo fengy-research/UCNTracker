@@ -7,9 +7,7 @@ namespace UCNTracker {
 		 */
 		public double time_limit = double.MAX;
 
-		public Experiment experiment {
-			get { return sim.experiment; }
-		}
+		public Experiment experiment { internal set; get;}
 
 		public bool running = false;
 		public double timestamp = 0.0;
@@ -23,10 +21,15 @@ namespace UCNTracker {
 
 		private uint source_id = 0;
 		private MainContext context = null;
-		public Run(Simulation sim) {
+
+		internal Run.with_simulation (Simulation sim) {
 			this.sim = sim;
+			this.experiment = sim.experiment;
 		}
 
+		public Run.with_experiment(Experiment experiment) {
+			this.experiment = experiment;
+		}
 		/**
 		 * Attach the run to a main context, so that it will be
 		 * scheduled by GLib main loop.
@@ -91,13 +94,15 @@ namespace UCNTracker {
 		 */
 		public signal void track_added_notify(Track track);
 
+		public signal void finish();
+
 		private bool run1() {
 			if(MainContext.current_source().is_destroyed()) return false;
 			if(running == true && 
 				(active_tracks == null || timestamp > time_limit)) {
 				debug("Run finished at %lf", timestamp);
 				running = false;
-				sim.finish(this);
+				this.finish();
 				return false;
 			}
 			if(running == false) {

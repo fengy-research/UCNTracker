@@ -114,11 +114,20 @@ public class ScenceEditor {
 			break;
 			case "simulation-start":
 				if(run != null) {
-					
-				} else {
-					run = experiment.add_run();
-					run.attach();
+					run.stop();
+					run = null;
 				}
+				run = new Run.with_experiment(experiment);
+				run.attach();
+				Track track = Track.new(typeof(Neutron));
+				Vertex start = track.create_vertex();
+
+				start.position = vertex_editor.position;
+				start.velocity = vertex_editor.velocity;
+				start.weight = 1.0;
+				run.frame_length = 0.1;
+				track.start(run, start);
+				camera.run = run;
 			break;
 			case "simulation-stop":
 				if(run != null) {
@@ -155,7 +164,6 @@ public class ScenceEditor {
 		Builder builder = new Builder("UCN");
 		builder.add_from_string(yml);
 		unowned List<unowned Object> list = builder.get_objects();
-		experiment = null;
 		foreach(Object obj in list) {
 			if(obj is Experiment) {
 				experiment = obj as Experiment;
@@ -166,21 +174,6 @@ public class ScenceEditor {
 		if(experiment == null) {
 			throw new Error.NO_EXPERIMENT("no experiment found in the yml file");
 		}
-		experiment.prepare += (obj, run) => {
-			Track track = Track.new(typeof(Neutron));
-			Vertex start = track.create_vertex();
-
-			start.position = vertex_editor.position;
-			start.velocity = vertex_editor.velocity;
-			start.weight = 1.0;
-			run.frame_length = 0.1;
-			track.start(run, start);
-			camera.run = null;
-			camera.run = run;
-		};
-		experiment.finish += (obj, run) => {
-			run = null;
-		};
 	}
 	private void open_file(string filename) {
 		string content;
