@@ -40,8 +40,10 @@ public class Experiment: Object, Buildable {
 	}
 	public Vector accelerate(Track track, Vertex Q) {
 		Vector accel = Vector(0, 0, 0);
+		Vector this_accel;
+		Volume child;
 		foreach(Field field in fields) {
-			Vector this_accel;
+			if(!field.locate(Q.position, out child)) continue;
 			if(field.fieldfunc(track, Q.position, Q.velocity, out this_accel)){
 				accel.x += this_accel.x;
 				accel.y += this_accel.y;
