@@ -1,6 +1,6 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
-	public class Torus: Primitive , GLib.YAML.Buildable {
+	public class Torus: Primitive {
 		private double _tube_radius= 0.0;
 		private double _radius = 0.0;
 		public double tube_radius {
