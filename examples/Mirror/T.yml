@@ -9,7 +9,7 @@
     objects:
     - !Box
        center: 0, 4, 0
-       size: 80, 160, 100
+       size: 400, 400, 100
     neighbours:
       *Lab: { absorb: 0, diffuse: 0, fermi: 0, reflect: 100 }
  - !Part &Lab
@@ -18,7 +18,7 @@
     - !Ball &ball
        center: 0, 0, 0
        radius: 500
-    neighbours: 
+    neighbours:
       *Mirror: { absorb: 0, diffuse: 0, fermi: 0, reflect: 100 }
 
 ...
