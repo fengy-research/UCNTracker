@@ -83,9 +83,12 @@ public class Simulation : VisSimulation {
 				double x, y, z;
 				double LR = ball.radius;
 				do {
-					x = ( rng.uniform() - 0.5 ) * 2 * LR;
-					y = ( rng.uniform() - 0.5 ) * 2 * LR;
-					z = ( rng.uniform() - 0.5 ) * 2 * LR;
+				//	x = ( rng.uniform() - 0.5 ) * 2 * LR;
+				//	y = ( rng.uniform() - 0.5 ) * 2 * LR;
+				//	z = ( rng.uniform() - 0.5 ) * 2 * LR;
+					x = -100;
+					y = 0;
+					z = 200;
 					head.position = Vector(x, y, z);
 					head.weight = 1.0;
 //					track.start(run, head);
@@ -95,8 +98,8 @@ public class Simulation : VisSimulation {
 				track.magnetic_helicity = rng.uniform() < 0.5? 1: -1;
 			}
 
-			run.time_limit = 50;
-			run.frame_length = 0.2;
+			run.time_limit = 200;
+			run.frame_length = 0.05;
 		};
 		finish += (ex, run) => {
 			summerize(run);

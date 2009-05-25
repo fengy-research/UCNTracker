@@ -3,10 +3,8 @@ using UCNPhysics;
 using Math;
 
 public class Simulation :VisSimulation {
-	Experiment experiment;
 	Part cell;
 	public void init() {
-		experiment = builder.get_object("experiment") as Experiment;
 		cell = get_part("cell") as Part;
 		prepare += (ex, run) => {
 			Track track = Track.new(typeof(Neutron));
