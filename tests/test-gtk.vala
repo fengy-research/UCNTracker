@@ -84,8 +84,8 @@ parts:
     size: 10, 10, 5
   cross-sections:
   - !CrossSection &cs1
-#    ptype: Neutron
-    const_sigma: 10
+    ptype: Neutron
+    const_sigma: 0.1
     density: 1.0
   neighbours:
     *Lab : { absorb: 70, reflect : 000, diffuse: 30, fermi: 0 }
