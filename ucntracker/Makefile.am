@@ -25,12 +25,12 @@ VALASOURCES = \
 	math/random.vala \
 	math/multichannel.vala \
 	math/quaternion.vala \
-	math/surface.vala \
 	buildables/volume.vala \
 	buildables/field.vala \
 	buildables/experiment.vala \
 	buildables/cross-section.vala \
 	buildables/border.vala \
+	buildables/surface.vala \
 	core/intersector.vala \
 	core/freelength-table.vala \
 	core/evolve.vala \
