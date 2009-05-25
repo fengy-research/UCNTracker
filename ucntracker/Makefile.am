@@ -32,6 +32,7 @@ VALASOURCES = \
 	buildables/border.vala \
 	buildables/surface.vala \
 	core/freelength-table.vala \
+	core/transformable.vala \
 	core/evolve.vala \
 	core/vertex.vala \
 	core/track.vala \

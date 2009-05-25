@@ -12,31 +12,11 @@ namespace UCNTracker {
 		ON = 0,
 		OUT = 1
 	}
-	public abstract class Volume: Object, GLib.YAML.Buildable {
+	public abstract class Volume: Transformable, GLib.YAML.Buildable {
 		private Gsl.RNG rng = new Gsl.RNG(Gsl.RNGTypes.mt19937);
 		private const double delta = 1.0e-5; /* Used by grad*/
 		public const double thickness = 1e-6; /* Used by sense */
-		private Vector _center = Vector(0.0, 0.0, 0.0);
-		private EulerAngles _rotation = EulerAngles(0.0, 0.0, 0.0);
 		public double bounding_radius { get; protected set; }
-
-		public Vector center {
-			get {
-				return _center;
-			}
-			set {
-				_center = value;
-			}
-		}
-
-		public EulerAngles rotation {
-			get {
-				return _rotation;
-			}
-			set {
-				_rotation = value;
-			}
-		}
 
 		/**
 		 * generate a point in the volume or on the surface.
@@ -64,12 +44,13 @@ namespace UCNTracker {
 
 		/**
 		 * return the sense of the point.
+		 *
 		 * - for inside;
 		 * + for outside;
 		 * 0 for on surface;
 		 */
 		public virtual Sense sense(Vector point) {
-			if(point.distance(_center) > bounding_radius + thickness) {
+			if(point.distance(center) > bounding_radius + thickness) {
 				/* if the point is out of the bounding ball,
 				 * don't bother calling sfunc and do the rotation
 				 * */
@@ -149,18 +130,5 @@ namespace UCNTracker {
 			return grad;
 		}
 
-		private Vector world_to_body(Vector point) {
-			Vector rt = point;
-			rt.translate_i(center);
-			rt.rotate_i(rotation);
-			return rt;
-		}
-
-		private Vector body_to_world(Vector point) {
-			Vector rt = point;
-			rt.rotate(rotation);
-			rt.translate(center);
-			return rt;
-		}
 	}
 }
