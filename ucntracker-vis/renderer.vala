@@ -49,8 +49,8 @@ namespace UCNTracker {
 				Ball ball = volume as Ball;
 				Gdk.GLDraw.sphere (use_solid, ball.radius, 8, 8);
 			} else
-			if(volume is Torus) {
-				Torus torus = volume as Torus;
+			if(volume is Donut) {
+				Donut torus = volume as Donut;
 				Gdk.GLDraw.torus (use_solid, 
 				torus.tube_radius, 
 				torus.radius, 

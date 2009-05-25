@@ -35,11 +35,13 @@ namespace UCNTracker {
 	 * To define the surface, we need two functions, S and T.
 	 */
 	public abstract class Surface : Transformable, GLib.YAML.Buildable {
+		public Border border {get; set; default = new Border();}
+
 		public virtual Vector xyz_to_uvw(Vector point) {
 			return body_xyz_to_uvw(world_to_body(point));
 		}
 		public abstract Vector body_xyz_to_uvw(Vector point);
-		public bool is_inside(Vector uvw) {
+		public bool is_inside_uvw(Vector uvw) {
 			if(uvw.x >= -1.0 && uvw.x <= 1.0 
 			&& uvw.y >= -1.0 && uvw.y <= 1.0) {
 				return true;
@@ -115,5 +117,31 @@ namespace UCNTracker {
 			return Vector(u, v, w);
 		}
 	}
+	public class Sphere :Surface {
+		public double radius {get; set;}
+		public override Vector body_xyz_to_uvw(Vector p) {
+			double w = p.norm() - radius;
+			/* This is tricky. 
+			 * Because the Sphere is a closed surface that separates the space into two parts,
+			 * and because we don't define a region of the sphere,
+			 * We don't need to define u & v.
+			 * */
+			double u = 0.0;
+			double v = 0.0;
+			return Vector(u, v, w);
+		}
+	}
+	public class Torus :Surface {
+		public double tube_radius {get; set;}
+		public double radius { get; set;}
 
+		public override Vector body_xyz_to_uvw(Vector p) {
+			double dn = Math.sqrt(p.x * p.x + p.y * p.y);
+			double w = Math.sqrt((dn - radius)*(dn - radius) + p.z * p.z) - tube_radius;
+			double u = 0.0;
+			double v = 0.0;
+			return Vector(u, v, w);
+		}
+		
+	}
 }

@@ -29,8 +29,8 @@ public class Application :UCNTracker.VisSimulation {
 		prepare += (obj, run) => {
 			Track t = Track.new(typeof(Neutron));
 			Vertex start = t.create_vertex();
-			start.position = Vector(0, 0, 11.0);
-			start.velocity = Vector(0.0, 0.0, -1000.0);
+			start.position = Vector(-18, -18, 0.0);
+			start.velocity = Vector(0.0, 100.0, -1000.0);
 			start.weight = 1.0;
 			run.time_limit = 10;
 			run.frame_length = 1.0;
@@ -92,6 +92,10 @@ parts:
     center: 0, 0, 10
     length: 10
     radius: 10
+  - !Donut
+    center: 12, 12, 0 
+    tube_radius: 3
+    radius: 6
   cross-sections:
   - !CrossSection &cs1
 #    ptype: Neutron
