@@ -35,7 +35,6 @@ namespace UCNTracker {
 	 * To define the surface, we need two functions, S and T.
 	 */
 	public abstract class Surface : Transformable, GLib.YAML.Buildable {
-		public Border border {get; set; default = new Border();}
 
 		public virtual Vector xyz_to_uvw(Vector point) {
 			return body_xyz_to_uvw(world_to_body(point));

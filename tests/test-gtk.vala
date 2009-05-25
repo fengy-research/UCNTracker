@@ -111,6 +111,13 @@ parts:
     radius: 30
   neighbours:
     *part1 : { absorb: 00, reflect: 000, diffuse: 00, fermi: 0 }
+foils:
+- !Foil &foil
+  surfaces:
+  - !Rectangle
+    width: 100
+    height: 100
+  border: { absorb: 00, reflect: 100, diffuse: 00, fermi: 0 }
 fields:
 - !AccelField
   direction: 0, 0, -1

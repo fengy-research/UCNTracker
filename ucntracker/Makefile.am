@@ -31,6 +31,7 @@ VALASOURCES = \
 	buildables/cross-section.vala \
 	buildables/border.vala \
 	buildables/surface.vala \
+	buildables/foil.vala \
 	core/freelength-table.vala \
 	core/transformable.vala \
 	core/evolve.vala \
@@ -40,7 +41,7 @@ VALASOURCES = \
 	volume/volume-simple.vala \
 	volume/volume-boolean.vala \
 	volume/volume-ball.vala \
-	volume/volume-torus.vala \
+	volume/volume-donut.vala \
 	volume/volume-box.vala \
 	volume/volume-cylinder.vala \
 	field/accel.vala \
