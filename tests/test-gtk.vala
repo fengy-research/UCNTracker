@@ -5,6 +5,7 @@ using UCNTracker;
 using UCNPhysics;
 
 public class Application :UCNTracker.VisSimulation {
+	private bool paused = false;
 	public override void init() throws GLib.Error {
 		base.init();
 
@@ -15,6 +16,8 @@ public class Application :UCNTracker.VisSimulation {
 
 		b1.transport += () => {
 			message("transport");
+			current_run.pause();
+			paused = true;
 		};
 
 		cs1.hit += (obj, track, state) => {
@@ -26,10 +29,10 @@ public class Application :UCNTracker.VisSimulation {
 		prepare += (obj, run) => {
 			Track t = Track.new(typeof(Neutron));
 			Vertex start = t.create_vertex();
-			start.position = Vector(1.0, 1.2, 10.0);
-			start.velocity = Vector(0.0, rng.uniform(), 2.0);
+			start.position = Vector(0, 0, 11.0);
+			start.velocity = Vector(0.0, 0.0, -1000.0);
 			start.weight = 1.0;
-			run.time_limit = 1000;
+			run.time_limit = 10;
 			run.frame_length = 1.0;
 			message("run prepared ");
 			t.start(run, start);
@@ -49,9 +52,12 @@ public class Application :UCNTracker.VisSimulation {
 
 		button.clicked += (obj) => {
 			message("clicked");
-			init_from_string(GML);
-			message("clicked-2");
-			add_run().attach();
+			if(paused) {
+				current_run.continue();
+			} else {
+				init_from_string(GML);
+				add_run().attach();
+			}
 		};
 		
 	}
@@ -82,13 +88,17 @@ parts:
   - !Box
     center: 0, 0, 0
     size: 10, 10, 5
+  - !Cylinder
+    center: 0, 0, 10
+    length: 10
+    radius: 10
   cross-sections:
   - !CrossSection &cs1
 #    ptype: Neutron
     const_sigma: 10
     density: 1.0
   neighbours:
-    *Lab : { absorb: 70, reflect : 000, diffuse: 30, fermi: 0 }
+    *Lab : { absorb: 0, reflect : 00, diffuse: 100, fermi: 0 }
 - !Part &Lab
   layer: 0
   volumes:

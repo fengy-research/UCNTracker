@@ -5,15 +5,21 @@ namespace UCNTracker {
 	 * reflect, transport or diffuse.
 	 *
 	 * Mathamatically a Surface is defined as
-	 * S(x, y, z) = 0
-	 * T(x, y, z) < 0
+	 * x = x(u, v, w)
+	 * y = y(u, v, w)
+	 * z = z(u, v, w)
 	 *
-	 * When S is close to 0,
-	 * |S| is the distance from the given point to the surface.
+	 * where u = [-1, 1]
+	 * v = [-1, 1]
+	 * w = 0
 	 *
-	 * T(x, y, z) < 0 for inside the surface region,
-	 * T(x, y, z) = 0 for the border of the surface  region
-	 * T(x, y, z) > 0 for outside of the surface region
+	 * for points not on the surface, when w is small, 
+	 * |w| is the distance from the given point to the surface.
+	 *
+	 * To make life easier we have a xyz_to_uvw function that takes 
+	 * a body coordinate and covert it to the parametrization coordinate
+	 * u v w
+	 *
 	 *
 	 * For this special kind of 2D (regional) surfaces,
 	 *
@@ -28,46 +34,86 @@ namespace UCNTracker {
 	 *
 	 * To define the surface, we need two functions, S and T.
 	 */
-	public abstract class Surface{
-		public Vector center;
-
-		public abstract double sfunc(Vector point);
-	}
-
-	public class Tube:Surface {
-		public Vector direction;
-		public double radius;
-
-		public Tube(Vector direction, Vector center, double radius) {
-			this.direction = direction;
-			this.center = center;
-			this.radius = radius;
+	public abstract class Surface : Transformable, GLib.YAML.Buildable {
+		public virtual Vector xyz_to_uvw(Vector point) {
+			return body_xyz_to_uvw(world_to_body(point));
 		}
-
-		public override double sfunc(Vector point) {
-			Vector v = point;
-			v.x -= center.x;
-			v.y -= center.y;
-			v.z -= center.z;
-			double proj = v.dot(direction);
-			return Math.sqrt(v.norm2() - proj * proj) - radius;
+		public abstract Vector body_xyz_to_uvw(Vector point);
+		public bool is_inside(Vector uvw) {
+			if(uvw.x >= -1.0 && uvw.x <= 1.0 
+			&& uvw.y >= -1.0 && uvw.y <= 1.0) {
+				return true;
+			}
+			return false;
 		}
 	}
 
-	public class Plane:Surface {
-		public Vector norm;
+	public class Circle : Surface {
+		public double radius {get; set;}
+		/**
+		 * The starting of the arc,
+		 * in degrees, from 0 to 360.
+		 */
+		public double arc_start {get; set; default = 0.0;}
+		/**
+		 * The ending of the arc,
+		 *
+		 * in degrees, from 0, to 360.
+		 */
+		public double arc_end {get; set; default = 360.0;}
 
-		public Plane(Vector norm, Vector center) {
-			this.norm = norm;
-			this.center = center;
+		public Circle.rotated(EulerAngles e) {
+			(this as Surface).rotation = e;
 		}
 
-		public override double sfunc(Vector point) {
-			Vector p = point;
-			p.x -= center.x;
-			p.y -= center.y;
-			p.z -= center.z;
-			return norm.dot(p);
+		public override Vector body_xyz_to_uvw(Vector p) {
+			double w = p.z;
+			double u = ((Math.atan2(p.y, p.x))/ Math.PI * 180.0 - arc_start)/(arc_end- arc_start) * 2.0;
+			double v = 2.0 * Math.sqrt(p.x * p.x + p.y * p.y) / radius - 1.0;
+			return Vector(u, v, w);
 		}
 	}
+	public class Rectangle: Surface {
+		public double width {get; set;}
+		public double height {get; set;}
+
+		public Rectangle.rotated(EulerAngles e) {
+			(this as Surface).rotation = e;
+		}
+		public override Vector body_xyz_to_uvw(Vector p) {
+			double w = p.z;
+			double u = (p.x - width)/ width * 2.0;
+			double v = (p.y - height) / height * 2.0;
+			return Vector(u, v, w);
+		}
+	}
+
+	public class Tube: Surface {
+		public double radius {get; set;}
+
+		public double length {get; set;}
+		/**
+		 * The starting of the arc,
+		 * in degrees, from 0 to 360.
+		 */
+		public double arc_start {get; set; default = 0.0;}
+		/**
+		 * The ending of the arc,
+		 *
+		 * in degrees, from 0, to 360.
+		 */
+		public double arc_end {get; set; default = 360.0;}
+
+		public Tube.rotated(EulerAngles e) {
+			(this as Surface).rotation = e;
+		}
+
+		public override Vector body_xyz_to_uvw(Vector p) {
+			double w = (Math.sqrt(p.x * p.x + p.y * p.y) - radius);
+			double u = ((Math.atan2(p.y, p.x))/ Math.PI * 180.0 - arc_start)/(arc_end- arc_start) * 2.0;
+			double v = (p.z - 0.5 * length ) / length;
+			return Vector(u, v, w);
+		}
+	}
+
 }

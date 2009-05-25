@@ -3,39 +3,37 @@ namespace UCNTracker {
 	public class Cylinder : Primitive {
 		private double _length = 0.0;
 		private double _radius = 0.0;
-		const int TOP = 0;
-		const int BOTTOM = 1;
-		const int TUBE = 2;
+
+		public Circle top = new Circle.rotated(EulerAngles(0, 0, 0));
+		public Circle bottom = new Circle.rotated(EulerAngles(0, 180, 0));
+
+		public Tube tube = new Tube();
 
 		public double length {
-			get { return _length; }
+			get { return tube.length; }
 			set {
-				_length = value;
+				tube.length = value;
 				bounding_radius =
-				  Math.sqrt(_length * _length + _radius * _radius);
-				surfaces[BOTTOM].center.z = 0;
-				surfaces[TOP].center.z = _length;
+				  Math.sqrt(value * value + tube.radius* tube.radius);
+				top.center = Vector(0, 0, value);
 			}
 		}
 
 		public double radius {
-			get { return _radius; }
+			get { return tube.radius; }
 			set {
-				_radius= value;
+				tube.radius= value;
 				bounding_radius =
-				  Math.sqrt(_length * _length + _radius * _radius);
-				(surfaces[TUBE] as Tube).radius = _radius;
+				  Math.sqrt(tube.length * tube.length + tube.radius * tube.radius);
+				tube.radius = radius;
+				top.radius = radius;
+				bottom.radius = radius;
 			}
 		}
 
 		construct {
-			surfaces = {
-				new Plane(Vector(0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0)),
-				new Plane(Vector(0.0, 0.0, -1.0), Vector(0.0, 0.0, 0.0)),
-				new Tube(Vector(0.0, 0.0, 1.0), Vector(0.0, 0.0, 0.0), 0.0)
-			};
+			surfaces = {top, bottom, tube};
 		}
-
 		public Cylinder(double length, double radius) {
 			this.length = length;
 			this.radius = radius;

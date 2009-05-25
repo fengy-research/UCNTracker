@@ -10,18 +10,17 @@ namespace UCNTracker {
 		public override double body_sfunc(Vector p) {
 			double max = -double.MAX;
 			double inside_max = -double.MAX;
-			double s;
 			bool in_side = true;
 			foreach(Surface surface in surfaces) {
-				s = surface.sfunc(p);
+				Vector uvw = surface.xyz_to_uvw(p);
 				/* if the point is on some of the surfaces, 
 				 * we still want to return the max sfunc,
 				 * instead of a very negative value */
-				in_side &= (s <= 0.0);
-				if( s <= 0.0) {
-					if(s > inside_max ) inside_max = s;
+				in_side &= (uvw.z <= 0.0);
+				if( uvw.z <= 0.0) {
+					if(uvw.z > inside_max ) inside_max = uvw.z;
 				}
-				if(s > max ) max = s;
+				if(uvw.z > max ) max = uvw.z;
 			}
 			return in_side?inside_max:max;
 		}
