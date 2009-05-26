@@ -29,7 +29,7 @@ public class Application :UCNTracker.VisSimulation {
 		prepare += (obj, run) => {
 			Track t = Track.new(typeof(Neutron));
 			Vertex start = t.create_vertex();
-			start.position = Vector(-18, -18, 0.0);
+			start.position = Vector(-0, -0, 0.0);
 			start.velocity = Vector(0.0, 100.0, -1000.0);
 			start.weight = 1.0;
 			run.time_limit = 10;

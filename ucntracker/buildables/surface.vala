@@ -9,9 +9,9 @@ namespace UCNTracker {
 	 * y = y(u, v, w)
 	 * z = z(u, v, w)
 	 *
-	 * where u = [-1, 1]
-	 * v = [-1, 1]
 	 * w = 0
+	 *
+	 * The effective region of the surface is defined by R(u, v) < 0
 	 *
 	 * for points not on the surface, when w is small, 
 	 * |w| is the distance from the given point to the surface.
@@ -36,17 +36,14 @@ namespace UCNTracker {
 	 */
 	public abstract class Surface : Transformable, GLib.YAML.Buildable {
 
-		public virtual Vector xyz_to_uvw(Vector point) {
-			return body_xyz_to_uvw(world_to_body(point));
+		public virtual double sfunc(Vector point) {
+			return body_sfunc(world_to_body(point));
 		}
-		public abstract Vector body_xyz_to_uvw(Vector point);
-		public bool is_inside_uvw(Vector uvw) {
-			if(uvw.x >= -1.0 && uvw.x <= 1.0 
-			&& uvw.y >= -1.0 && uvw.y <= 1.0) {
-				return true;
-			}
-			return false;
+		public abstract double body_sfunc(Vector point);
+		public virtual bool is_in_region(Vector point) {
+			return body_is_in_region(world_to_body(point));
 		}
+		public abstract bool body_is_in_region(Vector point);
 	}
 
 	public class Circle : Surface {
@@ -67,11 +64,16 @@ namespace UCNTracker {
 			(this as Surface).rotation = e;
 		}
 
-		public override Vector body_xyz_to_uvw(Vector p) {
-			double w = p.z;
-			double u = ((Math.atan2(p.y, p.x))/ Math.PI * 180.0 - arc_start)/(arc_end- arc_start) * 2.0;
-			double v = 2.0 * Math.sqrt(p.x * p.x + p.y * p.y) / radius - 1.0;
-			return Vector(u, v, w);
+		public override double body_sfunc(Vector p) {
+			return p.z;
+		}
+		public override bool body_is_in_region(Vector p) {
+			double u = Math.atan2(p.y, p.x)/ Math.PI * 180.0 + 180.0;
+			double v = Math.sqrt(p.x * p.x + p.y * p.y);
+			if(v < radius && u >= arc_start && u <= arc_end) {
+				return true;
+			}
+			return false;
 		}
 	}
 	public class Rectangle: Surface {
@@ -81,11 +83,17 @@ namespace UCNTracker {
 		public Rectangle.rotated(EulerAngles e) {
 			(this as Surface).rotation = e;
 		}
-		public override Vector body_xyz_to_uvw(Vector p) {
-			double w = p.z;
-			double u = (p.x - width)/ width * 2.0;
-			double v = (p.y - height) / height * 2.0;
-			return Vector(u, v, w);
+		public override double body_sfunc(Vector p) {
+			return p.z;
+		}
+		public override bool body_is_in_region(Vector p) {
+			double u2 = p.x * 2.0;
+			double v2 = p.y * 2.0;
+			if( u2 >= - width && u2 <= width &&
+				v2 >= - height && v2 <= height) {
+				return true;
+			}
+			return false;
 		}
 	}
 
@@ -109,38 +117,42 @@ namespace UCNTracker {
 			(this as Surface).rotation = e;
 		}
 
-		public override Vector body_xyz_to_uvw(Vector p) {
+		public override double body_sfunc(Vector p) {
 			double w = (Math.sqrt(p.x * p.x + p.y * p.y) - radius);
-			double u = ((Math.atan2(p.y, p.x))/ Math.PI * 180.0 - arc_start)/(arc_end- arc_start) * 2.0;
-			double v = (p.z - 0.5 * length ) / length;
-			return Vector(u, v, w);
+			return w;
+		}
+
+		public override bool body_is_in_region(Vector p) {
+			double u = Math.atan2(p.y, p.x)/ Math.PI * 180.0 + 180.0;
+			double v = p.z;
+			if(u  >= arc_start && u <= arc_end 
+			&& v >= 0 && v <= length ) {
+				return true;
+			}
+			return false;
 		}
 	}
 	public class Sphere :Surface {
 		public double radius {get; set;}
-		public override Vector body_xyz_to_uvw(Vector p) {
-			double w = p.norm() - radius;
-			/* This is tricky. 
-			 * Because the Sphere is a closed surface that separates the space into two parts,
-			 * and because we don't define a region of the sphere,
-			 * We don't need to define u & v.
-			 * */
-			double u = 0.0;
-			double v = 0.0;
-			return Vector(u, v, w);
+		public override double body_sfunc(Vector p) {
+			return p.norm() - radius;
+		}
+		public override bool body_is_in_region(Vector p) {
+			return true;
 		}
 	}
 	public class Torus :Surface {
 		public double tube_radius {get; set;}
 		public double radius { get; set;}
 
-		public override Vector body_xyz_to_uvw(Vector p) {
+		public override double body_sfunc(Vector p) {
 			double dn = Math.sqrt(p.x * p.x + p.y * p.y);
 			double w = Math.sqrt((dn - radius)*(dn - radius) + p.z * p.z) - tube_radius;
-			double u = 0.0;
-			double v = 0.0;
-			return Vector(u, v, w);
+			return  w;
 		}
 		
+		public override bool body_is_in_region(Vector p) {
+			return true;
+		}
 	}
 }
