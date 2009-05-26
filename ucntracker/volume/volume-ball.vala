@@ -6,13 +6,14 @@ namespace UCNTracker {
 	 *****/
 	public class Ball : Primitive {
 		private double _radius;
-		public double radius {
-			get { return _radius; }
-			set { _radius = value; bounding_radius = value;}
-		}
+		private Sphere sphere = new Sphere();
 
-		public override double sfunc(Vector point) {
-			return point.distance(center) - radius;
-		}	
+		public double radius {
+			get { return sphere.radius; }
+			set { sphere.radius = value; bounding_radius = value;}
+		}
+		construct {
+			surfaces = {sphere};
+		}
 	}
 }

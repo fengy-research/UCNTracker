@@ -25,14 +25,15 @@ VALASOURCES = \
 	math/random.vala \
 	math/multichannel.vala \
 	math/quaternion.vala \
-	math/surface.vala \
 	buildables/volume.vala \
 	buildables/field.vala \
 	buildables/experiment.vala \
 	buildables/cross-section.vala \
 	buildables/border.vala \
-	core/intersector.vala \
+	buildables/surface.vala \
+	buildables/foil.vala \
 	core/freelength-table.vala \
+	core/transformable.vala \
 	core/evolve.vala \
 	core/vertex.vala \
 	core/track.vala \
@@ -40,7 +41,7 @@ VALASOURCES = \
 	volume/volume-simple.vala \
 	volume/volume-boolean.vala \
 	volume/volume-ball.vala \
-	volume/volume-torus.vala \
+	volume/volume-donut.vala \
 	volume/volume-box.vala \
 	volume/volume-cylinder.vala \
 	field/accel.vala \

@@ -342,7 +342,7 @@ namespace UCNTracker {
 			glMatrixMode(GL_PROJECTION);
 
 			glLoadIdentity();
-			gluPerspective(45,
+			gluPerspective(40,
 			(GLdouble)allocation.width/ (GLdouble)allocation.height,
 		               	   0.01, 1000);
 
