@@ -35,11 +35,6 @@ namespace UCNTracker {
 	 * To define the surface, we need two functions, S and T.
 	 */
 	public abstract class Surface : Transformable, GLib.YAML.Buildable {
-
-		public virtual double sfunc(Vector point) {
-			return body_sfunc(world_to_body(point));
-		}
-		public abstract double body_sfunc(Vector point);
 		public virtual bool is_in_region(Vector point) {
 			return body_is_in_region(world_to_body(point));
 		}

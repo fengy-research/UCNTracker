@@ -29,8 +29,8 @@ public class Application :UCNTracker.VisSimulation {
 		prepare += (obj, run) => {
 			Track t = Track.new(typeof(Neutron));
 			Vertex start = t.create_vertex();
-			start.position = Vector(-0, -0, 0.0);
-			start.velocity = Vector(0.0, 100.0, -1000.0);
+			start.position = Vector(-10, -10, 10);
+			start.velocity = Vector(0.0, 10.0, 000.0);
 			start.weight = 1.0;
 			run.time_limit = 10;
 			run.frame_length = 1.0;
@@ -117,7 +117,7 @@ foils:
   - !Rectangle
     width: 100
     height: 100
-  border: { absorb: 00, reflect: 100, diffuse: 00, fermi: 0 }
+  border: { absorb: 00, reflect: 000, diffuse: 100, fermi: 0 }
 fields:
 - !AccelField
   direction: 0, 0, -1
