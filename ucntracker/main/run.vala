@@ -125,6 +125,7 @@ namespace UCNTracker {
 				while(!track.terminated &&
 				    dt < sync_t) {
 					dt+= track.evolve();
+					if(running == false) break;
 				}
 				track.tail.timestamp += dt;
 			}

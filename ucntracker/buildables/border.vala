@@ -63,8 +63,6 @@ namespace UCNTracker {
 		 */
 		public signal void transport(Border.ChannelType chn, ref Event event);
 
-		construct {
-		}
 		internal void execute(ref Event event) {
 
 			ChannelType chn = (ChannelType)mcrng.select(UniqueRNG.rng);

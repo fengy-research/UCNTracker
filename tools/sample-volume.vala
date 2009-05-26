@@ -22,8 +22,8 @@ public int main(string[] args) {
 private void sample_volume(UCNTracker.Volume volume, int points) {
 	for(int i = 0; i < points; i++) {
 		Vector point = volume.sample(true);
-		Vector grad = volume.grad(point);
-		stdout.printf("%s %s %lf\n", point.to_string(), grad.to_string(),
+		Vector normal = volume.normal(point);
+		stdout.printf("%s %s %lf\n", point.to_string(), normal.to_string(),
 		volume.sfunc(point));
 	}
 }

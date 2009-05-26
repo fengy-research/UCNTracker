@@ -3,6 +3,7 @@ namespace UCNTracker {
 public class Experiment: Object, GLib.YAML.Buildable {
 	public List<Part> parts;
 	public List<Field> fields;
+	public List<Foil> foils;
 
 	public double max_time_step {get; set; default=0.01;}
 
@@ -14,6 +15,9 @@ public class Experiment: Object, GLib.YAML.Buildable {
 		if(child is Field) {
 			fields.prepend(child as Field);
 		}
+		if(child is Foil) {
+			foils.prepend(child as Foil);
+		}
 		//(base as GLib.YAML.Buildable).add_child(builder, child, type);
 	}
 
@@ -24,6 +28,9 @@ public class Experiment: Object, GLib.YAML.Buildable {
 		}
 		if(tag == "fields") {
 			return typeof(Field);
+		}
+		if(tag == "foils") {
+			return typeof(Foil);
 		}
 		return Type.INVALID;
 	}

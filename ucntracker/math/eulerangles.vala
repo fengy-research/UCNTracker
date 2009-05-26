@@ -36,9 +36,18 @@ namespace UCNTracker {
 		/* update the quaternion */
 		private void update_q() {
 			q = Quaternion.from_rotation(Vector(0, 0, 1), alpha /180.0 * Math.PI);
+			message("%s byz = %s", to_string(), q.to_string());
 			q.mul(Quaternion.from_rotation(Vector(1, 0, 0), beta/ 180.0 * Math.PI));
+			Quaternion byx = Quaternion.from_rotation(Vector(1, 0, 0), beta/ 180.0 * Math.PI);
+			message("%s byx = %s", to_string(), byx.to_string());
+			message("%s dix = %s", to_string(), q.to_string());
 			q.mul(Quaternion.from_rotation(Vector(0, 0, 1), gamma/ 180.0 * Math.PI));
+			Quaternion byZ = Quaternion.from_rotation(Vector(0, 0, 1), gamma/ 180.0 * Math.PI);
+			message("%s byZ = %s", to_string(), byZ.to_string());
+			message("%s diZ = %s", to_string(), q.to_string());
+
 			q.normalize();
+			message("%s nom = %s", to_string(), q.to_string());
 		}
 		public string to_string(string format="%lf %lf %lf") {
 			return format.printf(alpha, beta, gamma);
