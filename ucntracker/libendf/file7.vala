@@ -75,8 +75,18 @@ namespace Endf {
 		 * angular dependency of the cross section
 		 * */
 		public double angular(Gsl.RNG rng, double E, double T) {
+			if(!angular_prepare(E, T)) return double.NAN;
+			return angular_next(rng, E, T);
+		}
+
+		public double angular_next(Gsl.RNG rng, double E, double T) {
+			int ch = mcrng.select(rng);
+			return Math.acos(1.0 - this.E[ch] / E);
+		}
+
+		public bool angular_prepare(double E, double T) {
 			int iT = find_T(T);
-			if(iT == -1) return double.NAN;
+			if(iT == -1) return false;
 			int i;
 			for(i = 0; i < this.E.length && this.E[i] < E; i++ ){
 				double s0 = pages[iT].s[i];
@@ -89,8 +99,8 @@ namespace Endf {
 				mcrng.set_ch_width(i, s);
 			}
 			mcrng.set_eff_channels(i);
-			int ch = mcrng.select(rng);
-			return Math.acos(1.0 - this.E[ch] / E);
+			
+			return true;
 		}
 
 		public void load(SectionEvent event) {
