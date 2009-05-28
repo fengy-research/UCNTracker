@@ -57,7 +57,7 @@ VALASOURCES = \
 	libendf/mt-type.vala \
 	libendf/int-type.vala \
 	libendf/interpolation.vala \
-	libendf/file7.vala \
+	libendf/file7t2.vala \
 	libendf/event.vala \
 	libendf/parser.vala
 

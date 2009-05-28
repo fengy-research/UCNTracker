@@ -55,6 +55,7 @@ namespace Endf {
 			}
 			return -1;
 		}
+
 		public double S(double E, double T) {
 			switch(LTHR) {
 				case LTHRType.COHERENT:
