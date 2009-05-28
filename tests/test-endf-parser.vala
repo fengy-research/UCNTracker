@@ -5,32 +5,32 @@ public void main(string[] args) {
 	section = new MF7MT2();
 	Endf.Parser parser = new Endf.Parser();
 	parser.section_end_function = (event) => {
-		stdout.printf("section-end\n");
+//		stdout.printf("section-end\n");
 		if(event.MF == 7 && event.MT == 2) {
 			section.load(event);
 		}
 	};
 	parser.section_start_function = (event) => {
-		stdout.printf("section-start\n");
-		event.dump();
+//		stdout.printf("section-start\n");
+//		event.dump();
 	};
 	parser.mat_start_function = (event) => {
-		stdout.printf("mat-start\n");
+//		stdout.printf("mat-start\n");
 	};
 	parser.mat_end_function = (event) => {
-		stdout.printf("mat-end\n");
+//		stdout.printf("mat-end\n");
 	};
 	parser.file_start_function = (event) => {
-		stdout.printf("file-start\n");
+//		stdout.printf("file-start\n");
 	};
 	parser.file_end_function = (event) => {
-		stdout.printf("file-end\n");
+//		stdout.printf("file-end\n");
 	};
 	parser.tape_start_function = (event) => {
-		stdout.printf("tape-start\n");
+//		stdout.printf("tape-start\n");
 	};
 	parser.tape_end_function = (event) => {
-		stdout.printf("tape-end\n");
+//		stdout.printf("tape-end\n");
 	};
 	parser.add_file("test-data.endf");
 
@@ -39,7 +39,6 @@ public void main(string[] args) {
 	assert( 0.0 == parse_number("0.00000+0"));
 	assert( 1.008e-2 == parse_number("1.008000-2"));
 
-	double T = 1000;
 	double [] Es = {
 		4.555489e-4,
 		4.515512e-3,
@@ -53,8 +52,15 @@ public void main(string[] args) {
 		5e-1,
 		1
 	};
-	for(int i = 0; i< Es.length; i++) {
-		stdout.printf("%lf %lf\n", Es[i], section.S(Es[i], T));
-	}
+	UCNTracker.init(ref args);
+	double E = args[1].to_double();
+	double T = args[2].to_double();
 
+	for(int k = 0; k< 10; k++) {
+	for(int j = 0; j< 60; j++) {
+		double theta = section.angular(UCNTracker.UniqueRNG.rng, E, T);
+		stdout.printf("%lf ", theta / Math.PI * 180.0);
+	}
+	stdout.printf("\n");
+	}
 }

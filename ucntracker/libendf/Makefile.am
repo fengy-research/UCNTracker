@@ -5,7 +5,7 @@ BUILT_SOURCES = vala-ccode
 
 VALAFLAGS= --library=libendf -H libendf.h
 VALADOCFLAGS = -o Documentation --package-name=libendf
-VALAPKGS = --pkg gsl
+VALAPKGS = --pkg gsl --pkg ucntracker
 
 libendf_la_SOURCES= \
 	$(VALASOURCES:.vala=.c)\
@@ -26,6 +26,7 @@ VALASOURCES = \
 vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
 	echo gmodule-2.0 > libendf.deps
+	echo ucntracker >> libendf.deps
 	echo gsl >> libendf.deps
 	touch vala-ccode
 
@@ -49,7 +50,7 @@ BUILT_SOURCES += $(noinst_PROGRAMS:%=%.c)
 test_parser_LDADD = libendf.la $(GLIB_LIBS) -lm
 test_parser_CPPFLAGS = $(GLIB_CFLAGS) -I.
 test-parser-ccode: test-parser.vala libendf.vapi
-	$(VALAC) -C $< libendf.vapi
+	$(VALAC) -C $< --vapidir=. --pkg libendf
 	touch $@
 
 $(DIST_SOURCES) : vala-ccode vala-doc test-parser-ccode

@@ -67,7 +67,6 @@ AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
 				ucntracker-vis/Makefile
-				libendf/Makefile
 				tests/Makefile
 				vapi/Makefile
 				examples/Makefile
