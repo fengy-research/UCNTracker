@@ -50,9 +50,7 @@ namespace UCNTracker {
 			Vertex Q = ev.track.create_vertex();
 			Vertex dQ = ev.track.create_vertex();
 			Q.from_array(y);
-			dQ.position = Q.velocity;
-			Vector accel = ev.track.experiment.accelerate(ev.track, Q);
-			dQ.velocity = accel;
+			ev.track.experiment.accelerate(ev.track, Q, dQ);
 		    dQ.to_array(dydt);
 
 		    return Gsl.Status.SUCCESS;

@@ -25,14 +25,13 @@ namespace UCNTracker {
 		}
 
 		public override bool fieldfunc(Track track, 
-		               Vector position,
-		               Vector velocity, 
-		               out Vector acceleration) {
+		               Vertex Q,
+		               Vertex dQ) {
 			/* FIXME: the rotation is not used.
 			 * Perhaps Part and Field should derive from a class
 			 * which has no center, neither be it a volume
 			 * */
-			Vector pos = position;
+			Vector pos = Q.position;
 			pos.translate_i(center);
 			double x = pos.dot(direction);
 
@@ -45,7 +44,9 @@ namespace UCNTracker {
 				double y1 = field_Bs[i+1];
 				if(x >= x0 && x < x1) {
 					double a = track.magnetic_helicity * factor * track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
-					acceleration = Vector(direction.x * a, direction.y * a, direction.z * a);
+					dQ.velocity.x += direction.x * a;
+					dQ.velocity.y += direction.y * a;
+					dQ.velocity.z += direction.z * a;
 //					message("magnetic effect : slope= %lg mdm=%lg [%d] %lg", (y1- y0)/(x1-x0), track.mdm, i, dx);
 					return true;
 				}

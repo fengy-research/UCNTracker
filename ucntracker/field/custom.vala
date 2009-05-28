@@ -5,11 +5,11 @@ namespace UCNTracker {
 		 * If evaludated, return true,
 		 * otherwise return false 
 		 * */
-		public delegate bool FieldFunction(Track track, Vector position, Vector velocity, out Vector acceleration);
+		public delegate bool FieldFunction(Track track, Vertex Q, Vertex dQ);
 		public FieldFunction function = null;
-		public override bool fieldfunc(Track track, Vector position, Vector velocity, out Vector acceleration) {
+		public override bool fieldfunc(Track track, Vertex Q, Vertex dQ) {
 			if(function == null) return false;
-			return function(track, position, velocity, out acceleration);
+			return function(track, Q, dQ);
 		}
 	}
 }
