@@ -39,6 +39,12 @@ namespace UCNTracker {
 			return body_is_in_region(world_to_body(point));
 		}
 		public abstract bool body_is_in_region(Vector point);
+		
+
+		/**
+		 * If the surface is visible in the visualization 
+		 * */
+		public bool visible {get; set; default = true;}
 	}
 
 	public class Circle : Surface {

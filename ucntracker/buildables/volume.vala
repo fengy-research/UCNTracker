@@ -63,5 +63,9 @@ namespace UCNTracker {
 		}
 
 
+		/**
+		 * If the volume is visible in the visualization 
+		 * */
+		public bool visible {get; set; default = true;}
 	}
 }

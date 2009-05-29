@@ -134,6 +134,7 @@ namespace UCNTracker {
 		}
 
 		private void visit_volume(Volume volume) {
+			if(volume.visible == false) return;
 			switch(mode) {
 				case RenderMode.DOTS:
 				case RenderMode.WIRE:
@@ -146,6 +147,7 @@ namespace UCNTracker {
 			}
 		}
 		private void visit_surface (Surface surface) {
+			if(surface.visible == false) return;
 			switch(mode) {
 				case RenderMode.DOTS:
 				case RenderMode.WIRE:
