@@ -4,7 +4,7 @@ namespace UCNTracker {
 	 * This is to work around VALA bz 572920
 	 */
 	public static Surface ____load_surface_headers___;
-	public abstract class Primitive : Volume {
+	public abstract class Primitive : Volume, GLib.YAML.Buildable {
 		protected Surface[] surfaces = null;
 
 		public override double body_sfunc(Vector p) {
@@ -25,5 +25,22 @@ namespace UCNTracker {
 			return in_side?inside_max:max;
 		}
 
+		public Object? get_internal_child(GLib.YAML.Builder builder,
+			string name) {
+			for(int i = 0; surfaces!= null && i < surfaces.length;
+				i++) {
+				if(surfaces[i].get_name() == name) {
+					return surfaces[i];
+				}
+			}
+			return null;
+		}
+		protected void set_surface_names(string[] names) {
+			assert(surfaces.length == names.length);
+			for(int i = 0; surfaces!= null && i < surfaces.length;
+				i++) {
+				surfaces[i].set_name(names[i]);
+			}
+		}
 	}
 }

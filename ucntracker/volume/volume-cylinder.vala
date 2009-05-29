@@ -33,6 +33,8 @@ namespace UCNTracker {
 
 		construct {
 			surfaces = {top, bottom, tube};
+			set_surface_names( new string[] {
+				"top", "bottom", "tube"});
 		}
 		public Cylinder(double length, double radius) {
 			this.length = length;

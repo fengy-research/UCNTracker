@@ -42,8 +42,9 @@ namespace UCNTracker {
 			surfaces =  {
 				top, bottom, left, right, front, back
 			};
-			front.set_name("front");
-			back.set_name("back");
+			set_surface_names(new string[] {
+				"top", "bottom", "left", "right", "front", "back"
+			});
 		}
 
 		public Box(Vector size) {
