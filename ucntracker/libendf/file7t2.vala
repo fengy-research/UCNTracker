@@ -56,6 +56,9 @@ namespace Endf {
 			return -1;
 		}
 
+		/** 
+		 * The total cross section for given E.
+		 * */
 		public double S(double E, double T) {
 			switch(LTHR) {
 				case LTHRType.COHERENT:
@@ -68,6 +71,10 @@ namespace Endf {
 						pages[iT + 1].LI,
 						T, this.T[iT], this.T[iT +1], S0, S1);
 					return S_E_T / E;
+				case LTHRType.INCOHERENT:
+					double W_T = INT.eval(T, this.T, W);
+					double EW = E * W_T;
+					return SB * 0.5 * ( 1 - Math.exp(-4.0 * EW)) / (2.0 * EW);
 			}
 			return double.NAN;
 		}
@@ -80,12 +87,31 @@ namespace Endf {
 			return angular_next(rng, E, T);
 		}
 
+		/**
+		 * After angular_prepare is called return a theta
+		 * angular according to the angular distributation.
+		 *
+		 * If LTHR == INCOHERENT, return a uniform angle for theta,
+		 * because the spherical coordinates has a sin(theta) weight,
+		 * the uniform angle is transformed by acos. Refer to
+		 * mathworld.wolfram.com/SpherePointPicking.html
+		 *
+		 * If LTHR == COHERENT, returns the angle by acos(1 - 2Ei/E),
+		 * where Ei is the energy of a randomly choosen bragg edge.
+		 *
+		 * */
 		public double angular_next(Gsl.RNG rng, double E, double T) {
+			if(LTHR == LTHRType.INCOHERENT) {
+				return Math.acos(2.0 * rng.uniform() - 1.0);
+			}
 			int ch = mcrng.select(rng);
-			return Math.acos(1.0 - this.E[ch] / E);
+			return Math.acos(1.0 - 2.0 * this.E[ch] / E);
 		}
 
 		public bool angular_prepare(double E, double T) {
+			if(LTHR == LTHRType.INCOHERENT) {
+				return true;
+			}
 			int iT = find_T(T);
 			if(iT == -1) return false;
 			int i;
