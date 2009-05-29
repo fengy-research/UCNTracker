@@ -21,7 +21,7 @@ namespace UCNTracker {
 		private Tracer tracer = new Tracer();
 		private Gtk.Menu popup = null;
 		private Gtk.UIManager ui = new Gtk.UIManager();
-		private RenderMode _mode = RenderMode.WIRE;
+		private RenderMode _mode = RenderMode.WIRE_SOLID;
 
 		private void rerender() {
 			if(scence_id != 0) {
@@ -343,15 +343,16 @@ namespace UCNTracker {
 			glEnable(GL_LIGHT0);
 			glEnable(GL_DEPTH_TEST);
 
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonMode(GL_FRONT, GL_LINE);
+			glPolygonMode(GL_BACK, GL_FILL);
 
 			float[] mf_diffuse = {1f, 1f, 1f, 1.0f};
 			float[] mf_ambient = {1f, 1f, 1f, 1.0f};
 			float[] mf_specular = {1f, 1f, 1f, 1.0f};
 
-			float[] mb_diffuse = {0.7f, 0.7f, 0.0f, 1.0f};
-			float[] mb_ambient = {0.7f, 0.7f, 0.0f, 1.0f};
-			float[] mb_specular = {0.7f, 0.7f, 0.0f, 1.0f};
+			float[] mb_diffuse = {0.7f, 0.7f, 0.7f, 1.0f};
+			float[] mb_ambient = {0.7f, 0.7f, 0.7f, 1.0f};
+			float[] mb_specular = {0.7f, 0.7f, 0.7f, 1.0f};
 
 			glMaterialfv(GL_BACK, GL_AMBIENT, mb_ambient);
 			glMaterialfv(GL_BACK, GL_DIFFUSE, mb_diffuse);
