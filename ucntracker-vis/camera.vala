@@ -9,6 +9,11 @@ using UCNTracker;
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public class Camera: Gtk.DrawingArea {
+		public enum RenderMode {
+			WIRE,
+			WIRE_SOLID,
+			SOLID
+		}
 		private Run _run;
 		private Experiment _experiment;
 		private uint scence_id;
@@ -24,7 +29,7 @@ namespace UCNTracker {
 				scence_id = 0;
 			}
 			if(this.is_realized() && _experiment != null) {
-				scence_id = renderer.render(_experiment, mode);
+				scence_id = renderer.render(_experiment);
 				message("scence_id = %u", scence_id);
 			}
 		}
@@ -45,7 +50,19 @@ namespace UCNTracker {
 			}
 			set {
 				_mode = value;
-				rerender();
+				switch(_mode) {
+					case RenderMode.WIRE:
+					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+					break;
+					case RenderMode.WIRE_SOLID:
+					glPolygonMode(GL_FRONT, GL_LINE);
+					glPolygonMode(GL_BACK, GL_FILL);
+					break;
+					case RenderMode.SOLID:
+					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+					break;
+				}
+				queue_draw();
 			}
 		}
 		public Run run {
@@ -64,8 +81,6 @@ namespace UCNTracker {
 				}
 			}
 		}
-
-		public bool use_solid {get; set;}
 
 		private void run_motion_notify(Run obj) {
 			foreach (Track track in run.tracks) {
@@ -122,7 +137,7 @@ namespace UCNTracker {
 			{"zoom-in", null, "Zoom In", null, null, action_callback_actions},
 			{"zoom-out", null, "Zoom Out", null, null, action_callback_actions},
 			{"mode", null, "Mode", null, null, action_callback_actions},
-			{"mode-dots", null, "Dots", null, null, action_callback_actions},
+			{"mode-wire-solid", null, "WireSolid", null, null, action_callback_actions},
 			{"mode-wire", null, "Wire", null, null, action_callback_actions},
 			{"mode-solid", null, "Solid", null, null, action_callback_actions}
 		};
@@ -143,7 +158,7 @@ namespace UCNTracker {
 		<menuitem action="zoom-out"/>
 	</menu>
 	<menu action="mode">
-		<menuitem action="mode-dots"/>
+		<menuitem action="mode-wire-solid"/>
 		<menuitem action="mode-wire"/>
 		<menuitem action="mode-solid"/>
 	</menu>
@@ -286,8 +301,8 @@ namespace UCNTracker {
 				case "zoom-out":
 					location = _location.mul(1.25);
 				break;
-				case "mode-dots":
-					mode = RenderMode.DOTS;
+				case "mode-wire-solid":
+					mode = RenderMode.WIRE_SOLID;
 				break;
 				case "mode-wire":
 					mode = RenderMode.WIRE;
@@ -308,11 +323,43 @@ namespace UCNTracker {
 			base.realize();
 			assert(WidgetGL.gl_begin(this));
 
-			float[] light = {0.0f, 0.0f, 20.0f, 0.0f};
-			glLightfv(GL_LIGHT0, GL_POSITION, light);
-		//	glEnable(GL_LIGHTING);
-		//	glEnable(GL_LIGHT0);
-			//glEnable(GL_DEPTH_TEST);
+			float[] position = {0.0f, 0.0f, -1.0f, 0.0f};
+			float[] diffuse = {0.1f, 0.1f, 0.1f, 0.1f};
+			float[] ambient = {0.8f, 0.8f, 0.8f, 0.8f};
+			float[] specular = {0.1f, 0.1f, 0.1f, 0.1f};
+			GLfloat[] glb_ambient = {0.2f,0.2f,0.2f,1f};
+
+			glShadeModel(GL_SMOOTH);
+			glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
+			glEnable(GL_NORMALIZE);
+
+			glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glb_ambient);
+			glLightfv(GL_LIGHT0, GL_POSITION, position);
+			glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+			glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+			glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+
+			glEnable(GL_LIGHTING);
+			glEnable(GL_LIGHT0);
+			glEnable(GL_DEPTH_TEST);
+
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+			float[] mf_diffuse = {1f, 1f, 1f, 1.0f};
+			float[] mf_ambient = {1f, 1f, 1f, 1.0f};
+			float[] mf_specular = {1f, 1f, 1f, 1.0f};
+
+			float[] mb_diffuse = {0.7f, 0.7f, 0.0f, 1.0f};
+			float[] mb_ambient = {0.7f, 0.7f, 0.0f, 1.0f};
+			float[] mb_specular = {0.7f, 0.7f, 0.0f, 1.0f};
+
+			glMaterialfv(GL_BACK, GL_AMBIENT, mb_ambient);
+			glMaterialfv(GL_BACK, GL_DIFFUSE, mb_diffuse);
+			glMaterialfv(GL_BACK, GL_SPECULAR, mb_specular);
+
+			glMaterialfv(GL_FRONT, GL_AMBIENT, mf_ambient);
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, mf_diffuse);
+			glMaterialfv(GL_FRONT, GL_SPECULAR, mf_specular);
 
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClearDepth(1.0);
@@ -326,9 +373,10 @@ namespace UCNTracker {
 
 			glLoadIdentity();
 
+
 			gluPerspective(45,
 			(GLdouble)allocation.width/ (GLdouble)allocation.height,
-		               	   0.01, 1000);
+		               	   10, 1000);
 
 			rerender();
 			glFlush();
