@@ -6,14 +6,29 @@ objects:
 - !Part
   volumes:
   - !Ball
+    center: 0, 20, 0
+    radius: 10
+    visible: true
+  - !Box
     center: 0, 0, 0
-    radius: 50
-    visible: false
+    size: 20, 20, 20
+    internals:
+      top: { visible : true }
+      left: { visible : false }
+      right: { visible : false }
+      bottom: { visible : false }
+  - !Cylinder
+    center: 0, 40, -10
+    radius: 10
+    length: 20
+    internals:
+      tube: { visible : false }
 - !Foil
   surfaces:
   - !Rectangle
     center: 0, 0, -10
     width: 100
     height: 100
+    visible: false
   border: { reflect: 100 }
 ...
