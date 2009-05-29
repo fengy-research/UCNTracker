@@ -165,9 +165,7 @@ namespace UCNTracker {
 					enter.volume = future.volume;
 					enter.part = future.part;
 					enter.timestamp = t1;
-					message("reduce t1");
 				} else {
-					message("reduce t0");
 					t0 = tc;
 					s0 = sc;
 					leave.from_array(y);
@@ -252,7 +250,6 @@ namespace UCNTracker {
 		 * about reset_free_length:
 		 *   When there is a surface transport, we don't want to emit
 		 *   hit signal, rather we'd like to reset all free_length counters in flt.
-		 *   
 		 *   NOTE: Should talk to chen-yu to see if this is the expected behavior.
 		 */
 		private void move_to(Vertex next, bool reset_free_length) {
@@ -260,6 +257,7 @@ namespace UCNTracker {
 			/*First do physical length accounting*/
 			track.length += dl;
 
+			tail = next;
 			if(!reset_free_length) {
 				foreach(CrossSection section in track.tail.part.cross_sections) {
 					if(section.ptype == track.get_type()) 
@@ -271,15 +269,7 @@ namespace UCNTracker {
 			/* After Scattering, simply push the adjusted
 			 * state to the tail*/
 
-			/* FIXME: The following passage is buggy.
-			 * prev is always a reference of the tail because we didn't clone it
-			 * However clone is a waste of CPU time on memory allocations.
-			 * Do it or not?*/
-
-			var prev = tail;
-			tail = next;
-
-			/*****
+			/*
 			 * Always invoke the track_motion notify 
 			 *
 			 * NOTE:
@@ -292,7 +282,7 @@ namespace UCNTracker {
 			 * We don't expect users really register to this
 			 * unless it is a visualizer it is debugging.
 			 * */
-			track.run.track_motion_notify(track, prev);
+			track.run.track_motion_notify(track, next);
 		}
 
 		public double evolve() {
