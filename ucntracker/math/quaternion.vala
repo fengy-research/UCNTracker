@@ -37,6 +37,24 @@ namespace UCNTracker {
 			this.z = z;
 			dirty = true;
 		}
+		/**
+		 * Create a quaternion based on a rotation that rotate
+		 * v1 to v2
+		 * */
+		public Quaternion.from_two_vectors(Vector v1, Vector v2) {
+			double n1 = v1.norm();
+			double n2 = v2.norm();
+			Vector k = v1.cross(v2);
+			double normk = k.norm();
+			Vector axis = k.mul(1.0 / normk);
+			double angle = Math.acos(v1.dot(v2)/ (n1 * n2));
+			w = Math.cos(angle/2.0);
+			double s = Math.sin(angle/2.0);
+			x = axis.x * s;
+			y = axis.y * s;
+			z = axis.z * s;
+			dirty = true;
+		}
 		public Quaternion.from_vector(Vector v) {
 			w = 0.0;
 			this.x = v.x;
