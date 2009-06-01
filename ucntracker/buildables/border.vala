@@ -21,31 +21,54 @@ namespace UCNTracker {
 		THROUGH = 5,
 		MAX_VALUE = 6,
 		}
-		private MultiChannelRNG mcrng = new MultiChannelRNG(ChannelType.MAX_VALUE);
+
+		private Gsl.RanDiscrete rd;
+		private double[] channels = new double[(int)ChannelType.MAX_VALUE];
+
 		public double diffuse {
-			get {return mcrng.get_ch_width(ChannelType.DIFFUSE);} 
-			set {mcrng.set_ch_width(ChannelType.DIFFUSE, value);}
+			get {return channels[(int)ChannelType.DIFFUSE];} 
+			set {
+				channels[(int)ChannelType.DIFFUSE] = value; 
+				rd = new Gsl.RanDiscrete(channels);
+			}
 		}
 		public double fermi {
-			get {return mcrng.get_ch_width(ChannelType.FERMI);} 
-			set {mcrng.set_ch_width(ChannelType.FERMI, value);}
+			get {return channels[(int)ChannelType.FERMI];} 
+			set {
+				channels[(int)ChannelType.FERMI] = value;
+				rd = new Gsl.RanDiscrete(channels);
+				
+			}
 		}
 		public double reflect {
-			get {return mcrng.get_ch_width(ChannelType.REFLECT);} 
-			set {mcrng.set_ch_width(ChannelType.REFLECT, value);}
+			get {return channels[(int)ChannelType.REFLECT];} 
+			set {
+				channels[(int)ChannelType.REFLECT] = value;
+				rd = new Gsl.RanDiscrete(channels);
+			}
 		}
 		public double absorb {
-			get {return mcrng.get_ch_width(ChannelType.ABSORB);} 
-			set {mcrng.set_ch_width(ChannelType.ABSORB, value);}
+			get {return channels[(int)ChannelType.ABSORB];} 
+			set {
+				channels[(int)ChannelType.ABSORB] = value;
+				rd = new Gsl.RanDiscrete(channels);
+			}
 		}
 		public double any {
-			get {return mcrng.get_ch_width(ChannelType.ANY);} 
-			set {mcrng.set_ch_width(ChannelType.ANY, value);}
+			get {return channels[(int)ChannelType.ANY];} 
+			set {
+				channels[(int)ChannelType.ANY] = value;
+				rd = new Gsl.RanDiscrete(channels);
+			}
 		}
 
 		public double through {
-			get {return mcrng.get_ch_width(ChannelType.THROUGH);}
-			set {mcrng.set_ch_width(ChannelType.THROUGH, value);}
+			get {
+				return channels[(int)ChannelType.THROUGH];}
+			set {
+				channels[(int)ChannelType.THROUGH] = value;
+				rd = new Gsl.RanDiscrete(channels);
+			}
 		}
 		public delegate bool BorderFunction (ref Event event);
 
@@ -59,13 +82,12 @@ namespace UCNTracker {
 		public bool transported;
 		/**
 		 * Emitted when a track goes through a surface.
-		 *
 		 */
 		public signal void transport(Border.ChannelType chn, ref Event event);
 
 		internal void execute(ref Event event) {
 
-			ChannelType chn = (ChannelType)mcrng.select(UniqueRNG.rng);
+			ChannelType chn = (ChannelType)rd.discrete(UniqueRNG.rng);
 			switch(chn) {
 				case ChannelType.FERMI:
 					UCNPhysics.Transport.fermi(ref event);

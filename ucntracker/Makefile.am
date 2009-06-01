@@ -23,7 +23,6 @@ VALASOURCES = \
 	math/eulerangles.vala \
 	math/vector.vala \
 	math/random.vala \
-	math/multichannel.vala \
 	math/quaternion.vala \
 	buildables/volume.vala \
 	buildables/field.vala \

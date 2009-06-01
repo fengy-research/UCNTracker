@@ -1,4 +1,4 @@
-vis_test = test-rng test-mcrng test-builder
+vis_test = test-rng test-builder
 nonvis_test = test-gtk
 
 test_gtk_CPPFLAGS = $(VIS_PROGRAM_CFLAGS)
