@@ -3,6 +3,7 @@ namespace UCNTracker {
 	public abstract class Vertex {
 		public Vector position;
 		public Vector velocity;
+		public double spin_precession;
 
 		public double weight;
 		public double timestamp;
@@ -12,6 +13,7 @@ namespace UCNTracker {
 		public virtual void copy_to(Vertex target) {
 			target.position = position;
 			target.velocity = velocity;
+			target.spin_precession = spin_precession;
 			target.weight = weight;
 			target.timestamp = timestamp;
 			target.part= part;
@@ -24,13 +26,15 @@ namespace UCNTracker {
 			y[3] = velocity.x;
 			y[4] = velocity.y;
 			y[5] = velocity.z;
+			y[6] = spin_precession;
 		}
 		public virtual string to_string() {
-			return "t=%lf w= %lf(%s) v=(%s) in %s.%s".printf(
+			return "t=%lf w= %lf(%s) v=(%s) s=%lf in %s.%s".printf(
 						timestamp, 
 						weight,
 						position.to_string(), 
 						velocity.to_string(),
+						spin_precession,
 						part!=null?part.get_name():"#nopart#",
 						volume!=null?volume.get_name():"#novolume#");
 		}
@@ -47,6 +51,7 @@ namespace UCNTracker {
 			velocity.x = y[3];
 			velocity.y = y[4];
 			velocity.z = y[5];
+			spin_precession = y[6];
 		}
 	}
 }

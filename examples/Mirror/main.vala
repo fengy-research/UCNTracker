@@ -95,7 +95,7 @@ public class Simulation : VisSimulation {
 					experiment.locate(head.position, out head.part, out head.volume);
 				} while( head.part == mirror );
 				track.start(run, head);
-				track.magnetic_helicity = rng.uniform() < 0.5? 1: -1;
+				track.spin_parallel = rng.uniform() < 0.5? 1: -1;
 			}
 
 			run.time_limit = 200;

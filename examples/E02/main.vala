@@ -58,7 +58,7 @@ public class Simulation : VisSimulation{
 				head.position = Vector(x, 0.0, z);
 				head.weight = 1.0;
 				track.start(run, head);
-				track.magnetic_helicity = rng.uniform() < 0.5? 1: -1;
+				track.spin_parallel = rng.uniform() < 0.5? 1: -1;
 			}
 
 			run.time_limit = 50;

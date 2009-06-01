@@ -8,7 +8,7 @@ namespace UCNTracker {
 		/*Phase space dimensions*/
 		public int dimensions;
 		public double[] tolerance;
-		public int magnetic_helicity; /*+1 / -1, along/not along the B field*/
+		public double spin_parallel; /*+1 / -1, along/not along the B field*/
 
 		public abstract Vertex create_vertex();
 		public abstract Vertex clone_vertex(Vertex source);
