@@ -26,6 +26,14 @@ namespace Endf {
 		double [] T;
 		Page [] pages;
 		double [] E;
+		/** 
+		 * internall used as the prepared probability at
+		 * each E.
+		 * */
+		private double [] s;
+
+		private Gsl.RanDiscrete rd;
+
 		Interpolation INT;
 		public MTType MT;
 		public MFType MF;
@@ -45,8 +53,6 @@ namespace Endf {
 		/* Debye-Waller integral divided by the atomic mass eV-1,
 		 * as a function of T(K)*/
 		public double[] W;
-
-		private MultiChannelRNG mcrng;
 
 		private int find_T(double T) {
 			for(int i = 1; i < this.T.length; i++) {
@@ -104,7 +110,7 @@ namespace Endf {
 			if(LTHR == LTHRType.INCOHERENT) {
 				return Math.acos(2.0 * rng.uniform() - 1.0);
 			}
-			int ch = mcrng.select(rng);
+			size_t ch = rd.discrete(rng);
 			return Math.acos(1.0 - 2.0 * this.E[ch] / E);
 		}
 
@@ -114,18 +120,20 @@ namespace Endf {
 			}
 			int iT = find_T(T);
 			if(iT == -1) return false;
-			int i;
-			for(i = 0; i < this.E.length && this.E[i] < E; i++ ){
-				double s0 = pages[iT].s[i];
-				double s1 = pages[iT + 1].s[i];
+			for(int i = 0; i < (this.NP - 1); i++ ){
 
-				double s = Interpolation.eval_static(
+				if(this.E[i] < E) {
+					double s0 = pages[iT].s[i];
+					double s1 = pages[iT + 1].s[i];
+
+					s[i] = Interpolation.eval_static(
 						pages[iT + 1].LI,
 						T, this.T[iT], this.T[iT +1], s0, s1);
-
-				mcrng.set_ch_width(i, s);
+				} else {
+					s[i] = 0.0;
+				}
+				rd = new Gsl.RanDiscrete(s);
 			}
-			mcrng.set_eff_channels(i);
 			
 			return true;
 		}
@@ -203,7 +211,7 @@ namespace Endf {
 			pages[0].s = new double[NP];
 
 			INT = new Interpolation(NR);
-			mcrng = new MultiChannelRNG(NP - 1);
+			s = new double[NP - 1];
 
 			INT.load(p, out p);
 
