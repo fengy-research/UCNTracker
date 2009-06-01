@@ -2978,8 +2978,8 @@ namespace Gsl
 		public double* F;
 		
 		[CCode (cname="gsl_ran_discrete_preproc")]
-		public RanDiscrete (size_t K, double* P);
-		[CCode (cname="gsl_ran_discrete")]
+		public RanDiscrete ([CCode (array_length_pos = 0.9)] double[] P);
+		[CCode (cname="gsl_ran_discrete", instance_pos = -1)]
 		public size_t discrete (RNG g);
 		[CCode (instance_pos=-1)]
 		public double pdf (size_t k);	
