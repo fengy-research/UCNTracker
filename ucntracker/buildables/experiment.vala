@@ -45,12 +45,12 @@ public class Experiment: Object, GLib.YAML.Buildable {
 		located = null;
 		return false;
 	}
-	public void accelerate(Track track, Vertex Q, Vertex dQ) {
+	public void accelerate(Track track, Vertex Q, Vertex P) {
 		Volume child;
 		foreach(Field field in fields) {
 			if(!field.locate(Q.position, out child)) continue;
-			field.fieldfunc(track, Q, dQ);
+			field.fieldfunc(track, Q, P);
 		}
-		dQ.position = Q.velocity;
+		P.position = Q.velocity;
 	}
 }}
