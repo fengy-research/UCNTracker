@@ -1,0 +1,27 @@
+--- !Experiment
+ max_time_step: 0.0001
+ objects:
+ - !AccelField &G
+    accel: 980.0
+    direction: 0, 0, -1
+ - !CustomField &Mag
+   volumes: [ *box ]
+ - !Part &Lab
+    layer: 0
+    volumes: 
+    - !Ball &ball
+       center: 0, 0, 0
+       radius: 500
+    neighbours:
+      *Container: { through: 100 }
+ - !Part &Container
+    layer: 1
+    volumes:
+    - !Box &box
+      center: 0, 0, 0
+      size: 100, 100, 100
+    neighbours:
+      *Lab: { reflect: 100 }
+
+...
+
