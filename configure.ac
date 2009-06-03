@@ -43,6 +43,11 @@ YAMLGLIB_LIBS='-L$(top_builddir)/libyaml-glib/src -lyaml-glib'
 AC_SUBST(YAMLGLIB_CFLAGS)
 AC_SUBST(YAMLGLIB_LIBS)
 
+ENDF_CFLAGS='-I$(top_srcdir)/libendf/src'
+ENDF_LIBS='-L$(top_builddir)/libendf/src -lendf'
+AC_SUBST(ENDF_CFLAGS)
+AC_SUBST(ENDF_LIBS)
+
 UCNTRACKER_CFLAGS='-I$(top_srcdir)/ucntracker'
 UCNTRACKER_LIBS='-L$(top_builddir)/ucntracker -lucntracker'
 AC_SUBST(UCNTRACKER_CFLAGS)

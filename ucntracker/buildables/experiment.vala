@@ -5,6 +5,8 @@ public class Experiment: Object, GLib.YAML.Buildable {
 	public List<Field> fields;
 	public List<Foil> foils;
 
+	private Endf.Loader endf;
+
 	public double max_time_step {get; set; default=0.01;}
 
 	public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
