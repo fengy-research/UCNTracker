@@ -108,6 +108,7 @@ public class Application :UCNTracker.VisSimulation {
 private const string GML = 
 """
 --- !Experiment &experiment
+endf-list: [ ../libendf/tests/test-data.endf ]
 parts:
 - !Part &part1
   layer: 1
