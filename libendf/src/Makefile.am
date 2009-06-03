@@ -5,7 +5,7 @@ BUILT_SOURCES = vala-ccode
 
 VALAFLAGS= --library=libendf -H libendf.h
 VALADOCFLAGS = -o Documentation --package-name=libendf
-VALAPKGS = --pkg gsl --pkg ucntracker
+VALAPKGS = --pkg gsl
 
 libendf_la_SOURCES= \
 	$(VALASOURCES:.vala=.c)\
@@ -19,14 +19,13 @@ VALASOURCES = \
 	mt-type.vala \
 	int-type.vala \
 	interpolation.vala \
-	file7.vala \
 	event.vala \
+	mf7mt2.vala \
 	parser.vala
 
 vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
 	echo gmodule-2.0 > libendf.deps
-	echo ucntracker >> libendf.deps
 	echo gsl >> libendf.deps
 	touch vala-ccode
 
@@ -42,18 +41,10 @@ vala-doc:
 	touch vala-doc;
 endif
 BUILT_SOURCES+=vala-doc
-EXTRA_DIST = $(VALASOURCES) vala-ccode libendf.vapi libendf.gir libendf.deps vala-doc test-parser-ccode
+EXTRA_DIST = $(VALASOURCES) vala-ccode libendf.vapi libendf.gir libendf.deps vala-doc
 
-noinst_PROGRAMS = test-parser
-BUILT_SOURCES += $(noinst_PROGRAMS:%=%.c)
 
-test_parser_LDADD = libendf.la $(GLIB_LIBS) -lm
-test_parser_CPPFLAGS = $(GLIB_CFLAGS) -I.
-test-parser-ccode: test-parser.vala libendf.vapi
-	$(VALAC) -C $< --vapidir=. --pkg libendf
-	touch $@
-
-$(DIST_SOURCES) : vala-ccode vala-doc test-parser-ccode
+$(DIST_SOURCES) : vala-ccode vala-doc
 
 MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) libendf.h \
                        libendf.vapi libendf.deps libendf.gir \

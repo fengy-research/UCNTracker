@@ -3,22 +3,36 @@ namespace Endf {
 		INTType [] type;
 		int[] range_end;
 		int NR;
+		int i;
 		public Interpolation(int NR) {
 			this.NR = NR;
 			type = new INTType[NR];
 			range_end = new int[NR];
+			i = 0;
 		}
 		public void set_range(int id, int range_end, INTType type) {
 			this.range_end[id] = range_end;
 			this.type[id] = type;
 		}
-		public void load(string p, out weak string outptr) {
-			for(int i = 0; i< NR; i++) {
-				range_end[i] = (int) read_number(p, out p);
-				type[i] = (INTType) read_number(p, out p);
+		public bool accept_card(Card card) {
+			if( i == NR) {
+				return true;
 			}
-			skip_to_next_line(p, out p);
-			outptr = p;
+			range_end[i] = (int)card.numbers[0];
+			type[i] = (INTType) card.numbers[1];
+			i++;
+			if( i == NR) {
+				return false;
+			}
+			range_end[i] = (int)card.numbers[2];
+			type[i] = (INTType) card.numbers[3];
+			i++;
+			if( i == NR) {
+				return false;
+			}
+			range_end[i] = (int)card.numbers[4];
+			type[i] = (INTType) card.numbers[5];
+			return false;
 		}
 		private int find(double x, double[] xs) {
 			int xi;

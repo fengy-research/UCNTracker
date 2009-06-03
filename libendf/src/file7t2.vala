@@ -17,13 +17,29 @@ namespace Endf {
 	 * S(E, T) returns an interpolated S 
 	 * corresponding to the reaction.
 	 */
-	public class MF7MT2 {
+	public class ThermalElastic {
+		public struct HEAD {
+			public double ZA;
+			public double AWR;
+			public LTHRType LTHR;
+		}
 		private struct Page {
 			public double [] S;
 			public double [] s;
 			public INTType LI;
 		}
 		double [] T;
+		/**
+		 * The current range where T fits in
+		 * T is in T[T_range_index] T[T_range_index + 1].
+		 * if T_range_index = -1, T is out of range.
+		 * */
+
+		int T_range_index = -1;
+
+		double prepared_T;
+		double prepared_E;
+
 		Page [] pages;
 		double [] E;
 		/** 
@@ -54,6 +70,44 @@ namespace Endf {
 		 * as a function of T(K)*/
 		public double[] W;
 
+		/**
+		 * Prepare the cross section, heat it to temparture T
+		 *
+		 * @return false if T is out of range;
+		 * */
+		public bool prepare_T(double T) {
+			T_range_index = find_T(T);
+			prepared_T = T;
+			if(T_range_index == -1) return false;
+		}
+
+		public bool prepare_E(double E) {
+			prepared_E = E;
+			if(LTHR == LTHRType.INCOHERENT) {
+				rd = null;
+				return true;
+			}
+			if(T_range_index == -1) {
+				rd = null;
+				return false;
+			}
+			for(int i = 0; i < (this.NP - 1); i++ ){
+
+				if(this.E[i] < E) {
+					double s0 = pages[T_range_index].s[i];
+					double s1 = pages[T_range_index + 1].s[i];
+					double LI = pages[T_range_index + 1].LI;
+					s[i] = Interpolation.eval_static(
+						LI, T, this.T[iT], this.T[iT +1], s0, s1);
+				} else {
+					s[i] = 0.0;
+				}
+				rd = new Gsl.RanDiscrete(s);
+			}
+			
+			return true;
+		}
+
 		private int find_T(double T) {
 			for(int i = 1; i < this.T.length; i++) {
 				if(this.T[i] > T && this.T[i - 1] <= T)
@@ -64,102 +118,86 @@ namespace Endf {
 
 		/** 
 		 * The total cross section for given E.
+		 *
+		 * Notice that the Temperature is applied in @link prepare_T
+		 * 
+		 * # For a coherent section, Refer to ENDF-102 Dataformats 7.2.2
+		 * # For a incoherent section, Refer to ENDF-102 Dataformat 7.3.2
+		 *
+		 * @return the total cross section at given E.
+		 *
 		 * */
-		public double S(double E, double T) {
+		public double S(double E) {
 			switch(LTHR) {
 				case LTHRType.COHERENT:
-					int iT = find_T(T);
-					if(iT == -1) return double.NAN;
-					double S0 = INT.eval(E, this.E, pages[iT].S);
-					double S1 = INT.eval(E, this.E, pages[iT + 1].S);
-
-					double S_E_T = Interpolation.eval_static(
-						pages[iT + 1].LI,
-						T, this.T[iT], this.T[iT +1], S0, S1);
+					/* if out of range or not prepared, return a NAN */
+					if(T_range_index == -1) return double.NAN;
+					/* First do the E interpolation */
+					double S0 = INT.eval(E, this.E, pages[T_range_index].S);
+					double S1 = INT.eval(E, this.E, pages[T_range_index + 1].S);
+					INTType LI = pages[T_range_index + 1].LI;
+					/* Then do the temperature intepolation */
+					double S_E_T =
+						Interpolation.eval_static(
+						LI, T, this.T[iT], this.T[iT +1], S0, S1);
 					return S_E_T / E;
 				case LTHRType.INCOHERENT:
+					/* interpolate by T */
 					double W_T = INT.eval(T, this.T, W);
 					double EW = E * W_T;
 					return SB * 0.5 * ( 1 - Math.exp(-4.0 * EW)) / (2.0 * EW);
 			}
 			return double.NAN;
 		}
-		/**
-		 * Returns a random angle according to the
-		 * angular dependency of the cross section
-		 * */
-		public double angular(Gsl.RNG rng, double E, double T) {
-			if(!angular_prepare(E, T)) return double.NAN;
-			return angular_next(rng, E, T);
-		}
 
 		/**
-		 * After angular_prepare is called return a theta
-		 * angular according to the angular distributation.
+		 * After prepare is called return a mu according to the 
+		 * angular distributation.
+		 * 
+		 * By definiation mu is the cos of the scattering angle.
 		 *
-		 * If LTHR == INCOHERENT, return a uniform angle for theta,
-		 * because the spherical coordinates has a sin(theta) weight,
-		 * the uniform angle is transformed by acos. Refer to
+		 * If LTHR == INCOHERENT, return a uniform mu,
+		 * Refer to
 		 * mathworld.wolfram.com/SpherePointPicking.html
 		 *
-		 * If LTHR == COHERENT, returns the angle by acos(1 - 2Ei/E),
-		 * where Ei is the energy of a randomly choosen bragg edge.
+		 * If LTHR == COHERENT, returns the angle by 1 - 2Ei/E,
+		 * where Ei is the energy of a randomly choosen bragg edge,
+		 * weighted by the cross section.
 		 *
+		 * @return a distributed mu.
 		 * */
-		public double angular_next(Gsl.RNG rng, double E, double T) {
+		public double next_mu(Gsl.RNG rng) {
 			if(LTHR == LTHRType.INCOHERENT) {
-				return Math.acos(2.0 * rng.uniform() - 1.0);
+				return 2.0 * rng.uniform() - 1.0;
+			} else {
+				size_t ch = rd.discrete(rng);
+				return 1.0 - 2.0 * E[ch] / prepared_E;
 			}
-			size_t ch = rd.discrete(rng);
-			return Math.acos(1.0 - 2.0 * this.E[ch] / E);
 		}
 
-		public bool angular_prepare(double E, double T) {
-			if(LTHR == LTHRType.INCOHERENT) {
-				return true;
-			}
-			int iT = find_T(T);
-			if(iT == -1) return false;
-			for(int i = 0; i < (this.NP - 1); i++ ){
 
-				if(this.E[i] < E) {
-					double s0 = pages[iT].s[i];
-					double s1 = pages[iT + 1].s[i];
-
-					s[i] = Interpolation.eval_static(
-						pages[iT + 1].LI,
-						T, this.T[iT], this.T[iT +1], s0, s1);
-				} else {
-					s[i] = 0.0;
-				}
-				rd = new Gsl.RanDiscrete(s);
-			}
-			
-			return true;
-		}
-
-		public void load(SectionEvent event) {
-			assert(event.MF == MFType.THERMAL_SCATTERING);
-			assert(event.MT == MTType.ELASTIC);
-			MT = event.MT;
-			MAT = event.MAT;
-			MF = event.MF;
-			weak string p = event.content;
-			/* first line */
-			ZA = read_number(p, out p);
-			AWR = read_number(p, out p);
-			LTHR = (LTHRType) read_number(p, out p);
-			skip_to_next_line(p, out p);
-
-			switch(LTHR) {
-				case LTHRType.COHERENT:
-					load_coherent(p, out p);
-				break;
-				case LTHRType.INCOHERENT:
-					load_incoherent(p, out p);
-				break;
-			}	
-		}
+//		public void load(SectionEvent event) {
+//			assert(event.MF == MFType.THERMAL_SCATTERING);
+//			assert(event.MT == MTType.ELASTIC);
+//			MT = event.MT;
+//			MAT = event.MAT;
+//			MF = event.MF;
+//			weak string p = event.content;
+//			/* first line */
+//			ZA = read_number(p, out p);
+//			AWR = read_number(p, out p);
+//			LTHR = (LTHRType) read_number(p, out p);
+//			skip_to_next_line(p, out p);
+//j
+//j			switch(LTHR) {
+//j				case LTHRType.COHERENT:
+//jj					load_coherent(p, out p);
+//jj				break;
+//jj				case LTHRType.INCOHERENT:
+//jjj					load_incoherent(p, out p);
+//				break;
+//			}	
+//		}
 		private void load_coherent(string p, out weak string outptr) {
 			load_first_page(p, out p);
 			

@@ -36,7 +36,10 @@ PKG_CHECK_MODULES(GSL, [gsl])
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
 
-AC_CONFIG_SUBDIRS([libyaml-glib])
+AC_CONFIG_SUBDIRS([
+libyaml-glib
+libendf
+])
 YAMLGLIB_CFLAGS='-I$(top_srcdir)/libyaml-glib -I$(top_srcdir)/libyaml-glib/libyaml/include'
 YAMLGLIB_LIBS='-L$(top_builddir)/libyaml-glib -lyaml-glib'
 
@@ -62,6 +65,7 @@ VIS_PROGRAM_CFLAGS='$(NONVIS_PROGRAM_CFLAGS) $(GTK_CFLAGS) $(GTKGL_CFLAGS) $(UCN
 VIS_PROGRAM_LIBS='$(NONVIS_PROGRAM_LIBS) $(GTK_LIBS) $(GTKGL_LIBS) $(UCNTRACKER_VIS_LIBS)'
 AC_SUBST(VIS_PROGRAM_CFLAGS)
 AC_SUBST(VIS_PROGRAM_LIBS)
+
 
 AC_CONFIG_FILES([
 				Makefile

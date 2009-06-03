@@ -7,9 +7,6 @@ using Endf;
 
 public class Application :UCNTracker.VisSimulation {
 	private bool paused = false;
-	private Endf.Parser parser = new Endf.Parser();
-	private Endf.MF7MT2 mf7mt2 = new Endf.MF7MT2();
-	double T = 296;
 	public override void init() throws GLib.Error {
 		base.init();
 
@@ -24,16 +21,18 @@ public class Application :UCNTracker.VisSimulation {
 			paused = true;
 		};
 
+		/*
 		cs1.sigmafunc = (track, vertex) => {
 			double E = vertex.velocity.norm2() * track.mass * 0.5;
 			double E_in_EV = E / ( 1.0 * UNITS.EV);
 			double s = mf7mt2.S(E_in_EV, T) * UNITS.BARN;
 			message(" E_in_EV = %lg Sigma = %lg", E_in_EV, s);
 			return s;
-		};
+		};*/
 
 		cs1.hit += (obj, track, vertex) => {
 			message("hit on track %p, at %s", track, vertex.position.to_string());
+			/*
 			double E = vertex.velocity.norm2() * track.mass * 0.5;
 			double E_in_EV = E / ( 1.0 * UNITS.EV);
 			double theta = mf7mt2.angular(UniqueRNG.rng, E_in_EV, T);
@@ -48,19 +47,13 @@ public class Application :UCNTracker.VisSimulation {
 			message("velocity before hit = %s ", vertex.velocity.to_string());
 			vertex.velocity = q.rotate_vector(vertex.velocity);
 			message("velocity after hit = %s ", vertex.velocity.to_string());
+			*/
 			current_run.pause();
 			paused = true;
 		};
 
 		if(!first_time_init) return;
 
-		parser.section_end_function = (event) => {
-			if(event.MF == MFType.THERMAL_SCATTERING
-			&& event.MT == MTType.ELASTIC) {
-				mf7mt2.load(event);
-			}
-		};
-		parser.add_file("test-data.endf");
 
 		prepare += (obj, run) => {
 			Track t = Track.new(typeof(Neutron));

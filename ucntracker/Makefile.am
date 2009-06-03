@@ -49,17 +49,7 @@ VALASOURCES = \
 	physics/neutron.vala \
 	physics/cold-neutron.vala \
 	physics/ultracold-neutron.vala \
-	physics/transport.vala \
-	libendf/enum.vala \
-	libendf/number.vala \
-	libendf/mat-type.vala \
-	libendf/mf-type.vala \
-	libendf/mt-type.vala \
-	libendf/int-type.vala \
-	libendf/interpolation.vala \
-	libendf/file7t2.vala \
-	libendf/event.vala \
-	libendf/parser.vala
+	physics/transport.vala
 
 vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
