@@ -1,5 +1,5 @@
 
-VALAPKGS = --pkg ucntracker --pkg ucntracker-vis
+VALAPKGS = --pkg ucntracker-vis-1.0
 noinst_PROGRAMS = sample-volume scene-editor
 
 sample_volume_SOURCES = sample-volume.c

@@ -17,7 +17,7 @@ AM_PROG_CC_C_O
 CFLAGS="$CFLAGS -std=c99"
 VALA_PROG_VALAC(0.5.7)
 VALA_PROG_VALADOC()
-VALA_VAPI_DIRS(['$(top_srcdir)/vapi' '$(top_srcdir)/libyaml-glib' '$(top_srcdir)/ucntracker' '$(top_srcdir)/ucntracker-vis'])
+VALA_VAPI_DIRS(['$(top_srcdir)/vapi' '$(top_srcdir)/libendf/src' '$(top_srcdir)/libyaml-glib/src' '$(top_srcdir)/ucntracker' '$(top_srcdir)/ucntracker-vis'])
 
 AC_CHECK_LIB(m, log1p)
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.10 gobject-2.0 >= 2.10 gmodule-2.0 >= 2.10])
@@ -36,13 +36,10 @@ PKG_CHECK_MODULES(GSL, [gsl])
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
 
-AC_CONFIG_SUBDIRS([
-libyaml-glib
-libendf
-])
-YAMLGLIB_CFLAGS='-I$(top_srcdir)/libyaml-glib -I$(top_srcdir)/libyaml-glib/libyaml/include'
-YAMLGLIB_LIBS='-L$(top_builddir)/libyaml-glib -lyaml-glib'
+AC_CONFIG_SUBDIRS([ libyaml-glib libendf ])
 
+YAMLGLIB_CFLAGS='-I$(top_srcdir)/libyaml-glib/src -I$(top_srcdir)/libyaml-glib/libyaml/include'
+YAMLGLIB_LIBS='-L$(top_builddir)/libyaml-glib/src -lyaml-glib'
 AC_SUBST(YAMLGLIB_CFLAGS)
 AC_SUBST(YAMLGLIB_LIBS)
 

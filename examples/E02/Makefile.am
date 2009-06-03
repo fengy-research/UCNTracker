@@ -6,6 +6,6 @@ BUILT_SOURCES = vala-ccode
 example_02_CPPFLAGS = $(VIS_PROGRAM_CFLAGS)
 example_02_LDADD = $(VIS_PROGRAM_LIBS)
 
-VALAPKGS = --pkg ucntracker --pkg gtk+-2.0 --pkg ucntracker-vis --pkg gsl
+VALAPKGS =--pkg ucntracker-vis-1.0
 @VALA_CCODE_RULES@
 EXTRA_DIST = $(VALASOURCES) vala-ccode

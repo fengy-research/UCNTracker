@@ -7,7 +7,7 @@ libucntracker_vis_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) $(GTK_CFLAGS) \
 
 libucntracker_vis_la_SOURCES =  \
 	$(VALASOURCES:.vala=.c) \
-	ucntracker-vis.h
+	ucntracker-vis-1.0.h
 
 VALASOURCES = \
 	main.vala \
@@ -19,21 +19,21 @@ VALASOURCES = \
 
 BUILT_SOURCES = vala-ccode vala-doc
 
-VALAFLAGS= --library=ucntracker-vis -H ucntracker-vis.h
-VALADOCFLAGS = --package-name=ucntracker-vis -o Documentation 
-VALAPKGS = --pkg ucntracker \
+VALAFLAGS= --library=ucntracker-vis-1.0 -H ucntracker-vis-1.0.h
+VALADOCFLAGS = --package-name=ucntracker-vis-1.0 -o Documentation 
+VALAPKGS = --pkg ucntracker-1.0 \
 	--pkg glu --pkg gl --pkg gtkglext-1.0 --pkg gtk+-2.0
 
-vapi_DATA = ucntracker-vis.vapi ucntracker-vis.deps
+vapi_DATA = ucntracker-vis-1.0.vapi ucntracker-vis-1.0.deps
 vapidir=$(datadir)/vala/vapi
 
 vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
-	echo gtk+-2.0 > ucntracker-vis.deps
-	echo gtkglext-1.0 >> ucntracker-vis.deps
-	echo gl >> ucntracker-vis.deps
-	echo glu >> ucntracker-vis.deps
-	echo ucntracker >> ucntracker-vis.deps
+	echo gtk+-2.0 > ucntracker-vis-1.0.deps
+	echo gtkglext-1.0 >> ucntracker-vis-1.0.deps
+	echo gl >> ucntracker-vis-1.0.deps
+	echo glu >> ucntracker-vis-1.0.deps
+	echo ucntracker-1.0 >> ucntracker-vis-1.0.deps
 	touch $@
 
 if ENABLE_VALADOC
@@ -43,13 +43,12 @@ vala-doc:
 	touch vala-doc;
 endif
 
-EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker-vis.gir ucntracker-vis.vapi ucntracker-vis.deps vala-doc
+EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker-vis-1.0.gir ucntracker-vis-1.0.vapi ucntracker-vis-1.0.deps vala-doc
 
-visualizeinclude_HEADERS =  ucntracker-vis.h
-visualizeincludedir = $(includedir)/ucntracker
+include_HEADERS =  ucntracker-vis-1.0.h
 
-MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) ucntracker-vis.h \
-     ucntracker-vis.deps ucntracker-vis.vapi ucntracker-vis.gir \
+MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) ucntracker-vis-1.0.h \
+     ucntracker-vis-1.0.deps ucntracker-vis-1.0.vapi ucntracker-vis-1.0.gir \
      Documentation
 
 $(DIST_SOURCES) : vala-ccode vala-doc

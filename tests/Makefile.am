@@ -1,5 +1,5 @@
 vis_test = test-rng test-builder
-nonvis_test = test-gtk test-endf-parser
+nonvis_test = test-gtk
 
 test_gtk_CPPFLAGS = $(VIS_PROGRAM_CFLAGS)
 test_gtk_LDADD = $(VIS_PROGRAM_LIBS)
@@ -13,12 +13,9 @@ test_mcrng_CPPFLAGS = $(NONVIS_PROGRAM_CFLAGS)
 test_builder_LDADD = $(NONVIS_PROGRAM_LIBS)
 test_builder_CPPFLAGS = $(NONVIS_PROGRAM_CFLAGS)
 
-test_endf_parser_LDADD = $(NONVIS_PROGRAM_LIBS)
-test_endf_parser_CPPFLAGS = $(NONVIS_PROGRAM_CFLAGS)
-
 AM_LDFLAGS = -export-dynamic -rdynamic
 
-VALAPKGS = --pkg ucntracker-vis
+VALAPKGS = --pkg ucntracker-vis-1.0
 
 noinst_PROGRAMS = $(vis_test) $(nonvis_test)
 SUFFIXES = .vala .c

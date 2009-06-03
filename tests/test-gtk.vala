@@ -3,7 +3,6 @@ using GL;
 using GLU;
 using UCNTracker;
 using UCNPhysics;
-using Endf;
 
 public class Application :UCNTracker.VisSimulation {
 	private bool paused = false;
