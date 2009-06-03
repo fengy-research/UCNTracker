@@ -12,6 +12,7 @@ depcomp
 .deps/
 .libs/
 dolt*
+!dolt.m4
 install-sh
 libtool
 ltmain.sh
