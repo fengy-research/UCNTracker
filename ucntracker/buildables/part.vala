@@ -38,12 +38,11 @@ namespace UCNTracker {
 			}
 			return Type.INVALID;
 		}
-		internal void custom_node(GLib.YAML.Builder builder, string tag, void* node_pointer) throws Error {
+		internal void custom_node(GLib.YAML.Builder builder, string tag, GLib.YAML.Node node) throws Error {
 			if(tag != "neighbours") {
 				string message = "Property %s.%s not found".printf(get_type().name(), tag);
 				throw new Error.PROPERTY_NOT_FOUND(message);
 			}
-			GLib.YAML.Node node = (GLib.YAML.Node)node_pointer;
 			if(!(node is GLib.YAML.Node.Mapping)) {
 				string message = "A mapping is expected for a neighbour tag (%s)"
 				.printf(node.start_mark.to_string());
