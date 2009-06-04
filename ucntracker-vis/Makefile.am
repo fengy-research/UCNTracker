@@ -2,7 +2,7 @@ SUBDIRS = .
 
 lib_LTLIBRARIES = libucntracker-vis.la
 libucntracker_vis_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) $(GTK_CFLAGS) \
-	$(GTKGL_CFLAGS) $(YAMLGLIB_CFLAGS) $(UCNTRACKER_CFLAGS) \
+	$(GTKGL_CFLAGS) $(YAMLGLIB_CFLAGS) $(ENDF_CFLAGS) $(UCNTRACKER_CFLAGS) \
 	-DG_LOG_DOMAIN=\"UCNTracker\" -DINFO=
 
 libucntracker_vis_la_SOURCES =  \
