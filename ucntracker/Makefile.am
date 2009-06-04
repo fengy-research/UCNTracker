@@ -72,10 +72,17 @@ vapidir=$(datadir)/vala/vapi
 include_HEADERS = ucntracker-1.0.h
 
 
-EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker.vapi ucntracker.gir ucntracker.deps vala-doc
+EXTRA_DIST = $(VALASOURCES) \
+             vala-ccode \
+             ucntracker-1.0.vapi \
+             ucntracker-1.0.gir \
+             ucntracker-1.0.deps \
+             vala-doc
 
 $(DIST_SOURCES) : vala-ccode vala-doc
 
 MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) ucntracker-1.0.h \
-                       ucntracker.vapi ucntracker.deps ucntracker.gir \
+                       ucntracker-1.0.vapi \
+                       ucntracker-1.0.deps \
+                       ucntracker-1.0.gir \
                        Documentation

@@ -92,7 +92,7 @@ public class Simulation : VisSimulation {
 					head.position = Vector(x, y, z);
 					head.weight = 1.0;
 //					track.start(run, head);
-					experiment.locate(head.position, out head.part, out head.volume);
+					track.locate(head);
 				} while( head.part == mirror );
 				track.start(run, head);
 				track.spin_parallel = rng.uniform() < 0.5? 1: -1;
