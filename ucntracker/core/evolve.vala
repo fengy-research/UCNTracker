@@ -1,5 +1,9 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
+	/**
+	 * Time Evolution of the particle track
+	 *
+	 */
 	internal class Evolution {
 
 		private weak Track track;
@@ -27,9 +31,12 @@ namespace UCNTracker {
 		private double [] y;
 		private double [] yerr;
 
+		Vertex Q;
+		Vertex dQ;
+
 		public Evolution(Track track) {
 			ode_system.function = F;
-			ode_system.jacobian = null; /*No Jacobian */
+			ode_system.jacobian = null;
 			ode_system.dimension = track.dimensions;
 			ode_system.params = this;
 			ode_step = new Gsl.OdeivStep(Gsl.OdeivStepTypes.rk2, track.dimensions);
@@ -39,31 +46,35 @@ namespace UCNTracker {
 			this.track = track;
 			y = new double[track.dimensions];
 			yerr = new double[track.dimensions];
+			Q = track.create_vertex();
+			dQ = track.create_vertex();
 		}
 
-		private static int F(double t, 
+		/** 
+		 * Defining the ODE system.
+		 * */
+		private int F(double t, 
 			[CCode (array_length = false)]
 			double[] y, 
 			[CCode (array_length = false)]
-			double[] dydt, void * params) {
-		    Evolution ev = (Evolution)params;
-			Vertex Q = ev.track.create_vertex();
-			Vertex dQ = ev.track.create_vertex();
+			double[] dydt) {
 			Q.from_array(y);
-			ev.track.experiment.accelerate(ev.track, Q, dQ);
+			dQ.reset();
+			accelerate(Q, dQ);
 		    dQ.to_array(dydt);
 
 		    return Gsl.Status.SUCCESS;
 		}
-		/*
-		private static int J(double t, 
+		/**
+		 * The Jacobian is not used
+		 */
+		private int J(double t, 
 			[CCode (array_length = false)]
 			double[] y, 
 			[CCode (array_length = false)]
 			double[] dfdy, 
 			[CCode (array_length = false)]
-			double[] dfdt, void * params) {
-		    Evolution ev = (Evolution)params;
+			double[] dfdt) {
 			for(int i = 0; i< 6; i++) 
 			for(int j = 0; j< 6; j++) {
 				dfdy[i*6 + j] = 0.0;
@@ -75,24 +86,41 @@ namespace UCNTracker {
 		    dfdt[4] = 0.0;
 		    dfdt[5] = 0.0;
 		    return Gsl.Status.SUCCESS;
-		} */
+		}
 
+		/**
+		 * Evolve the system from tail by dt, save the new state to future
+		 *
+		 * @param dt
+		 *          the time step, it is adaptive.
+		 * @param future
+		 *          the new state is save to this vertex,
+		 *          however the timestep of future is still point at the old time
+		 * */
 		private void integrate(Vertex future, ref double dt) {
-			tail.to_array(y);
 			double t0 = tail.timestamp;
 			double t1 = t0 + dt;
 
+			tail.to_array(y);
 			ode_evolve.apply(ode_control, ode_step, &ode_system,
-			ref t0, t1, ref step_size, y);
+				ref t0, t1, ref step_size, y);
 			dt = t0 - tail.timestamp;
 
 			future.from_array(y);
-			/* timestamp is also recovered from the array, which sucks*/
 			future.timestamp = t0;
-			//message("%lf %lf %lf %lf %lf %lf", y[0], y[1], y[2], y[3], y[4], y[5]);
 		}
 
 
+		/**
+		 * Brace the exact position where the particle leaves the current part.
+		 *
+		 * @param leave
+		 *        the vertex that is strictly inside the current part; it is where
+		 *        the particle attempts to leave the current part.
+		 * @param enter
+		 *        the veretx that is strictly outside the current part; it is where
+		 *        the particle attempts to enter the new part.
+		 */
 		private void adjust_leave_enter_by_part(Vertex leave, Vertex enter) {
 			double t0 = leave.timestamp;
 			double t1 = enter.timestamp;
@@ -113,7 +141,7 @@ namespace UCNTracker {
 				ode_step.reset();
 				ode_step.apply(t0, dt, y, yerr, null, null, &ode_system);
 				future.from_array(y);
-				experiment.locate(future.position, out future.part, out future.volume);
+				track.locate(future);
 				if(future.part != part_in) {
 					t1 = tc;
 					enter.from_array(y);
@@ -133,6 +161,20 @@ namespace UCNTracker {
 
 			debug("dl = %lg count = %d", dl, count);
 		}
+
+		/**
+		 * Brace the position where the particle goes through a surface.
+		 *
+		 * @param leave
+		 *        the vertex that is strictly inside the current part; it is where
+		 *        the particle attempts to leave the current part.
+		 * @param enter
+		 *        the veretx that is strictly outside the current part; it is where
+		 *        the particle attempts to enter the new part.
+		 *
+		 * @return true if there is a intersection
+		 *         false if there is not a intersection
+		 **/
 		private bool solve_surface_intersection(Surface surface, 
 				Vertex leave, 
 				Vertex enter) {
@@ -153,9 +195,7 @@ namespace UCNTracker {
 				ode_step.reset();
 				ode_step.apply(t0, dt, y, yerr, null, null, &ode_system);
 				future.from_array(y);
-				experiment.locate(future.position, 
-						out future.part, 
-						out future.volume);
+				track.locate(future);
 				double sc = surface.sfunc(future.position);
 				if((sc < 0.0 && s1 < 0.0)
 				|| (sc > 0.0 && s1 > 0.0)) {
@@ -180,7 +220,28 @@ namespace UCNTracker {
 			if(surface.is_in_region(leave.position)) return true;
 			return false;
 		}
-		public bool check_surfaces(Vertex leave, Vertex enter, 
+		/**
+		 * Calculate the acceleration
+		 *
+		 * @param Q
+		 *        the state of the ODE system
+		 * @param P
+		 *        the velocity of the ODE system.
+		 *
+		 */
+		private void accelerate(Vertex Q, Vertex P) {
+			Volume child;
+			foreach(Field field in experiment.fields) {
+				if(!field.locate(Q.position, out child)) continue;
+				field.fieldfunc(track, Q, P);
+			}
+			P.position = Q.velocity;
+		}
+		/**
+		 * Find the intersected surface.
+		 * 
+		 * */
+		private bool check_surfaces(Vertex leave, Vertex enter, 
 				out unowned Foil f, 
 				out unowned Surface s) {
 			foreach(var foil in track.experiment.foils) {
@@ -217,12 +278,14 @@ namespace UCNTracker {
 				return n;
 			}
 		}
-		/* Guess a surface normal vector based on leave and enter.
+		/**
+		 * Guess a surface normal vector based on leave and enter.
+		 *
 		 * The two vertices should already have been adjusted by
 		 * adjust_leave_enter
 		 *
 		 * The direction of the normal is always pointing to the leave
-		 * vertex, or backward.
+		 * vertex, in other words, backward.
 		 * */
 		private Vector guess_surface_normal_by_part(Vertex leave, Vertex enter) {
 			double sl = leave.get_sfunc_value();
@@ -301,13 +364,8 @@ namespace UCNTracker {
 
 			unowned Foil foil = null;
 			unowned Surface surface = null;
-			unowned Part part = null;
-			unowned Volume volume = null;
 
-			experiment.locate (next.position, out part, out volume);
-
-			next.part = part;
-			next.volume = volume;
+			track.locate (next);
 
 			/* Reset the weight of enter.
 			 * NOTE: this has to be removed after we addin the weight tracking!
@@ -322,7 +380,7 @@ namespace UCNTracker {
 				check_surfaces (leave, enter, 
 					out foil, out surface);
 
-			if(!surface_event_occurred && tail.part == part) {
+			if(!surface_event_occurred && tail.part == next.part) {
 				move_to(next, false);
 				return dt;
 			}

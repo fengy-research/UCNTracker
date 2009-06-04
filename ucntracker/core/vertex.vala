@@ -1,14 +1,22 @@
 [CCode (cprefix = "UCN", lower_case_cprefix = "ucn_")]
 namespace UCNTracker {
 	public abstract class Vertex {
+		/* Accounting */
+		public weak Part part;
+		public weak Volume volume;
+		public double timestamp;
+		public double weight;
+
+		/* Phasespace parameters */
 		public Vector position;
 		public Vector velocity;
 		public double spin_precession;
 
-		public double weight;
-		public double timestamp;
-		public weak Part part;
-		public weak Volume volume;
+		public virtual void reset() {
+			position = Vector(0, 0, 0);
+			velocity = Vector(0, 0, 0);
+			spin_precession = 0;
+		}
 
 		public virtual void copy_to(Vertex target) {
 			target.position = position;
@@ -19,6 +27,7 @@ namespace UCNTracker {
 			target.part= part;
 			target.volume = volume;
 		}
+
 		public virtual void to_array([CCode (array_length=false)]double [] y) {
 			y[0] = position.x;
 			y[1] = position.y;

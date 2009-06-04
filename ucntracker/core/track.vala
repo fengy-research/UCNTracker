@@ -101,7 +101,7 @@ namespace UCNTracker {
 			tail = clone_vertex(head);
 			tail.timestamp = run.timestamp;
 			if(tail.part == null || tail.volume == null)
-				experiment.locate(tail.position, out tail.part, out tail.volume);
+				locate(tail);
 
 			run.tracks.prepend(this);
 			run.track_added_notify(this);
@@ -148,6 +148,16 @@ namespace UCNTracker {
 				}
 			}
 			return min;
+		}
+		public bool locate(Vertex vertex) {
+			foreach(weak Part part in experiment.parts) {
+				if(part.locate(vertex.position, out vertex.volume)) {
+					vertex.part = part;
+					return true;
+				}
+			}
+			vertex.part = null;
+			return false;
 		}
 	}
 }

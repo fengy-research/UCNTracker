@@ -36,25 +36,6 @@ public class Experiment: Object, GLib.YAML.Buildable {
 		}
 		return Type.INVALID;
 	}
-	public bool locate(Vector point,
-	       out unowned Part located, out unowned Volume volume) {
-		foreach(Part part in parts) {
-			if(part.locate(point, out volume)) {
-				located = part;
-				return true;
-			}
-		}
-		located = null;
-		return false;
-	}
-	public void accelerate(Track track, Vertex Q, Vertex dQ) {
-		Volume child;
-		foreach(Field field in fields) {
-			if(!field.locate(Q.position, out child)) continue;
-			field.fieldfunc(track, Q, dQ);
-		}
-		dQ.position = Q.velocity;
-	}
 	internal void custom_node(GLib.YAML.Builder builder, string tag, GLib.YAML.Node node) throws GLib.Error {
 		
 		if(tag != "endf-list") {
