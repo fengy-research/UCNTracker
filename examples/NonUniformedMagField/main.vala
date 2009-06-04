@@ -91,7 +91,7 @@ public class Simulation : VisSimulation {
 				Track track = Track.new(typeof(Neutron));
 				double theta = dist.next(rng);
 				double phi = 2.0 * rng.uniform() * 3.14;
-				Vector dir = Vector( sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
+				Vector dir = Vector( sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta) );
 				energy = v_dist.next(rng) * UNITS.M;
 				energy = 0.5 * track.mass * energy * energy;
 				Vertex head = track.create_vertex_with_kinetics(energy, dir);
