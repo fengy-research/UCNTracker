@@ -13,6 +13,7 @@ namespace UCNTracker {
 			new HashTable<unowned Part, Border>(direct_hash, direct_equal);
 		public int layer {get; set; default = 0;}
 		public FermiPotential potential {get; set;}
+		public double temperature {get; set;}
 
 		public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {

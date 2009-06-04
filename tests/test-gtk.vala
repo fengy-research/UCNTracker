@@ -20,33 +20,9 @@ public class Application :UCNTracker.VisSimulation {
 			paused = true;
 		};
 
-		/*
-		cs1.sigmafunc = (track, vertex) => {
-			double E = vertex.velocity.norm2() * track.mass * 0.5;
-			double E_in_EV = E / ( 1.0 * UNITS.EV);
-			double s = mf7mt2.S(E_in_EV, T) * UNITS.BARN;
-			message(" E_in_EV = %lg Sigma = %lg", E_in_EV, s);
-			return s;
-		};*/
 
 		cs1.hit += (obj, track, vertex) => {
 			message("hit on track %p, at %s", track, vertex.position.to_string());
-			/*
-			double E = vertex.velocity.norm2() * track.mass * 0.5;
-			double E_in_EV = E / ( 1.0 * UNITS.EV);
-			double theta = mf7mt2.angular(UniqueRNG.rng, E_in_EV, T);
-			double phi = UniqueRNG.rng.uniform() * Math.PI * 2.0;
-			Quaternion q = Quaternion.from_two_vectors(
-				Vector(1, 0, 0),
-				Vector(Math.sin(theta) * Math.cos(phi), 
-					Math.sin(theta) * Math.sin(phi), Math.cos(theta)));
-
-			message("q = %s", q.to_string());
-			message("theta = %lf, phi = %lf", theta, phi);
-			message("velocity before hit = %s ", vertex.velocity.to_string());
-			vertex.velocity = q.rotate_vector(vertex.velocity);
-			message("velocity after hit = %s ", vertex.velocity.to_string());
-			*/
 			current_run.pause();
 			paused = true;
 		};
@@ -113,6 +89,7 @@ parts:
 - !Part &part1
   layer: 1
   potential: { f : 8.5e-5 , V : 193 }
+  temperature: 300
   volumes:
   - !Box
     center: 0, 0, 0
@@ -126,10 +103,12 @@ parts:
 #    tube_radius: 3
 #    radius: 6
   cross-sections:
-  - !CrossSection &cs1
+  - !ElasticCrossSection &cs1
     ptype: Neutron
-    const_sigma: 0.1
-    density: 6.0e23
+    density: 6.02e21
+    mat: 31
+    mf: 7
+    mt: 2
   neighbours:
     *Lab : { absorb: 0, reflect : 00, diffuse: 100, fermi: 0 }
 - !Part &Lab

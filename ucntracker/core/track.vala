@@ -19,6 +19,12 @@ namespace UCNTracker {
 			v.velocity = direction.mul(vel);
 			return v;
 		}
+
+		public double get_kinetic_energy(Vertex? vertex = null) {
+			if(vertex == null) vertex = tail;
+			return vertex.velocity.norm2() * mass * 0.5;
+		}
+
 		public Track parent {get; private set;}
 
 		public weak Run run {get; private set;}

@@ -1,5 +1,5 @@
-vis_test = test-rng test-builder
-nonvis_test = test-gtk
+nonvis_test = test-rng test-builder test-qua
+vis_test = test-gtk
 
 test_gtk_CPPFLAGS = $(VIS_PROGRAM_CFLAGS)
 test_gtk_LDADD = $(VIS_PROGRAM_LIBS)
@@ -12,6 +12,9 @@ test_mcrng_CPPFLAGS = $(NONVIS_PROGRAM_CFLAGS)
 
 test_builder_LDADD = $(NONVIS_PROGRAM_LIBS)
 test_builder_CPPFLAGS = $(NONVIS_PROGRAM_CFLAGS)
+
+test_qua_LDADD = $(NONVIS_PROGRAM_LIBS)
+test_qua_CPPFLAGS = $(NONVIS_PROGRAM_CFLAGS)
 
 AM_LDFLAGS = -export-dynamic -rdynamic
 
