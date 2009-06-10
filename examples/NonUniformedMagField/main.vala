@@ -43,6 +43,7 @@ public class Simulation : VisSimulation {
 	double loss_up_sc;
 	double error;
 	double energy = 0.0;
+	double sp = 0.0;
 	int number_tracks = 1;
 	int number_runs = 1;
 	bool visual = true;
@@ -66,10 +67,11 @@ public class Simulation : VisSimulation {
 		box = get_volume("box") as Box;
 		MagF.function = (track, Q, dQ) => {
 			double B = Math.pow(Math.pow(10 - 0.1 * Q.position.z, 2) + 0.0025 * (Math.pow(Q.position.x, 2) + Math.pow(Q.position.y, 2)), 0.5) * UNITS.TESLA;
-			dQ.spin_precession = -B;
-			dQ.velocity.x += track.spin_parallel * 0.0025 * Q.position.x / ( B * track.mass );
-			dQ.velocity.y += track.spin_parallel * 0.0025 * Q.position.y / ( B * track.mass );
-			dQ.velocity.z += track.spin_parallel * ( -0.1 ) * ( 10 - 0.1 * Q.position.z ) / ( B * track.mass );
+			dQ.spin_precession += track.spin_parallel * track.mdm * B / (1.0 * UNITS.H_BAR);
+			dQ.velocity.x += track.spin_parallel * track.mdm * 0.0025 * Q.position.x / ( B * track.mass );
+			dQ.velocity.y += track.spin_parallel * track.mdm * 0.0025 * Q.position.y / ( B * track.mass );
+			dQ.velocity.z += track.spin_parallel * track.mdm * ( -0.1 ) * ( 10 - 0.1 * Q.position.z ) / ( B * track.mass );
+		//	debug("%s", dQ.velocity.to_string());
 			return true;
 		};
 			
@@ -87,6 +89,15 @@ public class Simulation : VisSimulation {
 				return pow(5.28, 2.9)/1.87 * (7.15 - x);
 			};
 			v_dist.init();
+			run.run_motion_notify += (run) => {
+				int a;
+				foreach(Track track in run.tracks) {
+					a = (int)track.get_double("track");
+					message("spin precession of track %d: %lf\n", a, track.tail.spin_precession);
+					this.sp += track.tail.spin_precession;
+				}
+				message("Average spin precession of tracks: %lf\n", cos(sp / number_tracks));
+			};
 			for(int i = 0; i< number_tracks; i++) {
 				Track track = Track.new(typeof(Neutron));
 				double theta = dist.next(rng);
@@ -104,11 +115,13 @@ public class Simulation : VisSimulation {
 				head.spin_precession = 0;
 				track.spin_parallel = rng.uniform() * 2 - 1;
 				track.start(run, head);
+				track.set_double("track", i * 1.0);
 			}
 
-			run.time_limit = 200;
-			run.frame_length = 0.05;
+			run.time_limit = 100;
+			run.frame_length = 0.02;
 		};
+
 		finish += (ex, run) => {
 			summerize(run);
 			if(number_runs > 0) {
@@ -122,7 +135,7 @@ public class Simulation : VisSimulation {
 		};
 		init_gui();
 	}
-
+
 	private void init_gui() {
 		Gtk.Button button = new Gtk.Button.with_label("go");
 		Gtk.Box hbox = new Gtk.HBox(false, 0);
@@ -137,8 +150,8 @@ public class Simulation : VisSimulation {
 
 //		entry_energy.text = "400";
 		entry_field.text= "1.0";
-		entry_tracks.text= "10";
-		entry_runs.text = "10";
+		entry_tracks.text= "1";
+		entry_runs.text = "1";
 		check_visual.set_active(true);
 		button.clicked += (btn) => {
 //			energy = entry_energy.text.to_double() * 1.0e-9 * UNITS.EV;
@@ -157,8 +170,8 @@ public class Simulation : VisSimulation {
 
 	public static int main(string[] args) {
 		UCNTracker.init(ref args);
-		UCNTracker.set_verbose(false);
-		UCNTracker.set_absolutely_quiet(true);
+		UCNTracker.set_verbose(true);
+		UCNTracker.set_absolutely_quiet(false);
 		Simulation sim = new Simulation();
 		sim.init_from_file("T.yml");
 		sim.run(false, false);
