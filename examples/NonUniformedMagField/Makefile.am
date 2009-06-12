@@ -1,7 +1,7 @@
-VALASOURCES = main.vala
+VALASOURCES = main1.vala
 
 noinst_PROGRAMS = NonUniformedMagField
-NonUniformedMagField_SOURCES = main.c
+NonUniformedMagField_SOURCES = main1.c
 BUILT_SOURCES = vala-ccode
 NonUniformedMagField_CPPFLAGS = $(VIS_PROGRAM_CFLAGS)
 NonUniformedMagField_LDADD = $(VIS_PROGRAM_LIBS)
