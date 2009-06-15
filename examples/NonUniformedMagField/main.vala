@@ -43,7 +43,10 @@ public class Simulation : VisSimulation {
 	double loss_up_sc;
 	double error;
 	double energy = 0.0;
+<<<<<<< HEAD:examples/NonUniformedMagField/main.vala
 	double sp = 0.0;
+=======
+>>>>>>> origin/field-rework:examples/NonUniformedMagField/main.vala
 	int number_tracks = 1;
 	int number_runs = 1;
 	bool visual = true;
@@ -67,11 +70,18 @@ public class Simulation : VisSimulation {
 		box = get_volume("box") as Box;
 		MagF.function = (track, Q, dQ) => {
 			double B = Math.pow(Math.pow(10 - 0.1 * Q.position.z, 2) + 0.0025 * (Math.pow(Q.position.x, 2) + Math.pow(Q.position.y, 2)), 0.5) * UNITS.TESLA;
+<<<<<<< HEAD:examples/NonUniformedMagField/main.vala
 			dQ.spin_precession += track.spin_parallel * track.mdm * B / (1.0 * UNITS.H_BAR);
 			dQ.velocity.x += track.spin_parallel * track.mdm * 0.0025 * Q.position.x / ( B * track.mass );
 			dQ.velocity.y += track.spin_parallel * track.mdm * 0.0025 * Q.position.y / ( B * track.mass );
 			dQ.velocity.z += track.spin_parallel * track.mdm * ( -0.1 ) * ( 10 - 0.1 * Q.position.z ) / ( B * track.mass );
 		//	debug("%s", dQ.velocity.to_string());
+=======
+			dQ.spin_precession = -B;
+			dQ.velocity.x += track.spin_parallel * 0.0025 * Q.position.x / ( B * track.mass );
+			dQ.velocity.y += track.spin_parallel * 0.0025 * Q.position.y / ( B * track.mass );
+			dQ.velocity.z += track.spin_parallel * ( -0.1 ) * ( 10 - 0.1 * Q.position.z ) / ( B * track.mass );
+>>>>>>> origin/field-rework:examples/NonUniformedMagField/main.vala
 			return true;
 		};
 			
@@ -89,6 +99,7 @@ public class Simulation : VisSimulation {
 				return pow(5.28, 2.9)/1.87 * (7.15 - x);
 			};
 			v_dist.init();
+<<<<<<< HEAD:examples/NonUniformedMagField/main.vala
 			run.run_motion_notify += (run) => {
 				int a;
 				foreach(Track track in run.tracks) {
@@ -98,11 +109,17 @@ public class Simulation : VisSimulation {
 				}
 				message("Average spin precession of tracks: %lf\n", cos(sp / number_tracks));
 			};
+=======
+>>>>>>> origin/field-rework:examples/NonUniformedMagField/main.vala
 			for(int i = 0; i< number_tracks; i++) {
 				Track track = Track.new(typeof(Neutron));
 				double theta = dist.next(rng);
 				double phi = 2.0 * rng.uniform() * 3.14;
+<<<<<<< HEAD:examples/NonUniformedMagField/main.vala
 				Vector dir = Vector( sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta) );
+=======
+				Vector dir = Vector( sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
+>>>>>>> origin/field-rework:examples/NonUniformedMagField/main.vala
 				energy = v_dist.next(rng) * UNITS.M;
 				energy = 0.5 * track.mass * energy * energy;
 				Vertex head = track.create_vertex_with_kinetics(energy, dir);
@@ -115,6 +132,7 @@ public class Simulation : VisSimulation {
 				head.spin_precession = 0;
 				track.spin_parallel = rng.uniform() * 2 - 1;
 				track.start(run, head);
+<<<<<<< HEAD:examples/NonUniformedMagField/main.vala
 				track.set_double("track", i * 1.0);
 			}
 
@@ -122,6 +140,13 @@ public class Simulation : VisSimulation {
 			run.frame_length = 0.02;
 		};
 
+=======
+			}
+
+			run.time_limit = 200;
+			run.frame_length = 0.05;
+		};
+>>>>>>> origin/field-rework:examples/NonUniformedMagField/main.vala
 		finish += (ex, run) => {
 			summerize(run);
 			if(number_runs > 0) {
@@ -135,7 +160,11 @@ public class Simulation : VisSimulation {
 		};
 		init_gui();
 	}
+<<<<<<< HEAD:examples/NonUniformedMagField/main.vala
 
+=======
+
+>>>>>>> origin/field-rework:examples/NonUniformedMagField/main.vala
 	private void init_gui() {
 		Gtk.Button button = new Gtk.Button.with_label("go");
 		Gtk.Box hbox = new Gtk.HBox(false, 0);
@@ -150,8 +179,13 @@ public class Simulation : VisSimulation {
 
 //		entry_energy.text = "400";
 		entry_field.text= "1.0";
+<<<<<<< HEAD:examples/NonUniformedMagField/main.vala
 		entry_tracks.text= "1";
 		entry_runs.text = "1";
+=======
+		entry_tracks.text= "10";
+		entry_runs.text = "10";
+>>>>>>> origin/field-rework:examples/NonUniformedMagField/main.vala
 		check_visual.set_active(true);
 		button.clicked += (btn) => {
 //			energy = entry_energy.text.to_double() * 1.0e-9 * UNITS.EV;
@@ -170,8 +204,13 @@ public class Simulation : VisSimulation {
 
 	public static int main(string[] args) {
 		UCNTracker.init(ref args);
+<<<<<<< HEAD:examples/NonUniformedMagField/main.vala
 		UCNTracker.set_verbose(true);
 		UCNTracker.set_absolutely_quiet(false);
+=======
+		UCNTracker.set_verbose(false);
+		UCNTracker.set_absolutely_quiet(true);
+>>>>>>> origin/field-rework:examples/NonUniformedMagField/main.vala
 		Simulation sim = new Simulation();
 		sim.init_from_file("T.yml");
 		sim.run(false, false);
