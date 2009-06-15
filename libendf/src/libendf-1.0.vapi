@@ -4,15 +4,10 @@
 namespace Endf {
 	[CCode (ref_function = "endf_interpolation_ref", unref_function = "endf_interpolation_unref", param_spec_function = "endf_param_spec_interpolation", cheader_filename = "libendf-1.0.h")]
 	public class Interpolation : Endf.Acceptor {
-		public int NR;
-		public int i;
-		public int[] range_end;
-		public Endf.INTType[] type;
 		public bool accept_card (Endf.Card card);
 		public double eval (double x, double[] xs, double[] ys) throws Endf.Error;
-		public double eval_by_index (double x, int xi, double[] xs, double[] ys);
 		public static double eval_static (Endf.INTType type, double x, double x0, double x1, double y0, double y1);
-		public Endf.INTType get_int_type_by_index (int index);
+		public double eval_with_index (double x, int xi, double[] xs, double[] ys);
 		public Interpolation (int NR);
 		public void set_range (int id, int range_end, Endf.INTType type);
 	}
@@ -86,7 +81,6 @@ namespace Endf {
 			public double[] a;
 			public int LT;
 			public double[] T;
-			public Endf.INTType[] LI;
 		}
 		[CCode (type_id = "ENDF_MF7_MT4_TYPE_EFF_PAGE", cheader_filename = "libendf-1.0.h")]
 		public struct EffPage {
@@ -104,6 +98,7 @@ namespace Endf {
 		[CCode (type_id = "ENDF_MF7_MT4_TYPE_TPAGE", cheader_filename = "libendf-1.0.h")]
 		public struct TPage {
 			public double[] S;
+			public Endf.INTType LI;
 		}
 		[CCode (type_id = "ENDF_MF7_MT4_TYPE_BPAGE", cheader_filename = "libendf-1.0.h")]
 		public struct bPage {
