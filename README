@@ -1,6 +1,6 @@
 Welcome to UCNTracker 
 =========================
-  Last update Monday, March 20 2009.
+  Last update Fri Jun 19, 2009.
 
 Introduction
 ============
@@ -10,10 +10,10 @@ Source
 ======
 
   A public repository is at
-    git clone git://129.79.155.240/~fengyu/UCNTracker.git
+    git clone git://github.com/fengy-research/UCNTracker.git
 
   A web interface is at
-    http://129.79.155.240/~fengyu/viewgit
+    http://github.com/fengy-research/UCNTracker
 
   git is the version control tool used by many free softwares projects.
   A tutorial is available at
@@ -52,7 +52,7 @@ Dependency
     RHEL 5
     EPEL 5
       http://fedoraproject.org/wiki/EPEL
-    or Prebuilt by me at
+    or Prebuilt by me at (the link might be unavailable soon)
       http://129.79.155.240/~fengyu/rpmbuild
 
 Compiling
