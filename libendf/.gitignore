@@ -1,4 +1,0 @@
-*.vapi
-*.deps
-tests/elastic
-tests/inelastic

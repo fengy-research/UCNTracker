@@ -1,3 +1,6 @@
 [submodule "libyaml-glib"]
 	path = libyaml-glib
 	url = git@github.com:fengy-research/libyaml-glib.git
+[submodule "libendf"]
+	path = libendf
+	url = git@github.com:fengy-research/libendf.git
