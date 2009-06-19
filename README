@@ -58,19 +58,32 @@ Dependency
 Compiling
 =========
   $ ./autogen.sh
+  $ git submodule init
+  $ git submodule update
   $ make
 
 Code Layout
 ===========
   UCNTracker       : git repository root
   |-- autotools    : macros and scripts used by autotools
+  |
   |-- ucntracker   : the main ucntracker library is built here
-  |   |-- builder  : UCNBuilder, the geometry xml parser.
   |   |-- math     : math library(vectors and stuff)
   |   |-- physics  : defining particle types
   |   |-- core     : the tracking system
   |   |-- library  : the library interface
+  |   |-- buildables : the buildable GObject-s
+  |   |-- field    : physical fields
+  |   |-- volume   : geometry volume definitions
+  |
   |-- ucntracker-vis : the GTK visualization widget
+  |
+  |-- libendf      : reading ENDF files(external submodule)
+  |
+  |-- libyaml-glib : building GObject with YAML(external submodule)
+  |
+  |-- tools        : tools, mostly an geometry scene builder
+  |
   |-- tests    : very minimal test cases
   `---examples     : bundled apps
       |-- E01      : average length a particle goes before
