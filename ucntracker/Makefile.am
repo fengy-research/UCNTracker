@@ -63,6 +63,7 @@ if ENABLE_VALADOC
 @VALA_DOC_RULES@
 else
 vala-doc:
+	mkdir -p Documentation
 	touch vala-doc;
 endif
 BUILT_SOURCES+=vala-doc
@@ -70,13 +71,14 @@ BUILT_SOURCES+=vala-doc
 vapi_DATA = ucntracker-1.0.vapi
 vapidir=$(datadir)/vala/vapi
 include_HEADERS = ucntracker-1.0.h
-
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = ucntracker-1.0.pc
 
 EXTRA_DIST = $(VALASOURCES) \
              vala-ccode \
              ucntracker-1.0.vapi \
-             ucntracker-1.0.gir \
              ucntracker-1.0.deps \
+             ucntracker-1.0.pc.in \
              vala-doc
 
 $(DIST_SOURCES) : vala-ccode vala-doc
@@ -84,5 +86,4 @@ $(DIST_SOURCES) : vala-ccode vala-doc
 MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) ucntracker-1.0.h \
                        ucntracker-1.0.vapi \
                        ucntracker-1.0.deps \
-                       ucntracker-1.0.gir \
                        Documentation

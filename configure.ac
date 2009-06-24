@@ -72,7 +72,9 @@ AC_SUBST(VIS_PROGRAM_LIBS)
 AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
+				ucntracker/ucntracker-1.0.pc
 				ucntracker-vis/Makefile
+				ucntracker-vis/ucntracker-vis-1.0.pc
 				tests/Makefile
 				vapi/Makefile
 				examples/Makefile
