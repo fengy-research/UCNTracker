@@ -7,7 +7,7 @@ libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_C
 BUILT_SOURCES = vala-ccode
 VALAFLAGS= --library=ucntracker-1.0 -H ucntracker-1.0.h
 VALADOCFLAGS = -o Documentation --package-name=ucntracker-1.0
-VALAPKGS = --pkg gmodule-2.0 --pkg libyaml-glib-1.0 --pkg gsl --pkg libendf-1.0
+VALAPKGS = --pkg gmodule-2.0 --pkg libyaml-glib-1.0 --pkg gsl
 
 libucntracker_la_SOURCES = \
 	$(VALASOURCES:.vala=.c) \
@@ -32,8 +32,9 @@ FIELDS = \
 	object/field/accel.vala \
 	object/field/barrier.vala \
 	object/field/custom.vala 
-SECTIONS = \
-	object/cross-section/elastic.vala
+SECTIONS = 
+#	Temporarily disable endf dependency
+#	object/cross-section/elastic.vala
 
 VALASOURCES = \
 	main/main.vala \
@@ -68,7 +69,6 @@ vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
 	echo gmodule-2.0 > ucntracker-1.0.deps
 	echo libyaml-glib-1.0 >> ucntracker-1.0.deps
-	echo libendf-1.0 >> ucntracker-1.0.deps
 	echo gsl >> ucntracker-1.0.deps
 	touch vala-ccode
 

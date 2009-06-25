@@ -65,14 +65,14 @@ PKG_CHECK_MODULES(YAMLGLIB, libyaml-glib-1.0 >= 0.1)
 AC_SUBST(YAMLGLIB_CFLAGS)
 AC_SUBST(YAMLGLIB_LIBS)
 
-CHECK_MODULE(ENDF, libendf, libendf-1.0, 0.1)
-if test "x$use_builtin_ENDF" == xyes; then
-AC_CONFIG_SUBDIRS(libendf)
-ENDF_CFLAGS='-I$(top_srcdir)/libendf/src'
-ENDF_LIBS='-L$(top_builddir)/libendf/src -lendf'
-fi
-AC_SUBST(ENDF_CFLAGS)
-AC_SUBST(ENDF_LIBS)
+#CHECK_MODULE(ENDF, libendf, libendf-1.0, 0.1)
+#if test "x$use_builtin_ENDF" == xyes; then
+#AC_CONFIG_SUBDIRS(libendf)
+#ENDF_CFLAGS='-I$(top_srcdir)/libendf/src'
+#ENDF_LIBS='-L$(top_builddir)/libendf/src -lendf'
+#fi
+#AC_SUBST(ENDF_CFLAGS)
+#AC_SUBST(ENDF_LIBS)
 
 UCNTRACKER_CFLAGS='-I$(top_srcdir)/ucntracker'
 UCNTRACKER_LIBS='-L$(top_builddir)/ucntracker -lucntracker'

@@ -5,7 +5,6 @@ public class Experiment: Object, GLib.YAML.Buildable {
 	public List<Field> fields;
 	public List<Foil> foils;
 
-	public static Endf.Loader endfs = new Endf.Loader();
 
 	public double max_time_step {get; set; default=0.01;}
 
@@ -50,8 +49,8 @@ public class Experiment: Object, GLib.YAML.Buildable {
 		var sequence = node as GLib.YAML.Node.Sequence;
 		foreach(var item in sequence.items) {
 			var scalar = item as GLib.YAML.Node.Scalar;
-			endfs.add_file(scalar.value);
-			message("endf file %s loaded", scalar.value);
+			//endfs.add_file(scalar.value);
+			//message("endf file %s loaded", scalar.value);
 		}
 	}
 }}
