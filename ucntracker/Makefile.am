@@ -24,28 +24,28 @@ VALASOURCES = \
 	math/vector.vala \
 	math/random.vala \
 	math/quaternion.vala \
-	buildables/volume.vala \
-	buildables/field.vala \
-	buildables/experiment.vala \
-	buildables/cross-section.vala \
-	buildables/border.vala \
-	buildables/surface.vala \
-	buildables/foil.vala \
 	core/freelength-table.vala \
 	core/transformable.vala \
 	core/evolve.vala \
 	core/vertex.vala \
 	core/track.vala \
-	buildables/part.vala \
-	volume/volume-simple.vala \
-	volume/volume-boolean.vala \
-	volume/volume-ball.vala \
-	volume/volume-donut.vala \
-	volume/volume-box.vala \
-	volume/volume-cylinder.vala \
-	field/accel.vala \
-	field/barrier.vala \
-	field/custom.vala \
+	object/experiment.vala \
+	object/cross-section.vala \
+	object/border.vala \
+	object/surface.vala \
+	object/foil.vala \
+	object/part.vala \
+	object/volume.vala \
+	object/volume/simple.vala \
+	object/volume/boolean.vala \
+	object/volume/ball.vala \
+	object/volume/donut.vala \
+	object/volume/box.vala \
+	object/volume/cylinder.vala \
+	object/field.vala \
+	object/field/accel.vala \
+	object/field/barrier.vala \
+	object/field/custom.vala \
 	physics/neutron.vala \
 	physics/cold-neutron.vala \
 	physics/ultracold-neutron.vala \
