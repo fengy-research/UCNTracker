@@ -61,12 +61,7 @@ AC_DEFUN([CHECK_MODULE], [
 	AM_CONDITIONAL(USE_BUILTIN_$1, [test x$use_builtin_$1 == xyes])
 ])
 
-CHECK_MODULE(YAMLGLIB, libyaml-glib, libyaml-glib-1.0, 0.1)
-if test "x$use_builtin_YAMLGLIB" == xyes; then
-AC_CONFIG_SUBDIRS(libyaml-glib)
-YAMLGLIB_CFLAGS='-I$(top_srcdir)/libyaml-glib/src -I$(top_srcdir)/libyaml-glib/libyaml/include'
-YAMLGLIB_LIBS='-L$(top_builddir)/libyaml-glib/src -lyaml-glib'
-fi
+PKG_CHECK_MODULES(YAMLGLIB, libyaml-glib-1.0 >= 0.1)
 AC_SUBST(YAMLGLIB_CFLAGS)
 AC_SUBST(YAMLGLIB_LIBS)
 

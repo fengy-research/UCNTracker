@@ -63,6 +63,8 @@ Dependency
 
 Compiling
 =========
+  First make sure all required packages are installed.
+
   $ ./autogen.sh
   $ make
 
