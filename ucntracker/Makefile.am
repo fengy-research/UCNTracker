@@ -10,13 +10,31 @@ VALADOCFLAGS = -o Documentation --package-name=ucntracker-1.0
 VALAPKGS = --pkg gmodule-2.0 --pkg libyaml-glib-1.0 --pkg gsl --pkg libendf-1.0
 
 libucntracker_la_SOURCES = \
-	$(VALASOURCES:.vala=.c)\
+	$(VALASOURCES:.vala=.c) \
 	ucntracker-1.0.h
 
-SURFACES = circle rectangle sphere torus tube
-VOLUMES = simple ball boolean box cylinder donut
-FIELDS = accel barrier custom 
-SECTIONS = 
+SURFACES = \
+	object/surface/circle.vala \
+	object/surface/rectangle.vala \
+	object/surface/sphere.vala \
+	object/surface/torus.vala \
+	object/surface/tube.vala 
+
+VOLUMES = \
+	object/volume/simple.vala \
+	object/volume/ball.vala \
+	object/volume/boolean.vala \
+	object/volume/box.vala \
+	object/volume/cylinder.vala \
+	object/volume/donut.vala
+
+FIELDS = \
+	object/field/accel.vala \
+	object/field/barrier.vala \
+	object/field/custom.vala 
+SECTIONS = \
+	object/cross-section/elastic.vala
+
 VALASOURCES = \
 	main/main.vala \
 	main/error.vala \
@@ -37,10 +55,10 @@ VALASOURCES = \
 	object/foil.vala \
 	object/part.vala \
 	object/border.vala \
-	object/cross-section.vala $(SECTIONS:%=object/cross-section/%.vala) \
-	object/surface.vala $(SURFACES:%=object/surface/%.vala) \
-	object/volume.vala $(VOLUMES:%=object/volume/%.vala) \
-	object/field.vala $(FIELDS:%=object/field/%.vala) \
+	object/cross-section.vala $(SECTIONS) \
+	object/surface.vala $(SURFACES) \
+	object/volume.vala $(VOLUMES) \
+	object/field.vala $(FIELDS) \
 	physics/neutron.vala \
 	physics/cold-neutron.vala \
 	physics/ultracold-neutron.vala \
