@@ -13,6 +13,10 @@ libucntracker_la_SOURCES = \
 	$(VALASOURCES:.vala=.c)\
 	ucntracker-1.0.h
 
+SURFACES = circle rectangle sphere torus tube
+VOLUMES = simple ball boolean box cylinder donut
+FIELDS = accel barrier custom 
+SECTIONS = 
 VALASOURCES = \
 	main/main.vala \
 	main/error.vala \
@@ -30,22 +34,13 @@ VALASOURCES = \
 	core/vertex.vala \
 	core/track.vala \
 	object/experiment.vala \
-	object/cross-section.vala \
-	object/border.vala \
-	object/surface.vala \
 	object/foil.vala \
 	object/part.vala \
-	object/volume.vala \
-	object/volume/simple.vala \
-	object/volume/boolean.vala \
-	object/volume/ball.vala \
-	object/volume/donut.vala \
-	object/volume/box.vala \
-	object/volume/cylinder.vala \
-	object/field.vala \
-	object/field/accel.vala \
-	object/field/barrier.vala \
-	object/field/custom.vala \
+	object/border.vala \
+	object/cross-section.vala $(SECTIONS:%=object/cross-section/%.vala) \
+	object/surface.vala $(SURFACES:%=object/surface/%.vala) \
+	object/volume.vala $(VOLUMES:%=object/volume/%.vala) \
+	object/field.vala $(FIELDS:%=object/field/%.vala) \
 	physics/neutron.vala \
 	physics/cold-neutron.vala \
 	physics/ultracold-neutron.vala \
