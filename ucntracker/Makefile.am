@@ -7,11 +7,34 @@ libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_C
 BUILT_SOURCES = vala-ccode
 VALAFLAGS= --library=ucntracker-1.0 -H ucntracker-1.0.h
 VALADOCFLAGS = -o Documentation --package-name=ucntracker-1.0
-VALAPKGS = --pkg gmodule-2.0 --pkg libyaml-glib-1.0 --pkg gsl --pkg libendf-1.0
+VALAPKGS = --pkg gmodule-2.0 --pkg libyaml-glib-1.0 --pkg gsl
 
 libucntracker_la_SOURCES = \
-	$(VALASOURCES:.vala=.c)\
+	$(VALASOURCES:.vala=.c) \
 	ucntracker-1.0.h
+
+SURFACES = \
+	object/surface/circle.vala \
+	object/surface/rectangle.vala \
+	object/surface/sphere.vala \
+	object/surface/torus.vala \
+	object/surface/tube.vala 
+
+VOLUMES = \
+	object/volume/simple.vala \
+	object/volume/ball.vala \
+	object/volume/boolean.vala \
+	object/volume/box.vala \
+	object/volume/cylinder.vala \
+	object/volume/donut.vala
+
+FIELDS = \
+	object/field/accel.vala \
+	object/field/barrier.vala \
+	object/field/custom.vala 
+SECTIONS = 
+#	Temporarily disable endf dependency
+#	object/cross-section/elastic.vala
 
 VALASOURCES = \
 	main/main.vala \
@@ -24,28 +47,19 @@ VALASOURCES = \
 	math/vector.vala \
 	math/random.vala \
 	math/quaternion.vala \
-	buildables/volume.vala \
-	buildables/field.vala \
-	buildables/experiment.vala \
-	buildables/cross-section.vala \
-	buildables/border.vala \
-	buildables/surface.vala \
-	buildables/foil.vala \
 	core/freelength-table.vala \
 	core/transformable.vala \
 	core/evolve.vala \
 	core/vertex.vala \
 	core/track.vala \
-	buildables/part.vala \
-	volume/volume-simple.vala \
-	volume/volume-boolean.vala \
-	volume/volume-ball.vala \
-	volume/volume-donut.vala \
-	volume/volume-box.vala \
-	volume/volume-cylinder.vala \
-	field/accel.vala \
-	field/barrier.vala \
-	field/custom.vala \
+	object/experiment.vala \
+	object/foil.vala \
+	object/part.vala \
+	object/border.vala \
+	object/cross-section.vala $(SECTIONS) \
+	object/surface.vala $(SURFACES) \
+	object/volume.vala $(VOLUMES) \
+	object/field.vala $(FIELDS) \
 	physics/neutron.vala \
 	physics/cold-neutron.vala \
 	physics/ultracold-neutron.vala \
@@ -55,7 +69,6 @@ vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
 	echo gmodule-2.0 > ucntracker-1.0.deps
 	echo libyaml-glib-1.0 >> ucntracker-1.0.deps
-	echo libendf-1.0 >> ucntracker-1.0.deps
 	echo gsl >> ucntracker-1.0.deps
 	touch vala-ccode
 
@@ -63,20 +76,22 @@ if ENABLE_VALADOC
 @VALA_DOC_RULES@
 else
 vala-doc:
+	mkdir -p Documentation
 	touch vala-doc;
 endif
 BUILT_SOURCES+=vala-doc
 
-vapi_DATA = ucntracker-1.0.vapi
+vapi_DATA = ucntracker-1.0.vapi ucntracker-1.0.deps
 vapidir=$(datadir)/vala/vapi
 include_HEADERS = ucntracker-1.0.h
-
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = ucntracker-1.0.pc
 
 EXTRA_DIST = $(VALASOURCES) \
              vala-ccode \
              ucntracker-1.0.vapi \
-             ucntracker-1.0.gir \
              ucntracker-1.0.deps \
+             ucntracker-1.0.pc.in \
              vala-doc
 
 $(DIST_SOURCES) : vala-ccode vala-doc
@@ -84,5 +99,4 @@ $(DIST_SOURCES) : vala-ccode vala-doc
 MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) ucntracker-1.0.h \
                        ucntracker-1.0.vapi \
                        ucntracker-1.0.deps \
-                       ucntracker-1.0.gir \
                        Documentation

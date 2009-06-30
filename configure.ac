@@ -36,17 +36,43 @@ PKG_CHECK_MODULES(GSL, [gsl])
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
 
-AC_CONFIG_SUBDIRS([ libyaml-glib libendf ])
+AC_DEFUN([CHECK_MODULE], [
+	AC_ARG_WITH(with_builtin_$1,
+		[AS_HELP_STRING([--with-builtin-$2=check], [use the builtin $2]) ],
+		[],
+		[with_builtin_$1=check]
+	)
 
-YAMLGLIB_CFLAGS='-I$(top_srcdir)/libyaml-glib/src -I$(top_srcdir)/libyaml-glib/libyaml/include'
-YAMLGLIB_LIBS='-L$(top_builddir)/libyaml-glib/src -lyaml-glib'
+	if test "x$with_builtin_$1" != xyes; then
+		PKG_CHECK_MODULES($1, [$3 >= $4],
+		[ 
+			AC_MSG_WARN([linking against $2 installed in the system]) 
+			with_builtin_$1=no;
+		], [
+			if test "x$with_builtin_$1" != xcheck; then
+				AC_MSG_FAILURE([$2 not found in the system.])
+			fi
+		])
+	fi
+	if test "x$with_builtin_$1" != xno; then
+		AC_MSG_WARN([building $2 as a subpackage]);
+		use_builtin_$1=yes;
+	fi
+	AM_CONDITIONAL(USE_BUILTIN_$1, [test x$use_builtin_$1 == xyes])
+])
+
+PKG_CHECK_MODULES(YAMLGLIB, libyaml-glib-1.0 >= 0.1)
 AC_SUBST(YAMLGLIB_CFLAGS)
 AC_SUBST(YAMLGLIB_LIBS)
 
-ENDF_CFLAGS='-I$(top_srcdir)/libendf/src'
-ENDF_LIBS='-L$(top_builddir)/libendf/src -lendf'
-AC_SUBST(ENDF_CFLAGS)
-AC_SUBST(ENDF_LIBS)
+#CHECK_MODULE(ENDF, libendf, libendf-1.0, 0.1)
+#if test "x$use_builtin_ENDF" == xyes; then
+#AC_CONFIG_SUBDIRS(libendf)
+#ENDF_CFLAGS='-I$(top_srcdir)/libendf/src'
+#ENDF_LIBS='-L$(top_builddir)/libendf/src -lendf'
+#fi
+#AC_SUBST(ENDF_CFLAGS)
+#AC_SUBST(ENDF_LIBS)
 
 UCNTRACKER_CFLAGS='-I$(top_srcdir)/ucntracker'
 UCNTRACKER_LIBS='-L$(top_builddir)/ucntracker -lucntracker'
@@ -72,7 +98,9 @@ AC_SUBST(VIS_PROGRAM_LIBS)
 AC_CONFIG_FILES([
 				Makefile
 				ucntracker/Makefile
+				ucntracker/ucntracker-1.0.pc
 				ucntracker-vis/Makefile
+				ucntracker-vis/ucntracker-vis-1.0.pc
 				tests/Makefile
 				vapi/Makefile
 				examples/Makefile

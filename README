@@ -1,6 +1,6 @@
 Welcome to UCNTracker 
 =========================
-  Last update Monday, March 20 2009.
+  Last update Fri Jun 19, 2009.
 
 Introduction
 ============
@@ -9,11 +9,14 @@ Introduction
 Source
 ======
 
-  A public repository is at
-    git clone git://129.79.155.240/~fengyu/UCNTracker.git
+  A public repository is at github
+
+    $ git clone git://github.com/fengy-research/UCNTracker.git
+    $ git submodule init
+    $ git submodule update
 
   A web interface is at
-    http://129.79.155.240/~fengyu/viewgit
+    http://github.com/fengy-research/UCNTracker
 
   git is the version control tool used by many free softwares projects.
   A tutorial is available at
@@ -36,6 +39,9 @@ Dependency
       ftp://ftp.gnu.org/gnu/gsl/
       Available in EPEL 5.
 
+    libyaml-glib-1.0 >= 0.1
+      http://github.com/fengy-research/libyaml-glib
+
   For visualization the following packages are needed
     gtk+-2.0 >= 2.12:
       http://ftp.gnome.org/pub/gnome/sources/gtk+/
@@ -52,11 +58,13 @@ Dependency
     RHEL 5
     EPEL 5
       http://fedoraproject.org/wiki/EPEL
-    or Prebuilt by me at
+    or Prebuilt by me at (the link might be unavailable soon)
       http://129.79.155.240/~fengyu/rpmbuild
 
 Compiling
 =========
+  First make sure all required packages are installed.
+
   $ ./autogen.sh
   $ make
 
@@ -64,13 +72,24 @@ Code Layout
 ===========
   UCNTracker       : git repository root
   |-- autotools    : macros and scripts used by autotools
+  |
   |-- ucntracker   : the main ucntracker library is built here
-  |   |-- builder  : UCNBuilder, the geometry xml parser.
   |   |-- math     : math library(vectors and stuff)
   |   |-- physics  : defining particle types
   |   |-- core     : the tracking system
   |   |-- library  : the library interface
+  |   |-- buildables : the buildable GObject-s
+  |   |-- field    : physical fields
+  |   |-- volume   : geometry volume definitions
+  |
   |-- ucntracker-vis : the GTK visualization widget
+  |
+  |-- libendf      : reading ENDF files(external submodule)
+  |
+  |-- libyaml-glib : building GObject with YAML(external submodule)
+  |
+  |-- tools        : tools, mostly an geometry scene builder
+  |
   |-- tests    : very minimal test cases
   `---examples     : bundled apps
       |-- E01      : average length a particle goes before

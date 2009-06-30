@@ -40,15 +40,27 @@ if ENABLE_VALADOC
 @VALA_DOC_RULES@
 else
 vala-doc:
+	mkdir -p Documentation
 	touch vala-doc;
 endif
 
-EXTRA_DIST = $(VALASOURCES) vala-ccode ucntracker-vis-1.0.gir ucntracker-vis-1.0.vapi ucntracker-vis-1.0.deps vala-doc
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = ucntracker-vis-1.0.pc
+
+EXTRA_DIST = $(VALASOURCES) \
+             vala-ccode \
+             ucntracker-vis-1.0.vapi \
+             ucntracker-vis-1.0.deps \
+             ucntracker-vis-1.0.pc.in \
+             vala-doc
+
 
 include_HEADERS =  ucntracker-vis-1.0.h
 
-MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) ucntracker-vis-1.0.h \
-     ucntracker-vis-1.0.deps ucntracker-vis-1.0.vapi ucntracker-vis-1.0.gir \
-     Documentation
+MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) \
+        ucntracker-vis-1.0.h \
+        ucntracker-vis-1.0.deps \
+        ucntracker-vis-1.0.vapi \
+        Documentation
 
 $(DIST_SOURCES) : vala-ccode vala-doc
