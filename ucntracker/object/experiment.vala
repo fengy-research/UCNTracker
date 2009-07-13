@@ -35,7 +35,6 @@ public class Experiment: Object, GLib.YAML.Buildable {
 		}
 		return Type.INVALID;
 	}
-<<<<<<< HEAD:ucntracker/buildables/experiment.vala
 	internal void custom_node(GLib.YAML.Builder builder, string tag, GLib.YAML.Node node) throws GLib.Error {
 		
 		if(tag != "endf-list") {
@@ -53,9 +52,8 @@ public class Experiment: Object, GLib.YAML.Buildable {
 			//endfs.add_file(scalar.value);
 			//message("endf file %s loaded", scalar.value);
 		}
-=======
-	public bool locate(Vector point,
-	       out unowned Part located, out unowned Volume volume) {
+	}
+	public bool locate(Vector point, out unowned Part located, out unowned Volume volume) {
 		foreach(Part part in parts) {
 			if(part.locate(point, out volume)) {
 				located = part;
@@ -72,6 +70,6 @@ public class Experiment: Object, GLib.YAML.Buildable {
 			field.fieldfunc(track, Q, P);
 		}
 		P.position = Q.velocity;
->>>>>>> origin/field-rework:ucntracker/buildables/experiment.vala
 	}
-}}
+}
+}
