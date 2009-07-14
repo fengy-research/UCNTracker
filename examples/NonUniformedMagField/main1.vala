@@ -35,9 +35,9 @@ public class Simulation : UCNTracker.Simulation {
 			FSp[i] = FileStream.open("%s-%d".printf(prefix, i), "w");
 		}
 		MagF.function = (track, Q, dQ) => {
-			double k = 0.00005;
-			double B = k * Math.pow(Math.pow(10 - 0.1 * Q.position.z, 2) + 0.0025 * (Math.pow(Q.position.x, 2) + Math.pow(Q.position.y, 2)), 0.5) * UNITS.TESLA;
-			dQ.spin_precession += track.spin_parallel * track.mdm * B / (1.0 * UNITS.H_BAR);
+			double k = 0.001;
+			double B = k * Math.pow(Math.pow(10 - 0.1 * Q.position.z, 2) + 0.0025 * (Math.pow(Q.position.x, 2) + Math.pow(Q.position.y, 2)), 0.5) * UNITS.GAUSS;
+			dQ.spin_precession += pow(1 - pow(track.spin_parallel, 2), 0.5) * track.mdm * B / (1.0 * UNITS.H_BAR);
 			dQ.velocity.x += track.spin_parallel * track.mdm * Math.pow(k, 2) * 0.0025 * Q.position.x / ( B * track.mass );
 			dQ.velocity.y += track.spin_parallel * track.mdm * Math.pow(k, 2) * 0.0025 * Q.position.y / ( B * track.mass );
 			dQ.velocity.z += track.spin_parallel * track.mdm * Math.pow(k, 2) * ( -0.1 ) * ( 10 - 0.1 * Q.position.z ) / ( B * track.mass );

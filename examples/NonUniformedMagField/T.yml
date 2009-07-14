@@ -1,9 +1,5 @@
 --- !Experiment
-<<<<<<< HEAD:examples/NonUniformedMagField/T.yml
- max_time_step: 0.00001
-=======
  max_time_step: 0.0001
->>>>>>> origin/field-rework:examples/NonUniformedMagField/T.yml
  objects:
  - !AccelField &G
     accel: 980.0

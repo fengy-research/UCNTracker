@@ -11,6 +11,7 @@ namespace GLib {
 			public GLib.Object build_object (GLib.YAML.Node node, GLib.Type type) throws GLib.Error;
 			public GLib.Object? get_object (string? anchor);
 			public unowned GLib.List<GLib.Object>? get_objects ();
+			public GLib.Object? get_root_object ();
 			public Builder (string? prefix = null);
 		}
 		[CCode (ref_function = "g_yaml_document_ref", unref_function = "g_yaml_document_unref", param_spec_function = "g_yaml_param_spec_document", cheader_filename = "libyaml-glib-1.0.h")]
