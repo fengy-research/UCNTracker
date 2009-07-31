@@ -5,6 +5,7 @@ namespace UCNTracker {
 		 * If evaludated, return true,
 		 * otherwise return false 
 		 * */
+//		public int[] S_Flag = null;
 		public delegate bool FieldFunction(Track track, Vertex Q, Vertex dQ);
 		public FieldFunction function = null;
 		public override bool fieldfunc(Track track, Vertex Q, Vertex dQ) {

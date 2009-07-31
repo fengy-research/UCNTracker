@@ -43,7 +43,7 @@ namespace UCNTracker {
 				double y0 = field_Bs[i];
 				double y1 = field_Bs[i+1];
 				if(x >= x0 && x < x1) {
-					double a = Q.spin_parallel * factor * track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
+					double a = Q.spin.z * factor * track.mdm * ((y1 - y0))/((x1 - x0) ) / track.mass;
 					dQ.velocity.x += direction.x * a;
 					dQ.velocity.y += direction.y * a;
 					dQ.velocity.z += direction.z * a;

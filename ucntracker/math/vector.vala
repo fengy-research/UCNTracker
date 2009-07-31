@@ -13,9 +13,9 @@ namespace UCNTracker {
 
 		[CCode (instance_pos = 2)]
 		public bool parse(string foo) {
-			string[] words = foo.split(" ");
+			string[] words = foo.split(",");
 			if(words == null || words.length != 3) 
-				words = foo.split(",");
+				words = foo.split(" ");
 			if(words == null || words.length != 3) 
 				return false;
 			x = words[0].to_double();
@@ -112,7 +112,7 @@ namespace UCNTracker {
 			y += a.y;
 			z += a.z;
 		}
-		public string to_string(string format="%lf %lf %lf") {
+		public string to_string(string format="%lf,%lf,%lf") {
 			return format.printf(x, y, z);
 		}
 	}

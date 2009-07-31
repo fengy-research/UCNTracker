@@ -9,7 +9,6 @@ namespace UCNTracker {
 		public int dimensions;
 		public double[] tolerance;
 		public double spin_parallel; /*+1 / -1, along/not along the B field*/
-
 		public abstract Vertex create_vertex();
 		public abstract Vertex clone_vertex(Vertex source);
 
@@ -17,6 +16,37 @@ namespace UCNTracker {
 			Vertex v = create_vertex();
 			double vel = Math.sqrt(2 * kinetic / mass);
 			v.velocity = direction.mul(vel);
+			return v;
+		}
+
+		public virtual Vertex create_vertex_with_kinetics_and_spin(double kinetic, Vector direction, double spin_z, double spin_precession) {
+			Vertex v = create_vertex();
+			double vel = Math.sqrt(2 * kinetic / mass);
+			v.velocity = direction.mul(vel);
+			v.spin_precession = spin_precession;
+			v.spin = Vector(Math.pow(1 - Math.pow(spin_z, 2), 0.5) * Math.cos(spin_precession), Math.pow(1 - Math.pow(spin_z, 2), 0.5) * Math.sin(spin_precession), spin_z);
+			return v;
+		}
+
+		public virtual Vertex create_vertex_from_file(FileStream F) {
+			Vertex v = create_vertex();
+			int a = 0;
+			double b = 0.0;
+			v.position = Vector(0, 0, 0);
+			v.velocity = Vector(0, 0, 0);
+			v.spin = Vector(0, 0, 0);
+			string position = v.position.to_string();
+			string velocity = v.velocity.to_string();
+			string spin = v.spin.to_string();
+			message("Time = %le, Position = %s, Velocity = %s, Spin = %s\n", b, position, velocity, spin);
+			F.scanf("%d  Time = %le  Position = %s  Velocity = %s  Spin = %s \n", &a, &b, position, velocity, spin);
+			message("Time = %le, Position = %s, Velocity = %s, Spin = %s\n", b, position, velocity, spin);
+//			stdin.getc();
+			v.position.parse(position);
+			v.velocity.parse(velocity);
+			v.spin.parse(spin);
+			message("%s \n", v.to_string());
+			stdin.getc();
 			return v;
 		}
 
@@ -77,7 +107,7 @@ namespace UCNTracker {
 
 		public double get_double(string name) {
 			double * pointer = (double*)data.get_data(name);
-			if(pointer != null) return *pointer;	
+			if(pointer != null) return *pointer;
 			return 0.0;
 		}
 

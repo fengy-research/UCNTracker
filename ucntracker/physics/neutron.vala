@@ -5,12 +5,13 @@ namespace UCNPhysics {
 	public class Neutron : Track {
 		construct {
 			/*position, velocity = 6*/
-			dimensions = 8;
+			/*spin = 3, spin_precession*/
+			dimensions = 10;
 			name = "neutron";
 			mass = 939.56556 * UNITS.MEV_MASS;
 			charge = 0.0;
 			mdm = -1.913 / 1836.0 * UNITS.MU_BOHR;
-			tolerance = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+			tolerance = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 			spin_parallel = 1;
 		}
 
