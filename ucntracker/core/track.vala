@@ -32,16 +32,17 @@ namespace UCNTracker {
 			Vertex v = create_vertex();
 			int a = 0;
 			double b = 0.0;
-			v.position = Vector(0, 0, 0);
-			v.velocity = Vector(0, 0, 0);
-			v.spin = Vector(0, 0, 0);
+			v.position = Vector(10.0, 10.0, 10.0);
+			v.velocity = Vector(1000.0, 1000.0, 1000.0);
+			v.spin = Vector(10.0, 10.0, 10.0);
 			string position = v.position.to_string();
 			string velocity = v.velocity.to_string();
 			string spin = v.spin.to_string();
 			message("Time = %le, Position = %s, Velocity = %s, Spin = %s\n", b, position, velocity, spin);
-			F.scanf("%d  Time = %le  Position = %s  Velocity = %s  Spin = %s \n", &a, &b, position, velocity, spin);
+			F.scanf("%d  Time = %le  \nPosition = %s  \n", &a, &b, position);
+			F.scanf("Velocity = %s  \n", velocity);
+			F.scanf("Spin = %s", spin);
 			message("Time = %le, Position = %s, Velocity = %s, Spin = %s\n", b, position, velocity, spin);
-//			stdin.getc();
 			v.position.parse(position);
 			v.velocity.parse(velocity);
 			v.spin.parse(spin);
@@ -188,6 +189,13 @@ namespace UCNTracker {
 			}
 			vertex.part = null;
 			return false;
+		}
+		public bool print_tail(FileStream F) {
+			if(F == null) return false;
+			F.printf("Position = %s  \n", tail.position.to_string());
+			F.printf("Velocity = %s  \n", tail.velocity.to_string());
+			F.printf("Spin = %s  \n", tail.spin.to_string());
+			return true;
 		}
 	}
 }

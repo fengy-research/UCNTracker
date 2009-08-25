@@ -112,7 +112,7 @@ namespace UCNTracker {
 			y += a.y;
 			z += a.z;
 		}
-		public string to_string(string format="%lf,%lf,%lf") {
+		public string to_string(string format = "%lf,%lf,%lf") {
 			return format.printf(x, y, z);
 		}
 	}
