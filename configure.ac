@@ -110,6 +110,7 @@ AC_CONFIG_FILES([
 				examples/Mirror/Makefile
 				examples/NonUniformedMagField/Makefile
 				examples/EM/Makefile
+				examples/PIPE/Makefile
 				tools/Makefile
 				])
 

@@ -41,6 +41,9 @@ examples/E01/example-01
 examples/E02/example-02
 examples/E02/example-03
 examples/Mirror/mirror
+examples/NonUniformedMagField/NonUniformedMagField
+examples/EM/EM
+examples/PIPE/PIPE
 tools/sample-volume
 tools/scene-editor
 
