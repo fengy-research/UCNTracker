@@ -2,7 +2,7 @@ SUBDIRS = .
 
 lib_LTLIBRARIES = libucntracker-vis.la
 libucntracker_vis_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) $(GTK_CFLAGS) \
-	$(GTKGL_CFLAGS) $(YAMLGLIB_CFLAGS) $(ENDF_CFLAGS) $(UCNTRACKER_CFLAGS) \
+	$(GTKGL_CFLAGS) $(YAML_CFLAGS) $(ENDF_CFLAGS) $(UCNTRACKER_CFLAGS) \
 	-DG_LOG_DOMAIN=\"UCNTracker\" -DINFO=
 
 libucntracker_vis_la_SOURCES =  \
@@ -19,10 +19,10 @@ VALASOURCES = \
 
 BUILT_SOURCES = vala-ccode vala-doc
 
-VALAFLAGS= --library=ucntracker-vis-1.0 -H ucntracker-vis-1.0.h
+VALAFLAGS= --library=ucntracker-vis-1.0 -H ucntracker-vis-1.0.h $(YAML_VALAFLAGS)
 VALADOCFLAGS = --package-name=ucntracker-vis-1.0 -o Documentation 
 VALAPKGS = --pkg ucntracker-1.0 \
-	--pkg glu --pkg gl --pkg gtkglext-1.0 --pkg gtk+-2.0
+	--pkg gl --pkg glu --pkg gtkglext-1.0 --pkg gtk+-2.0
 
 vapi_DATA = ucntracker-vis-1.0.vapi ucntracker-vis-1.0.deps
 vapidir=$(datadir)/vala/vapi

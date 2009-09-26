@@ -1,7 +1,6 @@
 using GLib;
 using Gtk;
 using GL;
-using GLU;
 using Math;
 
 using UCNTracker;

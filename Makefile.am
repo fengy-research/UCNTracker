@@ -1,4 +1,4 @@
-SUBDIRS = vapi ucntracker ucntracker-vis tools tests examples 
+SUBDIRS = dependency vapi ucntracker ucntracker-vis tools tests examples 
 .PHONY: bootstrap
 bootstrap: maintainer-clean
 	./autogen.sh

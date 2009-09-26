@@ -1,4 +1,5 @@
-
+include $(top_srcdir)/Makefile.vars
+VALAFLAGS= $(YAML_VALAFLAGS)
 VALAPKGS = --pkg ucntracker-vis-1.0
 noinst_PROGRAMS = sample-volume scene-editor
 

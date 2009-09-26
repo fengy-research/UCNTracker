@@ -1357,10 +1357,10 @@ namespace GL
 	public static void glMultiTexCoord4iv (GLenum target, [CCode (array_length = false)] GLint[] v);
 	public static void glMultiTexCoord4s (GLenum target, GLshort s, GLshort t, GLshort r, GLshort q);
 	public static void glMultiTexCoord4sv (GLenum target, [CCode (array_length = false)] GLshort[] v);
-	public static void glLoadTransposeMatrixd ([CCode (array_length = false)] GLdouble[16] m);
-	public static void glLoadTransposeMatrixf ([CCode (array_length = false)] GLfloat[16] m);
-	public static void glMultTransposeMatrixd ([CCode (array_length = false)] GLdouble[16] m);
-	public static void glMultTransposeMatrixf ([CCode (array_length = false)] GLfloat[16] m);
+	public static void glLoadTransposeMatrixd ([CCode (array_length = false)] GLdouble[] m);
+	public static void glLoadTransposeMatrixf ([CCode (array_length = false)] GLfloat[] m);
+	public static void glMultTransposeMatrixd ([CCode (array_length = false)] GLdouble[] m);
+	public static void glMultTransposeMatrixf ([CCode (array_length = false)] GLfloat[] m);
 	public static void glSampleCoverage (GLclampf @value, GLboolean invert);
 	
 	// GL_ARB_multitexture (ARB extension 1 and OpenGL 1.2.1)

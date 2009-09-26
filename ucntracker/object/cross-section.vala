@@ -10,6 +10,6 @@ namespace UCNTracker {
 			if(sigmafunc == null) return const_sigma;
 			else return sigmafunc(track, vertex);
 		}
-		public virtual signal void hit(Track track, Vertex vertex);
+		public abstract signal void hit(Track track, Vertex vertex);
 	}
 }
