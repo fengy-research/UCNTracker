@@ -1,6 +1,4 @@
 using GLib;
-using GL;
-using GLU;
 using UCNTracker;
 using UCNPhysics;
 
@@ -102,13 +100,13 @@ parts:
 #    center: 12, 12, 0 
 #    tube_radius: 3
 #    radius: 6
-  cross-sections:
-  - !ElasticCrossSection &cs1
-    ptype: Neutron
-    density: 6.02e21
-    mat: 31
-    mf: 7
-    mt: 2
+#  cross-sections:
+#  - !ElasticCrossSection &cs1
+#    ptype: Neutron
+#    density: 6.02e21
+#    mat: 31
+#    mf: 7
+#    mt: 2
   neighbours:
     *Lab : { absorb: 0, reflect : 00, diffuse: 100, fermi: 0 }
 - !Part &Lab

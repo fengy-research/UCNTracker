@@ -55,7 +55,6 @@ AC_SUBST(YAML_LIBS)
 AC_SUBST(YAML_VALAFLAGS)
 AM_CONDITIONAL(USE_INSTALLED_LIBYAML_GLIB, [ test x$use_installed_libyaml_glib = xyes ])
 
-
 #AC_SUBST(ENDF_CFLAGS)
 #AC_SUBST(ENDF_LIBS)
 #CHECK_MODULE(ENDF, libendf, libendf-1.0, 0.1)
@@ -77,11 +76,6 @@ AC_CONFIG_FILES([
 				ucntracker-vis/ucntracker-vis-1.0.pc
 				tests/Makefile
 				vapi/Makefile
-				examples/Makefile
-				examples/E01/Makefile
-				examples/E02/Makefile
-				examples/E03/Makefile
-				examples/Mirror/Makefile
 				tools/Makefile
 				])
 

@@ -5,6 +5,7 @@ lib_LTLIBRARIES = libucntracker.la
 libucntracker_la_CPPFLAGS = -DG_LOG_DOMAIN=\"UCNTracker\" $(GLIB_CFLAGS) $(GSL_CFLAGS) $(YAML_CFLAGS) $(ENDF_CFLAGS)
 
 libucntracker_la_LIBADD = $(YAML_LIBS)
+libucntracker_la_LDFLAGS = -g 
 
 BUILT_SOURCES = vala-ccode
 VALAFLAGS= --library=ucntracker-1.0 -H ucntracker-1.0.h $(YAML_VALAFLAGS)

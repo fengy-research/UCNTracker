@@ -1,3 +1,4 @@
+include ../Makefile.vars
 SUBDIRS = .
 
 lib_LTLIBRARIES = libucntracker-vis.la
@@ -5,6 +6,7 @@ libucntracker_vis_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) $(GTK_CFLAGS) \
 	$(GTKGL_CFLAGS) $(YAML_CFLAGS) $(ENDF_CFLAGS) $(UCNTRACKER_CFLAGS) \
 	-DG_LOG_DOMAIN=\"UCNTracker\" -DINFO=
 
+libucntracker_vis_la_LDFLAGS = -g
 libucntracker_vis_la_SOURCES =  \
 	$(VALASOURCES:.vala=.c) \
 	ucntracker-vis-1.0.h
@@ -19,7 +21,7 @@ VALASOURCES = \
 
 BUILT_SOURCES = vala-ccode vala-doc
 
-VALAFLAGS= --library=ucntracker-vis-1.0 -H ucntracker-vis-1.0.h \
+VALAFLAGS= -g --library=ucntracker-vis-1.0 -H ucntracker-vis-1.0.h \
 	$(YAML_VALAFLAGS) \
 	--vapidir=../ucntracker
 VALADOCFLAGS = --package-name=ucntracker-vis-1.0 -o Documentation 
@@ -32,9 +34,6 @@ vapidir=$(datadir)/vala/vapi
 vala-ccode: $(VALASOURCES)
 	$(VALAC) $(VALAFLAGS) -C $^ $(VALAPKGS) 
 	echo gtk+-2.0 > ucntracker-vis-1.0.deps
-	echo gtkglext-1.0 >> ucntracker-vis-1.0.deps
-	echo gl >> ucntracker-vis-1.0.deps
-	echo glu >> ucntracker-vis-1.0.deps
 	echo ucntracker-1.0 >> ucntracker-vis-1.0.deps
 	touch $@
 
