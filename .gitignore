@@ -1,5 +1,9 @@
 *~
 *.swp
+dependency/vala
+dependency/libyaml-glib
+bootstrap/*source-ball
+bootstrap/root
 Makefile
 Makefile.in
 aclocal.m4
