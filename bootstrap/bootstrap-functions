@@ -10,11 +10,12 @@ function SOURCE {
 	STRIP=$2
 	FORMAT=$3
 	URL=$4
+	mkdir -p $abs_tarballdir
 	if test x$SKIPDOWNLOAD != xyes; then
-	wget -O $PKG-source-ball $URL || fatal "URL not found"
+		wget -O $abs_tarballdir/$PKG $URL || fatal "URL not found"
 	fi
 	mkdir -p $depdir/$PKG
-	tar -$FORMAT -xf $PKG-source-ball --strip-components $STRIP -C $depdir/$PKG
+	tar -$FORMAT -xf $abs_tarballdir/$PKG --strip-components $STRIP -C $depdir/$PKG
 }
 
 function PREPARE {
