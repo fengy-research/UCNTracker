@@ -51,7 +51,7 @@ dnl EXTRA_DIST = $(VALASOURCES)
 dnl 
 dnl --------------------------------------------------------------------------
 AC_DEFUN([VALA_PROG_VALAC],[
-  AC_PATH_PROG([VALAC_BIN], [valac], [])
+  AC_PATH_PROG([VALAC_BIN], [valac], [valac], [$2])
   AC_SUBST(VALAC_BIN)
   VALAC="$VALAC_BIN \$(vala_default_vapi_dirs)"
   AC_SUBST(VALAC)

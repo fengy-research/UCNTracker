@@ -1,3 +1,5 @@
+include ../Makefile.vars
+
 nonvis_test = test-rng test-builder test-qua
 vis_test = test-gtk
 
@@ -18,6 +20,7 @@ test_qua_CPPFLAGS = $(NONVIS_PROGRAM_CFLAGS)
 
 AM_LDFLAGS = -export-dynamic -rdynamic
 
+VALAFLAGS = --vapidir=../ucntracker --vapidir=../ucntracker-vis $(YAML_VALAFLAGS)
 VALAPKGS = --pkg ucntracker-vis-1.0
 
 noinst_PROGRAMS = $(vis_test) $(nonvis_test)

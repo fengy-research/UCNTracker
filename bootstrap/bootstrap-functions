@@ -1,0 +1,39 @@
+#! /bin/sh
+function fatal {
+	echo $1;
+	exit 1;
+}
+
+function SOURCE {
+	PKG=$1
+	STRIP=$2
+	FORMAT=$3
+	URL=$4
+	if test x$SKIPDOWNLOAD != xyes; then
+	wget -O $PKG-source-ball $URL || fatal "URL not found"
+	fi
+	mkdir -p $depdir/$PKG
+	tar -$FORMAT -xf $PKG-source-ball --strip-components $STRIP -C $depdir/$PKG
+}
+
+function PREPARE {
+	if test -x prepare-$1; then
+		(
+		cd $depdir/$1;
+		. $abs_bootstrapdir/prepare-$1;
+		)
+	else
+		fatal "prepare-$1" script is not found.
+	fi;
+}
+
+function PATCH {
+	if test -x patch-$1; then
+		(
+		cd $depdir/$1;
+		. $abs_bootstrapdir/patch-$1;
+		)
+	else
+		fatal "patch-$1" script is not found.
+	fi;
+}

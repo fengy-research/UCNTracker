@@ -1,0 +1,5 @@
+#! /bin/sh
+
+./configure --prefix=$abs_chroot
+make
+make install
