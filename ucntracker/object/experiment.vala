@@ -5,6 +5,12 @@ public class Experiment: Object, GLib.YAML.Buildable {
 	public List<Field> fields;
 	public List<Foil> foils;
 
+	private static const string[] tags = {"parts", "fields", "foils"};
+	private static Type[] types= {typeof(Part), typeof(Field), typeof(Foil) };
+
+	static construct {
+		GLib.YAML.Buildable.register_type(typeof(Experiment), tags, types);
+	}
 
 	public double max_time_step {get; set; default=0.01;}
 
@@ -22,19 +28,6 @@ public class Experiment: Object, GLib.YAML.Buildable {
 		//(base as GLib.YAML.Buildable).add_child(builder, child, type);
 	}
 
-
-	public Type get_child_type(GLib.YAML.Builder builder, string tag) {
-		if(tag == "parts") {
-			return typeof(Part);
-		}
-		if(tag == "fields") {
-			return typeof(Field);
-		}
-		if(tag == "foils") {
-			return typeof(Foil);
-		}
-		return Type.INVALID;
-	}
 	internal void custom_node(GLib.YAML.Builder builder, string tag, GLib.YAML.Node node) throws GLib.Error {
 		
 		if(tag != "endf-list") {

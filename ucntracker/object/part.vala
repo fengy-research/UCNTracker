@@ -9,6 +9,12 @@ namespace UCNTracker {
 		public List<Volume> volumes;
 		public List<CrossSection> cross_sections;
 
+		private static const string[] tags = {"volumes", "cross-sections"};
+		private static Type[] types= {typeof(Volume), typeof(CrossSection) };
+
+		static construct {
+			GLib.YAML.Buildable.register_type(typeof(Part), tags, types);
+		}
 		public HashTable<unowned Part, Border> neighbours =
 			new HashTable<unowned Part, Border>(direct_hash, direct_equal);
 		public int layer {get; set; default = 0;}
@@ -30,15 +36,6 @@ namespace UCNTracker {
 			//base.add_child(builder, child, type);
 		}
 
-		public Type get_child_type(GLib.YAML.Builder builder, string tag) {
-			if(tag == "volumes") {
-				return typeof(Volume);
-			}
-			if(tag == "cross-sections") {
-				return typeof(CrossSection);
-			}
-			return Type.INVALID;
-		}
 		internal void custom_node(GLib.YAML.Builder builder, string tag, GLib.YAML.Node node) throws Error {
 			if(tag != "neighbours") {
 				string message = "Property %s.%s not found".printf(get_type().name(), tag);

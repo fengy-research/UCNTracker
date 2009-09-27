@@ -2,6 +2,12 @@
 namespace UCNTracker {
 	public class Foil: Object, GLib.YAML.Buildable {
 		public List<Surface> surfaces;
+		private static const string[] tags = {"surfaces"};
+		private static Type[] types= {typeof(Surface) };
+
+		static construct {
+			GLib.YAML.Buildable.register_type(typeof(Foil), tags, types);
+		}
 
 		public Border border {get; set; default = new Border();}
 		public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
@@ -12,12 +18,6 @@ namespace UCNTracker {
 					typeof(Surface).name(),
 					child.get_type().name());
 			}
-		}
-		public Type get_child_type(GLib.YAML.Builder builder, string tag) {
-			if(tag == "surfaces") {
-				return typeof(Surface);
-			}
-			return Type.INVALID;
 		}
 	}
 }

@@ -2,6 +2,14 @@
 namespace UCNTracker {
 	public abstract class Field: Object, GLib.YAML.Buildable {
 		public List<Volume> volumes;
+
+		private static const string[] tags = {"volumes"};
+		private static Type[] types= {typeof(Volume)};
+
+		static construct {
+			GLib.YAML.Buildable.register_type(typeof(Field), tags, types);
+		}
+
 		public void add_child(GLib.YAML.Builder builder, GLib.Object child, string? type) throws Error {
 			if(child is Volume) {
 				volumes.prepend(child as Volume);
@@ -30,13 +38,6 @@ namespace UCNTracker {
 		 *         fieldfunc has not been calculated.
 		 **/
 		public abstract bool fieldfunc(Track track, Vertex Q, Vertex P);
-
-		public Type get_child_type(GLib.YAML.Builder builder, string tag) {
-			if(tag == "volumes") {
-				return typeof(Volume);
-			}
-			return Type.INVALID;
-		}
 
 		public bool locate(Vector point, out unowned Volume child) {
 			if(volumes == null) return true;
