@@ -1,14 +1,42 @@
 Welcome to UCNTracker 
 =========================
-  Last update Fri Jun 19, 2009.
+  Last update Sun Sep 27, 2009.
+
+TODO
+====
+- Simplify a couple of interfaces(especially the signal handling) with the
+  new powerful Vala 0.7.7/0.7.6
 
 Introduction
 ============
-  This part is missing.
+  This part is missing. (As how every poor document does)
+
+Physics
+=======
+  Think about UCNTracker as an integrater. It traces the particle motion in the phase space 
+  by integrating the ODE system, given by the Force Field. 
+
+  On the boundary between homogenous regions there are special
+  treatments.
+  The physics for particle transport in real 3D space is fully implemented. 
+  Transport + Reflection by the Fermi potential across physical bulks (Part) 
+  are fully implemented.
+  Transport + Reflection by thin layer of material (Foil) is also implemented.
+
+  There is limited support for the spin precession when the adiabic approximation is applicable.
+  The spin is parametrized by the parallel component(conserved quantity) and precession angle
+  (time-dependent). This work is mostly contributed by Ruizi Li.
+
+  There was a plan to implement an interface with ENDF data section 4 and 7. However this work
+  was not finished. The unfinished library to access the ENDF data is at
+
+    http://github.com/fengy-research/libendf
+
+  The interface between libendf and UCNTracker is at ucntracker/object/cross-section/elastic.vala
+  which is broken and not compiled.
 
 Source
 ======
-
   A public repository is at github
 
     $ git clone git://github.com/fengy-research/UCNTracker.git
@@ -44,7 +72,7 @@ Dependency
       http://ftp.gnome.org/pub/gnome/sources/gtk+/
       Available in RHEL 5.
 
-    gtkglext-1.0 >= 1.2.0:
+    gtkglext-1.0 >= 1.2.0 (Optional, obtained with bootstrap)
       http://sourceforge.net/project/showfiles.php?group_id=54333&package_id=48997&release_id=391012
 
       Refer to http://bugzilla.gnome.org/show_bug.cgi?id=119189 for
@@ -56,15 +84,22 @@ Dependency
 
 Bootstraping
 ============
-  Because sometimes it is painful to install the dependencies, compilation of several of 
-  the obscure dependencies are automated by the scripts bootstrap directory.
+  Because it is painful to install the dependencies on older systems, 
+  compilation of several of the obscure dependencies are automated 
+  by the scripts bootstrap directory. Do the followings before go to 
+  compilation.
+
+  $ cd bootstrap
+  $ ./bootstrap
+
+  NOTE: However I don't have the an older (RHEL 5) machine to test these
+  bootstrap toolchain. They are all tested on a Fedora 11 system.
 
   Currently, the automated packages are
    - vala
    - libyaml-glib
+   - gtkglext
 
-  $ cd bootstrap
-  $ ./bootstrap
 
   For VALA:
     The bootstrap script will download the 0.7.6 source code from the gnome ftp, 
@@ -79,6 +114,14 @@ Bootstraping
     The bootstrap script will download the source code from github. 
     The code appropriate for UCNTracker is under tag UCNTracker-sync-tag.
     The code is unpacked into dependency/.
+    configure.gnu ensures files are installed into ucntracker's package
+    directory so that they do not mix with the standalone packages.
+
+  For gtkglext
+    The bootstrap script will download the source code from gtkglext sourceforge site.
+    The code is unpacked into dependency/;
+    configure.gnu ensures files are installed into ucntracker's package
+    directory so that they do not mix with the standalone packages.
 
   bootstrap.conf
     This file describes the bootstrap procedure. It contains the information to locate
@@ -106,6 +149,7 @@ Code Layout
   |-- autotools    : macros and scripts used by autotools
   |
   |-- ucntracker   : the main ucntracker library is built here
+# the following part is deprecated
   |   |-- math     : math library(vectors and stuff)
   |   |-- physics  : defining particle types
   |   |-- core     : the tracking system
@@ -113,6 +157,7 @@ Code Layout
   |   |-- buildables : the buildable GObject-s
   |   |-- field    : physical fields
   |   |-- volume   : geometry volume definitions
+# the above part is deprecated
   |
   |-- ucntracker-vis : the GTK visualization widget
   |
@@ -124,6 +169,15 @@ Code Layout
       |            : they should be compilable with valac.
       |-- E01      : average length a particle goes before
                      getting out of a sphere = 3/4.
+
+Examples
+========
+  The example directory contains several small files. Some hacks around libtool+valac is
+  around examples/Makefile.var and examples/valac-libtool.
+  They are not built as part of UCNTracker. 
+  Rather, to run them one has to visit into each single directory and type make.
+
+  Several of them are not fixed. E01, E02 should be fine.
 
 Installation
 ===============
@@ -140,3 +194,6 @@ Licenses
   LGPL v2.0.
   Please acknowledge the authors, the UCN Group at IUCF, and NSF in the publications.
 
+Author
+======
+  This README is maintained by Yu Feng.
