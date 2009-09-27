@@ -12,8 +12,6 @@ Source
   A public repository is at github
 
     $ git clone git://github.com/fengy-research/UCNTracker.git
-    $ git submodule init
-    $ git submodule update
 
   A web interface is at
     http://github.com/fengy-research/UCNTracker
@@ -24,22 +22,21 @@ Source
 
 Dependency
 ==========
-  The package depends on
+  The package depends on (See NOTES on the bootstrap procedure)
 
-    glib-2.0 >= 2.10+:
+    glib-2.0 >= 2.12:
       http://ftp.gnome.org/pub/gnome/sources/glib/
       In general, any version newer than 2.10 should work.
       Available in RHEL 5.
 
-    vala >= 0.7.2
-      http://download.gnome.org/sources/vala/0.5/
-      Prebuilt packages on RHEL5.
+    vala >= 0.7.6 (Optional, obtained with bootstrap)
+      http://download.gnome.org/sources/vala/0.7/
 
     gsl >= 1.10:
       ftp://ftp.gnu.org/gnu/gsl/
       Available in EPEL 5.
 
-    libyaml-glib-1.0 >= 0.1
+    libyaml-glib-1.0 >= 0.1 (Optional, obtained with bootstrap)
       http://github.com/fengy-research/libyaml-glib
 
   For visualization the following packages are needed
@@ -52,18 +49,53 @@ Dependency
 
       Refer to http://bugzilla.gnome.org/show_bug.cgi?id=119189 for
       the progress of GtkGLExt getting into GTK.
-      Prebuilt package on RHEL5.
 
-  Most packages are available on either
-    RHEL 5
-    EPEL 5
+  Most packages are available on either RHEL 5 or EPEL 5.
+  EPEL 5 can be found in
       http://fedoraproject.org/wiki/EPEL
-    or Prebuilt by me at (the link might be unavailable soon)
-      http://129.79.155.240/~fengyu/rpmbuild
+
+Bootstraping
+============
+  Because sometimes it is painful to install the dependencies, compilation of several of 
+  the obscure dependencies are automated by the scripts bootstrap directory.
+
+  Currently, the automated packages are
+   - vala
+   - libyaml-glib
+
+  $ cd bootstrap
+  $ ./bootstrap
+
+  For VALA:
+    The bootstrap script will download the 0.7.6 source code from the gnome ftp, 
+    then compile and install vala into bootstrap/root.
+    A patch backported from vala (pre-0.7.7) trunk is applied to fix a serious memory
+    corrpution problem.
+
+    All compilation of .vala -> .c will be performed with the vala compiler 
+    in bootstrap/root.
+
+  For libyaml-glib
+    The bootstrap script will download the source code from github. 
+    The code appropriate for UCNTracker is under tag UCNTracker-sync-tag.
+    The code is unpacked into dependency/.
+
+  bootstrap.conf
+    This file describes the bootstrap procedure. It contains the information to locate
+    patch, and prepare the dependence packages. Lines in the file are executed one by one.
+
+  patch-{package}
+    This file contains the scripts to patch the package to fix bugs or to make it smoothly
+    work with UCNTracker
+
+  prepare-{package}
+    This file contains the scripts to get the package ready to be compiled with UCNTracker
+
 
 Compiling
 =========
-  First make sure all required packages are installed.
+  First make sure all required packages are installed, and/or the bootstrap script is
+  executed.
 
   $ ./autogen.sh
   $ make
@@ -84,14 +116,12 @@ Code Layout
   |
   |-- ucntracker-vis : the GTK visualization widget
   |
-  |-- libendf      : reading ENDF files(external submodule)
-  |
-  |-- libyaml-glib : building GObject with YAML(external submodule)
-  |
   |-- tools        : tools, mostly an geometry scene builder
   |
   |-- tests    : very minimal test cases
-  `---examples     : bundled apps
+  |
+  `---examples     : examples; after UCNTracker is installed to the system,
+      |            : they should be compilable with valac.
       |-- E01      : average length a particle goes before
                      getting out of a sphere = 3/4.
 
