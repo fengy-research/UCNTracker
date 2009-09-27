@@ -6,15 +6,22 @@ top_srcdir=`dirname $0`/..
 bootstrapdir=`dirname $0`
 abs_bootstrapdir=`readlink -f $bootstrapdir`
 abs_chroot=$abs_bootstrapdir/root
+abs_patchdir=$abs_bootstrapdir/patches
 depdir=$top_srcdir/dependency
 
 . $bootstrapdir/bootstrap-functions
 
-#SOURCE vala 1 j http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2
+if test $1; then
+	PACKAGE_FILTER=$1
+fi
 
+SOURCE vala 1 j http://ftp.gnome.org/pub/GNOME/sources/vala/0.7/vala-0.7.6.tar.bz2
 SOURCE libyaml-glib 1 z http://github.com/fengy-research/libyaml-glib/tarball/master
+
+PATCH vala
 PATCH libyaml-glib
-#PREPARE vala
+
+PREPARE vala
 PREPARE libyaml-glib
 
 

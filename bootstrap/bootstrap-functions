@@ -5,6 +5,7 @@ function fatal {
 }
 
 function SOURCE {
+	test $PACKAGE_FILTER && test x$PACKAGE_FILTER != x$1 && return;
 	PKG=$1
 	STRIP=$2
 	FORMAT=$3
@@ -17,6 +18,7 @@ function SOURCE {
 }
 
 function PREPARE {
+	test $PACKAGE_FILTER && test x$PACKAGE_FILTER != x$1 && return;
 	if test -x prepare-$1; then
 		(
 		cd $depdir/$1;
@@ -28,6 +30,7 @@ function PREPARE {
 }
 
 function PATCH {
+	test $PACKAGE_FILTER && test x$PACKAGE_FILTER != x$1 && return;
 	if test -x patch-$1; then
 		(
 		cd $depdir/$1;

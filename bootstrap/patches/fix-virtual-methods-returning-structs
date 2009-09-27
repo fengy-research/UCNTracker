@@ -1,0 +1,33 @@
+commit a82ad3fe728c41b9cd7c519963cdd1f21a65f2ca
+Author: Jürg Billeter <j@bitron.ch>
+Date:   Tue Sep 22 18:32:04 2009 +0200
+
+    Fix virtual methods returning structs
+    
+    Fixes bug 595954.
+
+diff --git a/codegen/valagtypemodule.vala b/codegen/valagtypemodule.vala
+index 1eb3d74..2f3634d 100644
+--- a/codegen/valagtypemodule.vala
++++ b/codegen/valagtypemodule.vala
+@@ -327,13 +327,19 @@ internal class Vala.GTypeModule : GErrorModule {
+ 			return;
+ 		}
+ 
++		var creturn_type = m.return_type;
++		if (m.return_type.is_real_non_null_struct_type ()) {
++			// structs are returned via out parameter
++			creturn_type = new VoidType ();
++		}
++
+ 		// add vfunc field to the type struct
+ 		var vdeclarator = new CCodeFunctionDeclarator (m.vfunc_name);
+ 		var cparam_map = new HashMap<int,CCodeFormalParameter> (direct_hash, direct_equal);
+ 
+ 		generate_cparameters (m, decl_space, cparam_map, new CCodeFunction ("fake"), vdeclarator);
+ 
+-		var vdecl = new CCodeDeclaration (m.return_type.get_cname ());
++		var vdecl = new CCodeDeclaration (creturn_type.get_cname ());
+ 		vdecl.add_declarator (vdeclarator);
+ 		type_struct.add_declaration (vdecl);
+ 	}
