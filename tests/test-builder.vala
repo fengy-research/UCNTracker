@@ -41,7 +41,7 @@ objects:
   layer: 0
   objects:
   - !Ball
-    center: [ 0, 0, 0 ]
+#    center: { x: 0, y: 0, z: 0 }
     radius: 30
 ...
 """;
