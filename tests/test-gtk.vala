@@ -100,9 +100,9 @@ parts:
 #    center: 12, 12, 0 
 #    tube_radius: 3
 #    radius: 6
-#  cross-sections:
-#  - !ElasticCrossSection &cs1
-#    ptype: Neutron
+  cross-sections:
+  - !CrossSection &cs1
+    ptype: Neutron
 #    density: 6.02e21
 #    mat: 31
 #    mf: 7
