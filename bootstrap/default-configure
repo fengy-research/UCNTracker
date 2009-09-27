@@ -6,5 +6,5 @@ for i in $*; do
 		prefix=${i##--prefix=};
 	fi
 done
-
+export VALAC_BIN=`readlink -f ../..`/bootstrap/root/bin/valac
 . ./configure $* --includedir=$prefix/include/ucntracker --libdir=$prefix/lib/ucntracker --datadir=$prefix/share/ucntracker
