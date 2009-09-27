@@ -41,3 +41,12 @@ function PATCH {
 		fatal "patch-$1" script is not found.
 	fi;
 }
+
+function noinst_libraries {
+	AMs=`find . -name 'Makefile.am'`
+	for AM in $AMs; do
+		mv $AM $AM.bak
+		cat $AM.bak | sed 's;lib_LTLIBRARIES;noinst_LTLIBRARIES;g' > $AM
+	done;
+	ln -sf $abs_bootstrapdir/default-configure configure.gnu
+}

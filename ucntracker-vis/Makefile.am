@@ -3,10 +3,10 @@ SUBDIRS = .
 
 lib_LTLIBRARIES = libucntracker-vis.la
 libucntracker_vis_la_CPPFLAGS = $(GLIB_CFLAGS) $(GSL_CFLAGS) $(GTK_CFLAGS) \
-	$(GTKGL_CFLAGS) $(YAML_CFLAGS) $(ENDF_CFLAGS) $(UCNTRACKER_CFLAGS) \
+	$(GTKGL_CFLAGS) $(YAML_CFLAGS) $(UCNTRACKER_CFLAGS) \
 	-DG_LOG_DOMAIN=\"UCNTracker\" -DINFO=
 
-libucntracker_vis_la_LDFLAGS = -g
+libucntracker_vis_la_LIBADD = $(GTKGL_LIBS)
 libucntracker_vis_la_SOURCES =  \
 	$(VALASOURCES:.vala=.c) \
 	ucntracker-vis-1.0.h
@@ -56,7 +56,7 @@ EXTRA_DIST = $(VALASOURCES) \
              vala-doc
 
 
-include_HEADERS =  ucntracker-vis-1.0.h
+pkginclude_HEADERS =  ucntracker-vis-1.0.h
 
 MAINTAINERCLEANFILES = $(VALASOURCES:.vala=.c) \
         ucntracker-vis-1.0.h \

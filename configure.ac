@@ -31,17 +31,26 @@ PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.10])
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-PKG_CHECK_MODULES(GTKGL, [gtkglext-1.0 >= 1.0])
-AC_SUBST(GTKGL_CFLAGS)
-AC_SUBST(GTKGL_LIBS)
-
 PKG_CHECK_MODULES(GSL, [gsl])
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
 
+WITH_INSTALLED([gtkglext], use_installed_gtkglext)
+
+if test "x$use_installed_gtkglext" == xyes; then
+	PKG_CHECK_MODULES(GTKGL, [gtkglext-1.0 >= 1.0])
+else
+	AC_CONFIG_SUBDIRS(dependency/gtkglext)
+	GTKGL_CFLAGS="-I$depdir/gtkglext -I$depdir/gtkglext/gdk"
+	GTKGL_LIBS="$depdir/gtkglext/gtk/libgtkglext-x11-1.0.la $depdir/gtkglext/gdk/libgdkglext-x11-1.0.la"
+fi
+AC_SUBST(GTKGL_CFLAGS)
+AC_SUBST(GTKGL_LIBS)
+AM_CONDITIONAL(USE_INSTALLED_GTKGLEXT, [ test x$use_installed_gtkglext = xyes ])
+
 WITH_INSTALLED([libyaml-glib], use_installed_libyaml_glib)
 
-if test "x$use_installed_YAMLGLIB" == xyes; then
+if test "x$use_installed_libyaml_glib" == xyes; then
 	PKG_CHECK_MODULES(YAML, [libyaml-glib >= 0.1])
 	YAML_VALAFLAGS=
 else

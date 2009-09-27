@@ -2,12 +2,12 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 bindir=@bindir@
-includedir=@includedir@
+includedir=@pkgincludedir@
 datadir=@datadir@
 
 Name: UCNTrackerVis
 Description: Tracking UltraCold Neutrons (Visualization) 
 Version: @VERSION@
-Requires: ucntracker-1.0 gtk+-2.0 >= 2.12 gl glu gtkglext-1.0
+Requires: ucntracker-1.0 gtk+-2.0 >= 2.12 gl glu
 Libs: -L${libdir} -lucntracker-vis
 Cflags: -I${includedir}

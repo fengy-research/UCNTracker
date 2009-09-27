@@ -2,12 +2,12 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 bindir=@bindir@
-includedir=@includedir@
+includedir=@pkgincludedir@
 datadir=@datadir@
 
 Name: UCNTracker
 Description: Tracking UltraCold Neutrons
 Version: @VERSION@
-Requires: gobject-2.0 >= 2.12 gsl gmodule-2.0 >=2.10 libendf-1.0 libyaml-glib-1.0
+Requires: gobject-2.0 >= 2.12 gsl gmodule-2.0 >=2.10
 Libs: -L${libdir} -lucntracker
 Cflags: -I${includedir}

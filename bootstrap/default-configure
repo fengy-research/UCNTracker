@@ -1,0 +1,10 @@
+#! /bin/sh
+
+prefix=/usr/local
+for i in $*; do
+	if expr $i : '--prefix=.*' > /dev/null; then
+		prefix=${i##--prefix=};
+	fi
+done
+
+. ./configure $* --includedir=$prefix/include/ucntracker --libdir=$prefix/lib/ucntracker --datadir=$prefix/share/ucntracker
