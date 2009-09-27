@@ -46,7 +46,7 @@ objects:
     rotation: 0, 90, 0
 - &Lab !Part
   layer: 0
-  potential: 193.0 8.5e-5
+  potential: { V : 193.0,  f : 8.5e-5 }
   objects:
   - !Ball
     center: 0, 0, 0
@@ -80,7 +80,7 @@ objects:
     rotation: 0, 0, 0
     radius: 22.225
     tube_radius: 4.88696
-  - class: Box
+  - !Box
     center: 0, 52.605, 0
     size: 44.45, 44.45, 10
 - &elbow51 !Intersection

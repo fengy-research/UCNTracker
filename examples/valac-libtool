@@ -1,0 +1,26 @@
+#! /bin/sh
+
+cmdline=../../bootstrap/root/bin/valac
+for i in $*; do
+	case $i in 
+	-o | -X )
+		cmdline="$cmdline $i"
+		preserve=true;
+	;;
+	* )
+		if test $preserve = true || 
+		expr $i : '^--.*' > /dev/null || 
+		expr $i : '.*.vala$' > /dev/null; then
+			cmdline="$cmdline $i"
+		else
+			cmdline="$cmdline -X $i"
+		fi;
+		preserve=false;
+	;;
+	esac;
+done;
+
+echo ------------
+echo $cmdline
+echo -----------
+$cmdline
